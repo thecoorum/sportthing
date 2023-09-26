@@ -5,6 +5,10 @@ import { X } from "lucide-react"
 
 import { cn } from "@/utils"
 
+type SheetProps = SheetPrimitive.DialogPortalProps & {
+  className?: string
+}
+
 const Sheet = SheetPrimitive.Root
 
 const SheetTrigger = SheetPrimitive.Trigger
@@ -14,7 +18,7 @@ const SheetClose = SheetPrimitive.Close
 const SheetPortal = ({
   className,
   ...props
-}: SheetPrimitive.DialogPortalProps) => (
+}: SheetProps) => (
   <SheetPrimitive.Portal className={cn(className)} {...props} />
 )
 SheetPortal.displayName = SheetPrimitive.Portal.displayName

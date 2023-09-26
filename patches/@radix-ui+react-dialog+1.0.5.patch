@@ -1,0 +1,12 @@
+diff --git a/node_modules/@radix-ui/react-dialog/dist/index.d.mts b/node_modules/@radix-ui/react-dialog/dist/index.d.mts
+index 9273b32..d30e8b4 100644
+--- a/node_modules/@radix-ui/react-dialog/dist/index.d.mts
++++ b/node_modules/@radix-ui/react-dialog/dist/index.d.mts
+@@ -29,6 +29,7 @@ export interface DialogPortalProps {
+      * controlling animation with React animation libraries.
+      */
+     forceMount?: true;
++    className?: string;
+ }
+ export const DialogPortal: React.FC<DialogPortalProps>;
+ export interface DialogOverlayProps extends DialogOverlayImplProps {
