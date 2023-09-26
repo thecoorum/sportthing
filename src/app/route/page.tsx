@@ -3,7 +3,7 @@
 import { useCallback, useEffect } from "react";
 
 import { useRouter } from "next/navigation";
-import { useBackButton } from "@twa.js/sdk-react";
+import { useBackButton, useHapticFeedback } from "@twa.js/sdk-react";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";

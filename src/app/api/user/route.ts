@@ -4,7 +4,7 @@ import { verifyInitData } from "@/utils";
 import { supabase } from "@/supabase";
 
 export const POST = async (req: NextRequest) => {
-  const { tgWebAppData } = await req.json();
+  const tgWebAppData = req.headers.get('Web-App-Data');
 
   const { success, user } = verifyInitData(tgWebAppData);
 
@@ -17,7 +17,7 @@ export const POST = async (req: NextRequest) => {
 
     // No user found in the database, create one and return
     if (!serverUser) {
-      const { data, error } = await supabase
+      const { data: newUser, error } = await supabase
         .from("users")
         .insert({
           id: user.id,
@@ -32,7 +32,7 @@ export const POST = async (req: NextRequest) => {
         return NextResponse.json({ error }, { status: 400 });
       }
 
-      return NextResponse.json({ success, user: data }, { status: 200 });
+      return NextResponse.json({ success, user: newUser }, { status: 200 });
     }
 
     // User found in the database, return it

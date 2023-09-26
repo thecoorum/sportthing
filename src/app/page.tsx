@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, memo } from "react";
+import { useCallback, memo } from "react";
 
 import { useHapticFeedback, useThemeParams } from "@twa.js/sdk-react";
 import { useRouter } from "next/navigation";
@@ -14,28 +14,6 @@ const Home = memo(() => {
   const theme = useThemeParams();
 
   const router = useRouter();
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.hash.slice(1));
-
-    fetch("/api/validate", {
-      method: "POST",
-      body: JSON.stringify({
-        tgWebAppData: params.get("tgWebAppData"),
-      }),
-    })
-      .then((response) => {
-        return response.json()
-      })
-      .then(({ user }) => {
-        console.log(user);
-      })
-      .catch((error) => {
-        console.log(error)
-
-        haptic.notificationOccurred("error");
-      });
-  }, [haptic]);
 
   const handleTrigger = useCallback(() => {
     haptic.notificationOccurred("success");

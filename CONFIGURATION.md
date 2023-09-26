@@ -4,7 +4,8 @@
 CREATE TABLE users (
   id SERIAL PRIMARY KEY NOT NULL,
   name TEXT NOT NULL,
-  role TEXT NOT NULL DEFAULT 'user' CHECK (role IN ('user', 'coach', 'admin'))
+  role TEXT NOT NULL DEFAULT 'user' CHECK (role IN ('user', 'coach', 'admin')),
+  username TEXT NOT NULL
 );
 
 CREATE TABLE locations (
