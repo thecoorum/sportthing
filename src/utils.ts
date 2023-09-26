@@ -41,7 +41,7 @@ export const verifyInitData = (
 
   const secret = crypto
     .createHmac("sha256", "WebAppData")
-    .update("6681833816:AAHZr6Au5WPxihLvLYd01XmcdN017EJ3wDA");
+    .update(process.env.BOT_TOKEN || "");
   const calculatedHash = crypto
     .createHmac("sha256", secret.digest())
     .update(dataCheckString)
