@@ -1,3 +1,5 @@
+"use client";
+
 import {
   createContext,
   useContext,
@@ -6,7 +8,7 @@ import {
   PropsWithChildren,
 } from "react";
 
-import type { User } from '@/types'
+import type { User } from "@/types";
 
 export const UserContext = createContext<User | null>(null);
 
