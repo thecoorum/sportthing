@@ -8,7 +8,13 @@ import {
   PropsWithChildren,
 } from "react";
 
+import { supabase } from "@/supabase";
+
 import type { User } from "@/types";
+import type {
+  RealtimeChannel,
+  RealtimePostgresUpdatePayload,
+} from "@supabase/supabase-js";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -16,6 +22,27 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
+    let channel: RealtimeChannel;
+
+    const handleUserUpdate = (payload: RealtimePostgresUpdatePayload<User>) => {
+      setUser(payload.new);
+    };
+
+    const subscribeToUserProfile = async () => {
+      channel = supabase
+        .channel("realtime:users")
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "users",
+          },
+          handleUserUpdate
+        )
+        .subscribe();
+    };
+
     if (!user) {
       const headers = new Headers();
 
@@ -44,6 +71,16 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
           console.log(error);
         });
     }
+
+    if (user) {
+      subscribeToUserProfile();
+    }
+
+    return () => {
+      if (channel) {
+        supabase.removeChannel(channel);
+      }
+    };
   }, [user]);
 
   return <UserContext.Provider value={user}>{children}</UserContext.Provider>;

@@ -5,4 +5,5 @@ export type User = {
   name: string;
   username?: string;
   role: Role;
+  created_at: string;
 };
