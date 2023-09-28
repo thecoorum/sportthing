@@ -25,7 +25,7 @@ const Locations = () => {
 
   if (!user) return null;
 
-  if (error || !(loading && data)) {
+  if (error) {
     return (
       <Alert>
         <Activity className="w-4 h-4" />
@@ -37,7 +37,7 @@ const Locations = () => {
     );
   }
 
-  if (loading && !data) {
+  if (loading) {
     return (
       <div className="space-y-2">
         <Skeleton className="w-full h-[150px]" />

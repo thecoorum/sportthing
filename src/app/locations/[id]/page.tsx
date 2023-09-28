@@ -17,7 +17,7 @@ const LocationPage = ({ params }: { params: { id: string } }) => {
 
   if (!user) return null;
 
-  if (error || !(loading && location)) {
+  if (error) {
     return (
       <Alert>
         <Activity className="w-4 h-4" />
