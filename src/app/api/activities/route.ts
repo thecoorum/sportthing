@@ -1,13 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// import { useDatabase } from "@/hooks/useDatabase";
-
 import { verifyInitData } from "@/utils";
 import { supabase } from "@/supabase";
 
 export const GET = async (req: NextRequest) => {
-  // const database = useDatabase()
-
   const tgWebAppData = req.headers.get("Web-App-Data");
   const user = req.headers.get("User");
 
@@ -34,8 +30,6 @@ export const GET = async (req: NextRequest) => {
 
       return NextResponse.json({ activities }, { status: 200 });
     } catch (error) {
-      console.error(error);
-
       return NextResponse.json({ error }, { status: 400 });
     }
   }
@@ -47,8 +41,6 @@ export const GET = async (req: NextRequest) => {
 };
 
 export const POST = async (req: NextRequest) => {
-  // const database = useDatabase()
-
   const tgWebAppData = req.headers.get("Web-App-Data");
   const user = req.headers.get("User");
 
@@ -74,8 +66,6 @@ export const POST = async (req: NextRequest) => {
 
       return NextResponse.json({ activity }, { status: 200 });
     } catch (error) {
-      console.error(error);
-
       return NextResponse.json({ error }, { status: 400 });
     }
   }
