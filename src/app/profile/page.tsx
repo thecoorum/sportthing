@@ -8,7 +8,8 @@ import { ProfileForm } from "@/components/profile-form";
 
 import { useUser } from "@/hooks/useUser";
 import { useBackButton } from "@/hooks/useBackButton";
-import { supabase } from "@/supabase";
+import { useDatabase } from "@/hooks/useDatabase";
+// import { supabase } from "@/supabase";
 
 import { DateTime } from "luxon";
 
@@ -21,8 +22,9 @@ const Profile = () => {
   const [editing, setEditing] = useState<boolean>(false);
 
   const user = useUser();
+  const database = useDatabase()
 
-  useBackButton();
+  // useBackButton();
 
   if (!user) return null;
 
@@ -33,7 +35,7 @@ const Profile = () => {
   const withStatus = ["admin", "coach"].includes(user.role);
 
   const handleSubmit = async (data: FormValues) => {
-    const { error } = await supabase
+    const { error } = await database
       .from("users")
       .update({
         name: data.name,

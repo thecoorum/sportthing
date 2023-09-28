@@ -10,9 +10,10 @@ import { Header } from "@/components/header";
 import { Toaster } from "@/components/ui/toaster";
 
 import { UserProvider } from "@/providers/user";
+import { ApiProvider } from "@/providers/api";
+import { DatabaseProvider } from "@/providers/database";
 
 import { cn } from "@/utils";
-import { ApiProvider } from "@/providers/api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,13 +27,15 @@ export default function RootLayout({
       <body className={cn("h-[100vh]", inter.className)}>
         <SDKProvider>
           <ApiProvider>
-            <UserProvider>
-              <Loader>
-                <Header />
-                {children}
-                <Toaster />
-              </Loader>
-            </UserProvider>
+            <DatabaseProvider>
+              <UserProvider>
+                <Loader>
+                  <Header />
+                  {children}
+                  <Toaster />
+                </Loader>
+              </UserProvider>
+            </DatabaseProvider>
           </ApiProvider>
         </SDKProvider>
       </body>

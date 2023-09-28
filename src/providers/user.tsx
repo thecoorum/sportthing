@@ -2,8 +2,9 @@
 
 import { createContext, useState, useEffect, PropsWithChildren } from "react";
 
-import { supabase } from "@/supabase";
+// import { supabase } from "@/supabase";
 import { useApi } from "@/hooks/useApi";
+import { useDatabase } from "@/hooks/useDatabase";
 
 import type {
   RealtimeChannel,
@@ -19,6 +20,7 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
   const [user, setUser] = useState<User | null>(null);
 
   const api = useApi();
+  const database = useDatabase()
 
   useEffect(() => {
     let channel: RealtimeChannel;
@@ -28,7 +30,7 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
     };
 
     const subscribeToUserProfile = async () => {
-      channel = supabase
+      channel = database
         .channel("realtime:users")
         .on(
           "postgres_changes",
@@ -63,7 +65,7 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
 
     return () => {
       if (channel) {
-        supabase.removeChannel(channel);
+        database.removeChannel(channel);
       }
     };
   }, [user, api]);
