@@ -79,11 +79,3 @@ export const POST = async (req: NextRequest) => {
     { status: 400 }
   );
 };
-
-export const PUT = async (req: NextRequest) => {
-  // TODO
-};
-
-export const DELETE = async (req: NextRequest) => {
-  // TODO
-};

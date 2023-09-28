@@ -11,12 +11,7 @@ import type {
 } from "@supabase/supabase-js";
 import { AxiosResponse } from "axios";
 
-import type { User } from "@/types";
-
-type UserResponse = {
-  success: boolean;
-  user?: User;
-};
+import type { User, UserApiResponse } from "@/types";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -49,8 +44,8 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
 
     if (!user) {
       api
-        .post<UserResponse>("/user")
-        .then((response: AxiosResponse<UserResponse>) => {
+        .post<UserApiResponse>("/user")
+        .then((response: AxiosResponse<UserApiResponse>) => {
           const { user } = response.data;
 
           if (user) {

@@ -8,6 +8,11 @@ export type User = {
   created_at: string;
 };
 
+export type UserApiResponse = {
+  success: boolean;
+  user: User | null;
+}
+
 export type Location = {
   id: string;
   name: string;
