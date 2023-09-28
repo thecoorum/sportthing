@@ -27,6 +27,11 @@ export const GET = async (req: NextRequest) => {
       return NextResponse.json({ error }, { status: 400 });
     }
   }
+
+  return NextResponse.json(
+    { message: "Invalid data provided" },
+    { status: 400 }
+  );
 };
 
 export const POST = async (req: NextRequest) => {
@@ -53,10 +58,10 @@ export const POST = async (req: NextRequest) => {
     } catch (error) {
       return NextResponse.json({ error }, { status: 400 });
     }
-  } else {
-    return NextResponse.json(
-      { message: "Invalid data provided" },
-      { status: 400 }
-    );
   }
+
+  return NextResponse.json(
+    { message: "Invalid data provided" },
+    { status: 400 }
+  );
 };
