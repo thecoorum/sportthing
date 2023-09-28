@@ -7,3 +7,10 @@ export type User = {
   role: Role;
   created_at: string;
 };
+
+export type Location = {
+  id: string;
+  name: string;
+  description?: string;
+  image_url?: string;
+}

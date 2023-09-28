@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 
 import Link from "next/link";
 
-import { useUser } from "@/providers/user";
+import { useUser } from "@/hooks/useUser";
 
 const STATUS_MAP = {
   admin: "Administrator",
@@ -34,24 +34,20 @@ export const Sidebar = memo(({ children }: PropsWithChildren) => {
     <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetTrigger>{children}</SheetTrigger>
       <SheetContent className="p-2">
-        <div className="flex items-center gap-3 px-3">
-          <Avatar className="w-14 h-14">
-            <AvatarImage />
-            <AvatarFallback>{initials}</AvatarFallback>
-          </Avatar>
-          {withStatus && (
-            <Badge className="py-2 px-4">{STATUS_MAP[user.role]}</Badge>
-          )}
-        </div>
         <div className="space-y-1 py-2">
-          <Link onClick={() => handleOpenChange(false)} href="/">
+          <Link onClick={() => handleOpenChange(false)} href="/" autoFocus={false}>
             <Button variant="ghost" className="w-full justify-start">
               Home
             </Button>
           </Link>
-          <Link onClick={() => handleOpenChange(false)} href="/profile">
+          <Link onClick={() => handleOpenChange(false)} href="/profile" autoFocus={false}>
             <Button variant="ghost" className="w-full justify-start">
               Profile
+            </Button>
+          </Link>
+          <Link onClick={() => handleOpenChange(false)} href="/locations" autoFocus={false}>
+            <Button variant="ghost" className="w-full justify-start">
+              Locations
             </Button>
           </Link>
           {/* <Button variant="ghost" className="w-full justify-start">

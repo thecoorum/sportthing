@@ -1,25 +1,29 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  PropsWithChildren,
-} from "react";
+import { createContext, useState, useEffect, PropsWithChildren } from "react";
 
 import { supabase } from "@/supabase";
+import { useApi } from "@/hooks/useApi";
 
-import type { User } from "@/types";
 import type {
   RealtimeChannel,
   RealtimePostgresUpdatePayload,
 } from "@supabase/supabase-js";
+import { AxiosResponse } from "axios";
+
+import type { User } from "@/types";
+
+type UserResponse = {
+  success: boolean;
+  user?: User;
+};
 
 export const UserContext = createContext<User | null>(null);
 
 export const UserProvider = ({ children }: PropsWithChildren) => {
   const [user, setUser] = useState<User | null>(null);
+
+  const api = useApi();
 
   useEffect(() => {
     let channel: RealtimeChannel;
@@ -44,31 +48,17 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
     };
 
     if (!user) {
-      const headers = new Headers();
+      api
+        .post<UserResponse>("/user")
+        .then((response: AxiosResponse<UserResponse>) => {
+          const { user } = response.data;
 
-      const webAppData = localStorage.getItem("webAppData");
-
-      if (webAppData) {
-        headers.set("Web-App-Data", webAppData);
-      } else {
-        const params = new URLSearchParams(window.location.hash.slice(1));
-
-        localStorage.setItem("webAppData", params.get("tgWebAppData") || "");
-        headers.set("Web-App-Data", params.get("tgWebAppData") || "");
-      }
-
-      fetch("/api/user", {
-        method: "POST",
-        headers,
-      })
-        .then((response) => {
-          return response.json();
-        })
-        .then(({ user }) => {
-          setUser(user);
+          if (user) {
+            setUser(user);
+          }
         })
         .catch((error) => {
-          console.log(error);
+          console.error(error);
         });
     }
 
@@ -81,17 +71,7 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
         supabase.removeChannel(channel);
       }
     };
-  }, [user]);
+  }, [user, api]);
 
   return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
-};
-
-export const useUser = () => {
-  const context = useContext(UserContext);
-
-  if (context === undefined) {
-    throw new Error("useUser must be used within a UserProvider");
-  }
-
-  return context;
 };

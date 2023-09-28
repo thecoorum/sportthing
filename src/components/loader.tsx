@@ -7,7 +7,7 @@ import { useSDK } from "@twa.js/sdk-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import { useUser } from "@/providers/user";
+import { useUser } from "@/hooks/useUser";
 
 export const Loader = ({ children }: PropsWithChildren) => {
   const { didInit, components, error } = useSDK();

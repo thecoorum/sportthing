@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { useUser } from "@/providers/user";
+import { useUser } from "@/hooks/useUser";
 
 import { Loader2 } from "lucide-react";
 import * as z from "zod";
@@ -21,6 +21,7 @@ export type FormValues = z.infer<typeof formSchema>;
 
 type Props = {
   onSubmit: (data: FormValues) => void;
+  onCancel: () => void;
 };
 
 const formSchema = z.object({
@@ -32,7 +33,7 @@ const formSchema = z.object({
   }),
 });
 
-export const ProfileForm = ({ onSubmit }: Props) => {
+export const ProfileForm = ({ onSubmit, onCancel }: Props) => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const user = useUser();
@@ -78,7 +79,10 @@ export const ProfileForm = ({ onSubmit }: Props) => {
             </FormItem>
           )}
         />
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center gap-2">
+          <Button size="sm" onClick={onCancel} variant="outline">
+            Cancel
+          </Button>
           <Button
             size="sm"
             type="submit"

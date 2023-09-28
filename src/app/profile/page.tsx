@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ProfileForm } from "@/components/profile-form";
 
-import { useUser } from "@/providers/user";
+import { useUser } from "@/hooks/useUser";
 import { useBackButton } from "@/hooks/useBackButton";
 import { supabase } from "@/supabase";
 
@@ -33,7 +33,7 @@ const Profile = () => {
   const withStatus = ["admin", "coach"].includes(user.role);
 
   const handleSubmit = async (data: FormValues) => {
-    const { data: update, error } = await supabase
+    const { error } = await supabase
       .from("users")
       .update({
         name: data.name,
@@ -41,6 +41,14 @@ const Profile = () => {
       })
       .eq("id", user.id);
 
+    if (error) {
+      console.error(error);
+    }
+
+    setEditing(false);
+  };
+
+  const handleCancel = () => {
     setEditing(false);
   };
 
@@ -51,7 +59,9 @@ const Profile = () => {
           <AvatarImage />
           <AvatarFallback>{initials}</AvatarFallback>
         </Avatar>
-        {editing && <ProfileForm onSubmit={handleSubmit} />}
+        {editing && (
+          <ProfileForm onSubmit={handleSubmit} onCancel={handleCancel} />
+        )}
         {!editing && (
           <>
             <h2 className="text-2xl">{user.name}</h2>
