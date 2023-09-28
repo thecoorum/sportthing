@@ -1,19 +1,20 @@
-"use client";
-
 import { Activity, Dumbbell } from "lucide-react";
 
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 
 import { useLocation } from "@/hooks/locations";
 import { useUser } from "@/hooks/useUser";
+
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { useRouter } from "next/router";
 
-const LocationPage = ({ params }: { params: { id: string } }) => {
+const LocationPage = () => {
   const user = useUser();
+  const router = useRouter()
 
-  const { data: location, error, loading } = useLocation(params.id);
+  const { data: location, error, loading } = useLocation(router.query.id as string);
 
   if (!user) return null;
 

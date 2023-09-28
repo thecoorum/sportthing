@@ -1,5 +1,3 @@
-"use client";
-
 import { Map } from "lucide-react";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";

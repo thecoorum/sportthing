@@ -6,19 +6,13 @@ import { supabase } from "@/supabase";
 export const GET = async (req: NextRequest) => {
   const tgWebAppData = req.headers.get("Web-App-Data");
 
-  // const { location_id } = await req.json();
-
   const { success } = verifyInitData(tgWebAppData);
 
   if (success) {
     try {
-      let query = supabase.from("locations").select("*");
-
-      // if (location_id) {
-      //   query = query.eq("id", location_id);
-      // }
-
-      const { data: locations, error } = await query;
+      const { data: locations, error } = await supabase
+        .from("locations")
+        .select("*");
 
       if (error) {
         return NextResponse.json({ error }, { status: 400 });
@@ -29,6 +23,11 @@ export const GET = async (req: NextRequest) => {
       return NextResponse.json({ error }, { status: 400 });
     }
   }
+
+  return NextResponse.json(
+    { message: "Invalid data provided" },
+    { status: 400 }
+  );
 };
 
 export const POST = async (req: NextRequest) => {
@@ -36,7 +35,7 @@ export const POST = async (req: NextRequest) => {
 
   const { success } = verifyInitData(tgWebAppData);
 
-  const data = await req.json()
+  const data = await req.json();
 
   if (success) {
     try {
@@ -54,10 +53,10 @@ export const POST = async (req: NextRequest) => {
     } catch (error) {
       return NextResponse.json({ error }, { status: 400 });
     }
-  } else {
-    return NextResponse.json(
-      { message: "Invalid data provided" },
-      { status: 400 }
-    );
   }
+
+  return NextResponse.json(
+    { message: "Invalid data provided" },
+    { status: 400 }
+  );
 };

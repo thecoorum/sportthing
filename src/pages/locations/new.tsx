@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -70,9 +68,9 @@ const LocationCreate = () => {
         console.error(error);
 
         toast({
-          title: 'Error occured',
-          description: error.message
-        })
+          title: "Error occured",
+          description: error.message,
+        });
       })
       .finally(() => {
         setLoading(false);
