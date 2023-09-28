@@ -10,7 +10,9 @@ CREATE TABLE users (
 
 CREATE TABLE locations (
   id UUID PRIMARY KEY NOT NULL,
-  name TEXT NOT NULL
+  name TEXT NOT NULL,
+  description TEXT,
+  image_url TEXT
 );
 
 CREATE TABLE activities (
