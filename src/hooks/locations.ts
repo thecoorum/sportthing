@@ -18,13 +18,11 @@ type LocationsResponse = {
 export const useLocations = () => {
   const [locations, setLocations] = useState<Tables<"locations">[] | []>([]);
   const [error, setError] = useState<Error | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const api = useApi();
 
   useEffect(() => {
-    setLoading(true);
-
     api
       .get("/locations")
       .then(({ data }: LocationsResponse) => {
@@ -40,13 +38,11 @@ export const useLocations = () => {
 export const useLocation = (id: string) => {
   const [location, setLocation] = useState<Tables<"locations"> | null>(null);
   const [error, setError] = useState<Error | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const api = useApi();
 
   useEffect(() => {
-    setLoading(true);
-
     api
       .get(`/locations/${id}`)
       .then(({ data }: LocationResponse) => {
