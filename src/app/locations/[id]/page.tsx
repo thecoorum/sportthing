@@ -17,7 +17,7 @@ const LocationPage = ({ params }: { params: { id: string } }) => {
 
   if (!user) return null;
 
-  if (error || !location) {
+  if (error || !(loading && location)) {
     return (
       <Alert>
         <Activity className="w-4 h-4" />
@@ -29,7 +29,7 @@ const LocationPage = ({ params }: { params: { id: string } }) => {
     );
   }
 
-  if (loading) {
+  if (loading && !location) {
     return (
       <div className="space-y-1.5">
         <Skeleton className="w-[120px] h-[24px]" />
@@ -42,13 +42,13 @@ const LocationPage = ({ params }: { params: { id: string } }) => {
     <div className="flex flex-col space-y-6">
       <div className="space-y-1.5">
         <h2 className="text-3xl font-semibold leading-none tracking-tight">
-          {location.name}
+          {location?.name}
         </h2>
         <div className="space-y-4">
-          {location.address && (
+          {location?.address && (
             <p className="text-sm text-muted-foreground">{location.address}</p>
           )}
-          {location.description && (
+          {location?.description && (
             <>
               <hr />
               <p className="text-sm text-muted-foreground">
@@ -72,7 +72,7 @@ const LocationPage = ({ params }: { params: { id: string } }) => {
         </Alert>
       </div>
       {user.role === "admin" && (
-        <Link href={`/locations/${location.id}/edit`}>
+        <Link href={`/locations/${location?.id}/edit`}>
           <Button variant="outline" size="lg">
             Edit location
           </Button>
