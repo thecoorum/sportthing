@@ -10,9 +10,9 @@ export const POST = async (req: NextRequest) => {
 
   if (success && user) {
     const { data, error } = await supabase.rpc('get_or_create_user', {
-      id_input: user.id,
-      name_input: [user.first_name, user.last_name].filter(Boolean).join(" "),
-      username_input: user.username,
+      user_id: user.id,
+      name: [user.first_name, user.last_name].filter(Boolean).join(" "),
+      username: user.username,
     })
 
     if (error) {
