@@ -26,17 +26,17 @@ export default function RootLayout({
     <html lang="en">
       <body className={cn("h-[100vh]", inter.className)}>
         <SDKProvider>
-          <ApiProvider>
-            <DatabaseProvider>
-              <UserProvider>
-                <Loader>
+          <Loader>
+            <ApiProvider>
+              <DatabaseProvider>
+                <UserProvider>
                   <Header />
                   {children}
                   <Toaster />
-                </Loader>
-              </UserProvider>
-            </DatabaseProvider>
-          </ApiProvider>
+                </UserProvider>
+              </DatabaseProvider>
+            </ApiProvider>
+          </Loader>
         </SDKProvider>
       </body>
     </html>

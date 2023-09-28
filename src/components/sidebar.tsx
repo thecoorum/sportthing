@@ -34,7 +34,7 @@ export const Sidebar = memo(({ children }: PropsWithChildren) => {
     <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetTrigger>{children}</SheetTrigger>
       <SheetContent className="p-2">
-        <div className="space-y-1 py-2">
+        <div className="space-y-1 py-8">
           <Link onClick={() => handleOpenChange(false)} href="/" autoFocus={false}>
             <Button variant="ghost" className="w-full justify-start">
               Home

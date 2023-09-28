@@ -9,7 +9,6 @@ import { ProfileForm } from "@/components/profile-form";
 import { useUser } from "@/hooks/useUser";
 import { useBackButton } from "@/hooks/useBackButton";
 import { useDatabase } from "@/hooks/useDatabase";
-// import { supabase } from "@/supabase";
 
 import { DateTime } from "luxon";
 
@@ -55,7 +54,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="flex flex-col h-full p-4 justify-between">
+    <div className="flex flex-col h-full p-4 pt-16 justify-between">
       <div className="flex flex-col space-y-2 items-center">
         <Avatar className="w-16 h-16">
           <AvatarImage />

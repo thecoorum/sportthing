@@ -2,7 +2,8 @@
 
 import { createContext, useState, useEffect, PropsWithChildren } from "react";
 
-// import { supabase } from "@/supabase";
+import { Skeleton } from "@/components/ui/skeleton";
+
 import { useApi } from "@/hooks/useApi";
 import { useDatabase } from "@/hooks/useDatabase";
 
@@ -20,7 +21,7 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
   const [user, setUser] = useState<User | null>(null);
 
   const api = useApi();
-  const database = useDatabase()
+  const database = useDatabase();
 
   useEffect(() => {
     let channel: RealtimeChannel;
@@ -69,6 +70,16 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
       }
     };
   }, [user, api]);
+
+  if (!user) {
+    return (
+      <div className="p-5">
+        <Skeleton className="w-[100px] h-[20px] mb-2" />
+        <Skeleton className="w-[150px] h-[20px] mb-2" />
+        <Skeleton className="w-[75px] h-[20px] mb-2" />
+      </div>
+    );
+  }
 
   return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
 };

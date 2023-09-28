@@ -1,26 +1,21 @@
 "use client";
 
-import { PropsWithChildren, useEffect, useState, createContext } from "react";
+import { PropsWithChildren, createContext } from "react";
 
 import axios, { AxiosInstance } from "axios";
+import { useLaunchParams } from "@twa.js/sdk-react";
 
 export const ApiContext = createContext<AxiosInstance>(axios.create());
 
 export const ApiProvider = ({ children }: PropsWithChildren) => {
-  const [data, setData] = useState<string>("");
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.hash.slice(1));
-
-    setData(params.get("tgWebAppData") || "");
-  }, []);
+  const launchParams = useLaunchParams()
 
   const api = axios.create({
     baseURL: "/api",
     withCredentials: true,
     headers: {
       "Content-Type": "application/json",
-      "Web-App-Data": data,
+      "Web-App-Data": launchParams.initDataRaw,
     },
   });
 
