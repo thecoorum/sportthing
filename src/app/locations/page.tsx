@@ -11,46 +11,32 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+
+import Link from "next/link";
 
 import { useLocations } from "@/hooks/locations";
 import { useUser } from "@/hooks/useUser";
-import { useBackButton, useMainButton } from "@twa.js/sdk-react";
+import { useBackButton } from "@twa.js/sdk-react";
 import { useRouter } from "next/navigation";
-
-import Link from "next/link";
 
 const Locations = () => {
   const user = useUser();
 
   const router = useRouter();
 
-  const mainButton = useMainButton();
   const backButton = useBackButton();
 
   useEffect(() => {
-    const handleCreateLocation = () => {
-      router.push("/locations/new");
-    };
-
     backButton.show();
     backButton.on("click", () => {
       router.push("/");
     });
 
-    if (user?.role === "admin") {
-      mainButton.enable().show();
-      mainButton.setText("Create a new location");
-      mainButton.on("click", handleCreateLocation);
-    } else {
-      mainButton.hide();
-    }
-
     return () => {
-      mainButton.off("click", handleCreateLocation);
-      mainButton.hide();
       backButton.hide();
     };
-  }, [user?.role, backButton, mainButton, router]);
+  }, [backButton, router]);
 
   const { data, error, loading } = useLocations();
 
@@ -84,7 +70,7 @@ const Locations = () => {
         <Alert>
           <Map className="w-4 h-4" />
           <AlertTitle>No locations found</AlertTitle>
-          {/* {user.role === "admin" && (
+          {user.role === "admin" && (
             <div className="space-y-3">
               <AlertDescription>
                 You can create a new location by clicking the button below.
@@ -93,7 +79,7 @@ const Locations = () => {
                 <Button className="w-full">Create a new location</Button>
               </Link>
             </div>
-          )} */}
+          )}
         </Alert>
       </div>
     );
@@ -125,13 +111,13 @@ const Locations = () => {
           </Card>
         </Link>
       ))}
-      {/* {user.role === "admin" && (
+      {user.role === "admin" && (
         <Link href="/locations/new" className="block">
           <Button size="lg" className="w-full">
             Create a new location
           </Button>
         </Link>
-      )} */}
+      )}
     </div>
   );
 };

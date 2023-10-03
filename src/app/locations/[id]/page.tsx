@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 import { useLocation } from "@/hooks/locations";
 import { useUser } from "@/hooks/useUser";
-import { useBackButton, useMainButton } from "@twa.js/sdk-react";
+import { useBackButton } from "@twa.js/sdk-react";
 import { useRouter } from "next/navigation";
 
 const LocationPage = ({ params }: { params: { id: string } }) => {
@@ -16,7 +16,6 @@ const LocationPage = ({ params }: { params: { id: string } }) => {
 
   const router = useRouter();
 
-  const mainButton = useMainButton();
   const backButton = useBackButton();
 
   useEffect(() => {
@@ -27,19 +26,11 @@ const LocationPage = ({ params }: { params: { id: string } }) => {
     backButton.show();
     backButton.on("click", handleGoBack);
 
-    if (user?.role === "admin") {
-      mainButton.enable().show();
-      mainButton.setText("Edit location");
-    } else {
-      mainButton.hide();
-    }
-
     return () => {
-      mainButton.hide();
       backButton.off("click", handleGoBack);
       backButton.hide();
     };
-  }, [user?.role, mainButton, backButton, router]);
+  }, [user?.role, backButton, router]);
 
   const { data: location, error, loading } = useLocation(params.id);
 
