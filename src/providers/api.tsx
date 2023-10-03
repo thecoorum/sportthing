@@ -5,19 +5,7 @@ import { PropsWithChildren, createContext } from "react";
 import axios, { AxiosInstance } from "axios";
 import { useLaunchParams } from "@twa.js/sdk-react";
 
-interface ApiContextInterface {
-  get: AxiosInstance["get"];
-  post: AxiosInstance["post"];
-  delete: AxiosInstance["delete"];
-  patch: AxiosInstance["patch"];
-}
-
-export const ApiContext = createContext<ApiContextInterface>({
-  get: () => Promise.resolve({} as any),
-  post: () => Promise.resolve({} as any),
-  delete: () => Promise.resolve({} as any),
-  patch: () => Promise.resolve({} as any),
-});
+export const ApiContext = createContext<AxiosInstance>(axios.create());
 
 export const ApiProvider = ({ children }: PropsWithChildren) => {
   const launchParams = useLaunchParams();
