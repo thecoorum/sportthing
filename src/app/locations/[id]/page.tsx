@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-import { Activity, Dumbbell, Loader2 } from "lucide-react";
+import { Activity, Dumbbell, Loader2, ChevronLeft } from "lucide-react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
@@ -115,9 +115,15 @@ const LocationPage = ({ params }: { params: { id: string } }) => {
   return (
     <div className="flex flex-col space-y-6">
       <div className="space-y-1.5">
-        <h2 className="text-3xl font-semibold leading-none tracking-tight">
-          {location?.name}
-        </h2>
+        <div className="space-y-3">
+          <Link href="/locations" className="flex items-center space-x-1">
+            <ChevronLeft className="w-4 h-4" />
+            <span className="text-sm">Locations</span>
+          </Link>
+          <h2 className="text-3xl font-semibold leading-none tracking-tight">
+            {location?.name}
+          </h2>
+        </div>
         <div className="space-y-4">
           {location?.address && (
             <p className="text-sm text-muted-foreground">{location.address}</p>
@@ -142,6 +148,9 @@ const LocationPage = ({ params }: { params: { id: string } }) => {
           <AlertDescription>
             No activities in this location at the moment. Please come back
             later.
+            {user.role === "admin" && (
+              <Button className="w-full mt-2" size="lg" variant="outline">Create activity in this location</Button>
+            )}
           </AlertDescription>
         </Alert>
       </div>
