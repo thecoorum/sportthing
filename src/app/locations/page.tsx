@@ -112,11 +112,13 @@ const Locations = () => {
         </Link>
       ))}
       {user.role === "admin" && (
-        <Link href="/locations/new" className="block">
-          <Button size="lg" className="w-full">
-            Create a new location
-          </Button>
-        </Link>
+        <div className="sticky bottom-0 left-0 w-full py-4 bg-white/60 backdrop-blur-sm">
+          <Link href="/locations/new" className="block">
+            <Button size="lg" className="w-full">
+              Create a new location
+            </Button>
+          </Link>
+        </div>
       )}
     </div>
   );
