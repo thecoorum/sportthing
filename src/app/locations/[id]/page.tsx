@@ -1,22 +1,34 @@
 "use client";
 
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { Activity, Dumbbell } from "lucide-react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+
+import Link from "next/link";
 
 import { useLocation } from "@/hooks/locations";
 import { useUser } from "@/hooks/useUser";
-import { useBackButton } from "@twa.js/sdk-react";
+import { useBackButton, usePopup } from "@twa.js/sdk-react";
 import { useRouter } from "next/navigation";
+import { useApi } from "@/hooks/useApi";
+import { useToast } from "@/components/ui/use-toast";
 
 const LocationPage = ({ params }: { params: { id: string } }) => {
+  const [deletePending, setDeletePending] = useState<boolean>(false);
+
   const user = useUser();
+
+  const api = useApi();
 
   const router = useRouter();
 
+  const { toast } = useToast();
+
   const backButton = useBackButton();
+  const popup = usePopup();
 
   useEffect(() => {
     const handleGoBack = () => {
@@ -33,6 +45,45 @@ const LocationPage = ({ params }: { params: { id: string } }) => {
   }, [user?.role, backButton, router]);
 
   const { data: location, error, loading } = useLocation(params.id);
+
+  const handleDelete = useCallback(async () => {
+    setDeletePending(true);
+
+    const action = await popup.open({
+      title: "Are you sure?",
+      message: "This action cannot be undone.",
+      buttons: [
+        {
+          id: "cancel",
+          type: "cancel",
+        },
+        {
+          id: "confirm",
+          type: "destructive",
+          text: "Delete",
+        },
+      ],
+    });
+
+    if (action === "confirm") {
+      api
+        .delete(`/locations/${params.id}`)
+        .then(() => {
+          router.replace("/locations");
+        })
+        .catch((error: Error) => {
+          console.error(error);
+
+          toast({
+            title: "Error occured",
+            description: error.message,
+          });
+        })
+        .finally(() => {
+          setDeletePending(false);
+        });
+    }
+  }, [params.id, popup, api, toast, router]);
 
   if (!user) return null;
 
@@ -90,6 +141,18 @@ const LocationPage = ({ params }: { params: { id: string } }) => {
           </AlertDescription>
         </Alert>
       </div>
+      {user.role === "admin" && (
+        <div className="flex items-center gap-2">
+          <Button size="lg" onClick={handleDelete} variant="destructive">
+            Delete
+          </Button>
+          <Link href={`/locations/${params.id}/edit`} className="block w-full">
+            <Button size="lg" className="w-full" variant="outline">
+              Edit
+            </Button>
+          </Link>
+        </div>
+      )}
     </div>
   );
 };

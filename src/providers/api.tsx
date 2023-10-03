@@ -8,11 +8,15 @@ import { useLaunchParams } from "@twa.js/sdk-react";
 interface ApiContextInterface {
   get: AxiosInstance["get"];
   post: AxiosInstance["post"];
+  delete: AxiosInstance["delete"];
+  patch: AxiosInstance["patch"];
 }
 
 export const ApiContext = createContext<ApiContextInterface>({
   get: () => Promise.resolve({} as any),
   post: () => Promise.resolve({} as any),
+  delete: () => Promise.resolve({} as any),
+  patch: () => Promise.resolve({} as any),
 });
 
 export const ApiProvider = ({ children }: PropsWithChildren) => {
@@ -32,6 +36,8 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
       value={{
         get: (url) => api.get(url),
         post: (url, data) => api.post(url, data),
+        delete: (url) => api.delete(url),
+        patch: (url, data) => api.patch(url, data),
       }}
     >
       {children}

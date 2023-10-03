@@ -65,3 +65,33 @@ export const POST = async (req: NextRequest) => {
     { status: 400 }
   );
 };
+
+export const DELETE = async (req: NextRequest) => {
+  const tgWebAppData = req.headers.get("Web-App-Data");
+
+  const id = req.url.split("/").at(-1);
+
+  const { success } = verifyInitData(tgWebAppData);
+
+  if (success) {
+    try {
+      const { data: location, error } = await supabase
+        .from("locations")
+        .delete()
+        .eq("id", id);
+
+      if (error) {
+        return NextResponse.json({ error }, { status: 400 });
+      }
+
+      return NextResponse.json({ location }, { status: 200 });
+    } catch (error) {
+      return NextResponse.json({ error }, { status: 400 });
+    }
+  }
+
+  return NextResponse.json(
+    { message: "Invalid data provided" },
+    { status: 400 }
+  );
+};
