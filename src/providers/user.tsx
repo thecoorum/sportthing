@@ -1,85 +1,57 @@
-"use client";
-
-import { createContext, useState, useEffect, PropsWithChildren } from "react";
+import { createContext, PropsWithChildren } from "react";
+import useSWR, { Fetcher } from "swr";
 
 import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 import { useApi } from "@/hooks/useApi";
-import { useDatabase } from "@/hooks/useDatabase";
 
-import type {
-  RealtimeChannel,
-  RealtimePostgresUpdatePayload,
-} from "@supabase/supabase-js";
-import { AxiosResponse } from "axios";
+import { ServerCrash } from "lucide-react";
 
-import type { User, UserApiResponse } from "@/types";
+import type { Tables } from "@/database.extensions";
 
-export const UserContext = createContext<User | null>(null);
+interface UserResponse {
+  data: {
+    user: Tables<"users">;
+    success: boolean;
+  };
+}
+
+export const UserContext = createContext<Tables<"users"> | undefined>(
+  undefined
+);
 
 export const UserProvider = ({ children }: PropsWithChildren) => {
-  const [user, setUser] = useState<User | null>(null);
+  const { post } = useApi();
 
-  const api = useApi();
-  const database = useDatabase();
+  const fetcher: Fetcher<Tables<"users">, string> = (url) =>
+    post(url).then((response: UserResponse) => response.data.user);
 
-  useEffect(() => {
-    let channel: RealtimeChannel;
+  const { data, error, isLoading } = useSWR("/user", fetcher);
 
-    const handleUserUpdate = (payload: RealtimePostgresUpdatePayload<User>) => {
-      setUser(payload.new);
-    };
-
-    const subscribeToUserProfile = async () => {
-      channel = database
-        .channel("realtime:users")
-        .on(
-          "postgres_changes",
-          {
-            event: "UPDATE",
-            schema: "public",
-            table: "users",
-          },
-          handleUserUpdate
-        )
-        .subscribe();
-    };
-
-    if (!user) {
-      api
-        .post<UserApiResponse>("/user")
-        .then((response: AxiosResponse<UserApiResponse>) => {
-          const { user } = response.data;
-
-          if (user) {
-            setUser(user);
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
-
-    if (user) {
-      subscribeToUserProfile();
-    }
-
-    return () => {
-      if (channel) {
-        database.removeChannel(channel);
-      }
-    };
-  }, [user, api]);
-
-  if (!user) {
+  if (error) {
     return (
-      <div className="p-5">
-        <Skeleton className="w-[100px] h-[20px] mb-2" />
-        <Skeleton className="w-[150px] h-[20px] mb-2" />
-        <Skeleton className="w-[75px] h-[20px] mb-2" />
+      <div className="p-4">
+        <Alert>
+          <ServerCrash className="w-4 h-4" />
+          <AlertTitle>Oops, something went wrong</AlertTitle>
+          <AlertDescription>
+            There was an error during fetching the user, please try again
+          </AlertDescription>
+        </Alert>
       </div>
     );
   }
 
-  return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
+  if (isLoading) {
+    return (
+      <div className="space-y-2">
+        <Skeleton className="w-full h-[150px]" />
+        <Skeleton className="w-full h-[150px]" />
+        <Skeleton className="w-full h-[150px]" />
+      </div>
+    );
+  }
+
+  return <UserContext.Provider value={data}>{children}</UserContext.Provider>;
 };

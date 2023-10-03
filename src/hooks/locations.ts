@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import useSWR, { Fetcher } from "swr";
 
 import { Tables } from "@/database.extensions";
 import { useApi } from "./useApi";
@@ -6,51 +6,33 @@ import { useApi } from "./useApi";
 type LocationResponse = {
   data: {
     location: Tables<"locations">;
-  }
-}
+  };
+};
 
 type LocationsResponse = {
   data: {
-    locations: Tables<"locations">[]
+    locations: Tables<"locations">[];
   };
-}
+};
 
 export const useLocations = () => {
-  const [locations, setLocations] = useState<Tables<"locations">[] | []>([]);
-  const [error, setError] = useState<Error | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const { get } = useApi();
 
-  const api = useApi();
+  const fetcher: Fetcher<Tables<"locations">[], string> = (url) =>
+    get(url).then((response: LocationsResponse) => response.data.locations);
 
-  useEffect(() => {
-    api
-      .get("/locations")
-      .then(({ data }: LocationsResponse) => {
-        setLocations(data.locations);
-      })
-      .catch((error: Error) => setError(error))
-      .finally(() => setLoading(false));
-  }, []);
+  const { data, error, isLoading } = useSWR("/locations", fetcher);
 
-  return { data: locations, error, loading };
+  return { data, error, loading: isLoading };
 };
 
 export const useLocation = (id: string) => {
-  const [location, setLocation] = useState<Tables<"locations"> | null>(null);
-  const [error, setError] = useState<Error | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const { get } = useApi();
 
-  const api = useApi();
+  const fetcher: Fetcher<Tables<"locations">, string> = (url) =>
+    get(url).then((response: LocationResponse) => response.data.location);
 
-  useEffect(() => {
-    api
-      .get(`/locations/${id}`)
-      .then(({ data }: LocationResponse) => {
-        setLocation(data.location);
-      })
-      .catch((error: Error) => setError(error))
-      .finally(() => setLoading(false));
-  }, []);
+  const { data, error, isLoading } = useSWR(`/locations/${id}`, fetcher);
 
-  return { data: location, error, loading };
+  return { data, error, loading: isLoading };
 };

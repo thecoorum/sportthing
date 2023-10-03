@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -13,14 +13,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2 } from "lucide-react";
+// import { Loader2 } from "lucide-react";
 
 import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useApi } from "@/hooks/useApi";
 import { useToast } from "@/components/ui/use-toast";
+import { useMainButton, useBackButton } from "@twa.js/sdk-react";
+
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -49,6 +51,9 @@ const formSchema = z.object({
 const LocationCreate = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
+  const mainButton = useMainButton();
+  const backButton = useBackButton();
+
   const api = useApi();
   const router = useRouter();
 
@@ -58,36 +63,72 @@ const LocationCreate = () => {
     resolver: zodResolver(formSchema),
   });
 
-  const handleSubmit = (data: z.infer<typeof formSchema>) => {
-    setLoading(true);
+  useEffect(() => {
+    const handleSubmit = (data: z.infer<typeof formSchema>) => {
+      setLoading(true);
 
-    api
-      .post("/locations", data)
-      .then(() => {
-        router.replace("/locations");
-      })
-      .catch((error: Error) => {
-        console.error(error);
-
-        toast({
-          title: 'Error occured',
-          description: error.message
+      api
+        .post("/locations", data)
+        .then(() => {
+          router.replace("/locations");
         })
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
+        .catch((error: Error) => {
+          console.error(error);
 
-  const handleCancel = () => {
-    router.replace("/locations");
-  };
+          toast({
+            title: "Error occured",
+            description: error.message,
+          });
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    };
+
+    const handleFormSubmit = () => {
+      form.handleSubmit(handleSubmit)();
+    };
+
+    const handleCancel = () => {
+      router.replace("/locations");
+    };
+
+    backButton.show();
+    backButton.on("click", handleCancel);
+
+    mainButton.setText("Create");
+    mainButton.on("click", handleFormSubmit);
+    mainButton.show();
+
+    return () => {
+      mainButton.off("click", handleFormSubmit);
+      mainButton.hide();
+      backButton.hide();
+    };
+  }, [mainButton, backButton, router, api, toast, form]);
+
+  useEffect(() => {
+    console.log(form.formState.isValid);
+    if (form.formState.isValid) {
+      mainButton.enable();
+    } else {
+      mainButton.disable();
+    }
+  }, [form.formState.isValid, mainButton]);
+
+  useEffect(() => {
+    if (loading) {
+      mainButton.showProgress();
+    } else {
+      mainButton.hideProgress();
+    }
+  }, [loading, mainButton]);
 
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-medium">Create new location</h2>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-3">
+        <form className="space-y-3">
           <FormField
             control={form.control}
             name="name"
@@ -124,13 +165,16 @@ const LocationCreate = () => {
               <FormItem>
                 <FormLabel>Location description</FormLabel>
                 <FormControl>
-                  <Textarea {...field} />
+                  <Textarea
+                    placeholder="Our new GYM located in the most city center"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <Button size="lg" onClick={handleCancel} variant="outline">
               Cancel
             </Button>
@@ -148,7 +192,7 @@ const LocationCreate = () => {
               )}
               {!loading && "Create"}
             </Button>
-          </div>
+          </div> */}
         </form>
       </Form>
     </div>

@@ -1,17 +1,45 @@
 "use client";
 
-import { Activity, Dumbbell } from "lucide-react";
+import { useEffect } from "react";
 
+import { Activity, Dumbbell } from "lucide-react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { useLocation } from "@/hooks/locations";
 import { useUser } from "@/hooks/useUser";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { useBackButton, useMainButton } from "@twa.js/sdk-react";
+import { useRouter } from "next/navigation";
 
 const LocationPage = ({ params }: { params: { id: string } }) => {
   const user = useUser();
+
+  const router = useRouter();
+
+  const mainButton = useMainButton();
+  const backButton = useBackButton();
+
+  useEffect(() => {
+    const handleGoBack = () => {
+      router.push("/locations");
+    };
+
+    backButton.show();
+    backButton.on("click", handleGoBack);
+
+    if (user?.role === "admin") {
+      mainButton.enable().show();
+      mainButton.setText("Edit location");
+    } else {
+      mainButton.hide();
+    }
+
+    return () => {
+      mainButton.hide();
+      backButton.off("click", handleGoBack);
+      backButton.hide();
+    };
+  }, [user?.role, mainButton, backButton, router]);
 
   const { data: location, error, loading } = useLocation(params.id);
 
@@ -71,13 +99,6 @@ const LocationPage = ({ params }: { params: { id: string } }) => {
           </AlertDescription>
         </Alert>
       </div>
-      {user.role === "admin" && (
-        <Link href={`/locations/${location?.id}/edit`}>
-          <Button variant="outline" size="lg">
-            Edit location
-          </Button>
-        </Link>
-      )}
     </div>
   );
 };
