@@ -1,4 +1,4 @@
-import { FormEventHandler } from "react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,15 +13,19 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react";
 
-import { useFormContext } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import { useToast } from "./ui/use-toast";
 
 import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import type { Tables } from "@/database.extensions";
 
 type Props = {
-  onSubmit: FormEventHandler<HTMLFormElement>;
+  onSubmit: (data: z.infer<typeof schema>) => Promise<void>;
   onCancel: () => void;
-  loading?: boolean;
-  type?: "create" | "edit"
+  type?: "create" | "edit";
+  location?: Tables<"locations"> | null;
 };
 
 export const schema = z.object({
@@ -50,26 +54,52 @@ export const schema = z.object({
 
 const messages = {
   create: {
-    default: 'Create',
-    loading: 'Creating...'
+    default: "Create",
+    loading: "Creating...",
   },
   edit: {
-    default: 'Save',
-    loading: 'Saving...'
-  }
-}
+    default: "Save",
+    loading: "Saving...",
+  },
+};
 
 export const LocationForm = ({
   onSubmit,
   onCancel,
-  loading = false,
-  type = "create"
+  type = "create",
+  location,
 }: Props) => {
-  const form = useFormContext();
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const { toast } = useToast();
+
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      name: location?.name || "",
+      description: location?.description || "",
+      address: location?.address || "",
+    },
+  });
+
+  const handleSubmit = (data: z.infer<typeof schema>) => {
+    setLoading(true);
+
+    onSubmit(data)
+      .catch((error) => {
+        toast({
+          title: "Error",
+          description: error.message,
+        });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   return (
     <Form {...form}>
-      <form onSubmit={onSubmit} className="space-y-3">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-3">
         <FormField
           control={form.control}
           name="name"

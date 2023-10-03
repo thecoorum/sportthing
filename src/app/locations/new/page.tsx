@@ -1,27 +1,22 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 import { LocationForm, schema } from "@/components/location-form";
 
 import { FormProvider, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useApi } from "@/hooks/useApi";
-import { useToast } from "@/components/ui/use-toast";
 import { useBackButton } from "@twa.js/sdk-react";
 
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const LocationCreatePage = () => {
-  const [loading, setLoading] = useState<boolean>(false);
-
   const backButton = useBackButton();
 
   const api = useApi();
   const router = useRouter();
-
-  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -41,29 +36,12 @@ const LocationCreatePage = () => {
     };
   }, [backButton, router]);
 
-  const handleSubmit = (data: z.infer<typeof schema>) => {
-    setLoading(true);
-
-    api
+  const handleSubmit = async (data: z.infer<typeof schema>) => {
+    return api
       .post("/locations", data)
       .then(() => {
         router.replace("/locations");
       })
-      .catch((error: Error) => {
-        console.error(error);
-
-        toast({
-          title: "Error occured",
-          description: error.message,
-        });
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
-
-  const handleFormSubmit = () => {
-    form.handleSubmit(handleSubmit)();
   };
 
   const handleCancel = () => {
@@ -75,9 +53,8 @@ const LocationCreatePage = () => {
       <h2 className="text-2xl font-medium">Create new location</h2>
       <FormProvider {...form}>
         <LocationForm
-          onSubmit={handleFormSubmit}
+          onSubmit={handleSubmit}
           onCancel={handleCancel}
-          loading={loading}
         />
       </FormProvider>
     </div>
