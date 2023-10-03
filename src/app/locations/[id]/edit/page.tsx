@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { LocationForm, schema } from "@/components/location-form";
 
@@ -9,12 +9,15 @@ import { useRouter } from "next/navigation";
 import { useApi } from "@/hooks/useApi";
 import { useToast } from "@/components/ui/use-toast";
 import { useBackButton } from "@twa.js/sdk-react";
+import { useLocation } from "@/hooks/locations";
 
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-const LocationCreatePage = () => {
-  const [loading, setLoading] = useState<boolean>(false);
+const LocationEditPage = ({ params }: { params: { id: string } }) => {
+  const [editPending, setEditPending] = useState<boolean>(false);
+
+  const { data: location } = useLocation(params.id);
 
   const backButton = useBackButton();
 
@@ -29,7 +32,7 @@ const LocationCreatePage = () => {
 
   useEffect(() => {
     const handleGoBack = () => {
-      router.replace("/locations");
+      router.push("/locations");
     };
 
     backButton.show();
@@ -42,12 +45,15 @@ const LocationCreatePage = () => {
   }, [backButton, router]);
 
   const handleSubmit = (data: z.infer<typeof schema>) => {
-    setLoading(true);
+    setEditPending(true);
 
     api
-      .post("/locations", data)
+      .post(`/locations/${params.id}`, {
+        id: params.id,
+        ...data,
+      })
       .then(() => {
-        router.replace("/locations");
+        router.replace(`/locations/${params.id}`);
       })
       .catch((error: Error) => {
         console.error(error);
@@ -58,7 +64,7 @@ const LocationCreatePage = () => {
         });
       })
       .finally(() => {
-        setLoading(false);
+        setEditPending(false);
       });
   };
 
@@ -67,21 +73,32 @@ const LocationCreatePage = () => {
   };
 
   const handleCancel = () => {
-    router.replace("/locations");
+    router.replace(`/locations/${params.id}`);
   };
+
+  useEffect(() => {
+    if (location) {
+      form.reset({
+        name: location.name,
+        description: location.description || "",
+        address: location.address || "",
+      });
+    }
+  }, [location, form]);
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-medium">Create new location</h2>
+      <h2 className="text-2xl font-medium">Edit location</h2>
       <FormProvider {...form}>
         <LocationForm
           onSubmit={handleFormSubmit}
           onCancel={handleCancel}
-          loading={loading}
+          loading={editPending}
+          type="edit"
         />
       </FormProvider>
     </div>
   );
 };
 
-export default LocationCreatePage;
+export default LocationEditPage;

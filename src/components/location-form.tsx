@@ -1,0 +1,140 @@
+import { FormEventHandler } from "react";
+
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Loader2 } from "lucide-react";
+
+import { useFormContext } from "react-hook-form";
+
+import * as z from "zod";
+
+type Props = {
+  onSubmit: FormEventHandler<HTMLFormElement>;
+  onCancel: () => void;
+  loading?: boolean;
+  type?: "create" | "edit"
+};
+
+export const schema = z.object({
+  name: z.string().min(2, {
+    message: "Name must be at least 2 characters.",
+  }),
+  description: z
+    .string()
+    .min(2, {
+      message: "Description must be at least 2 characters.",
+    })
+    .max(512, {
+      message: "Description must be less than 512 characters.",
+    })
+    .optional(),
+  address: z
+    .string()
+    .min(2, {
+      message: "Address must be at least 2 characters.",
+    })
+    .max(256, {
+      message: "Address must be less than 256 characters.",
+    })
+    .optional(),
+});
+
+const messages = {
+  create: {
+    default: 'Create',
+    loading: 'Creating...'
+  },
+  edit: {
+    default: 'Save',
+    loading: 'Saving...'
+  }
+}
+
+export const LocationForm = ({
+  onSubmit,
+  onCancel,
+  loading = false,
+  type = "create"
+}: Props) => {
+  const form = useFormContext();
+
+  return (
+    <Form {...form}>
+      <form onSubmit={onSubmit} className="space-y-3">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input placeholder="GYM ONE" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="address"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Address (optional)</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Ukraine, Kyiv, Khreschyatik 1, 02000"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description (optional)</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Our new GYM located in the most city center"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className="flex items-center gap-2">
+          <Button size="lg" onClick={onCancel} variant="outline">
+            Cancel
+          </Button>
+          <Button
+            size="lg"
+            type="submit"
+            disabled={loading || !form.formState.isDirty}
+            className="w-full"
+          >
+            {loading && (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {messages[type].loading}
+              </>
+            )}
+            {!loading && messages[type].default}
+          </Button>
+        </div>
+      </form>
+    </Form>
+  );
+};

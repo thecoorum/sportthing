@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-import { Activity, Dumbbell } from "lucide-react";
+import { Activity, Dumbbell, Loader2 } from "lucide-react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
@@ -42,7 +42,7 @@ const LocationPage = ({ params }: { params: { id: string } }) => {
       backButton.off("click", handleGoBack);
       backButton.hide();
     };
-  }, [user?.role, backButton, router]);
+  }, [backButton, router]);
 
   const { data: location, error, loading } = useLocation(params.id);
 
@@ -82,6 +82,10 @@ const LocationPage = ({ params }: { params: { id: string } }) => {
         .finally(() => {
           setDeletePending(false);
         });
+    }
+
+    if (action === "cancel") {
+      setDeletePending(false);
     }
   }, [params.id, popup, api, toast, router]);
 
@@ -143,8 +147,19 @@ const LocationPage = ({ params }: { params: { id: string } }) => {
       </div>
       {user.role === "admin" && (
         <div className="flex items-center gap-2">
-          <Button size="lg" onClick={handleDelete} variant="destructive">
-            Delete
+          <Button
+            size="lg"
+            onClick={handleDelete}
+            disabled={deletePending}
+            variant="destructive"
+          >
+            {deletePending && (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Deleting...
+              </>
+            )}
+            {!deletePending && "Delete"}
           </Button>
           <Link href={`/locations/${params.id}/edit`} className="block w-full">
             <Button size="lg" className="w-full" variant="outline">
