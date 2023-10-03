@@ -8,6 +8,7 @@ import { ProfileForm } from "@/components/profile-form";
 
 import { useUser } from "@/hooks/useUser";
 import { useDatabase } from "@/hooks/useDatabase";
+import { useSWRConfig } from "swr";
 
 import { DateTime } from "luxon";
 
@@ -22,6 +23,8 @@ const Profile = () => {
   const user = useUser();
   const database = useDatabase()
 
+  const { mutate } = useSWRConfig()
+
   if (!user) return null;
 
   const initials = user.name
@@ -31,18 +34,21 @@ const Profile = () => {
   const withStatus = ["admin", "coach"].includes(user.role);
 
   const handleSubmit = async (data: FormValues) => {
-    const { error } = await database
+    const { data: serverData, error } = await database
       .from("users")
       .update({
         name: data.name,
         username: data.username,
       })
-      .eq("id", user.id);
+      .eq("id", user.id)
+      .select('*')
+      .single();
 
     if (error) {
       console.error(error);
     }
 
+    mutate('/user', serverData)
     setEditing(false);
   };
 
@@ -51,7 +57,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="flex flex-col h-full p-4 pt-16 justify-between">
+    <div className="flex flex-col h-full p-4 justify-between">
       <div className="flex flex-col space-y-2 items-center">
         <Avatar className="w-16 h-16">
           <AvatarImage />
