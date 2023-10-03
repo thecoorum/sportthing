@@ -31,16 +31,5 @@ export const ApiProvider = ({ children }: PropsWithChildren) => {
     },
   });
 
-  return (
-    <ApiContext.Provider
-      value={{
-        get: (url) => api.get(url),
-        post: (url, data) => api.post(url, data),
-        delete: (url) => api.delete(url),
-        patch: (url, data) => api.patch(url, data),
-      }}
-    >
-      {children}
-    </ApiContext.Provider>
-  );
+  return <ApiContext.Provider value={api}>{children}</ApiContext.Provider>;
 };

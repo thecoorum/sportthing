@@ -18,7 +18,7 @@ const Activities = () => {
         id: query.id
       }
     })
-  }, [query])
+  }, [query, api])
 
   if (!user) return null
 

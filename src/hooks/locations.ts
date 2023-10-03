@@ -16,10 +16,10 @@ type LocationsResponse = {
 };
 
 export const useLocations = () => {
-  const { get } = useApi();
+  const api = useApi();
 
   const fetcher: Fetcher<Tables<"locations">[], string> = (url) =>
-    get(url).then((response: LocationsResponse) => response.data.locations);
+    api.get(url).then((response: LocationsResponse) => response.data.locations);
 
   const { data, error, isLoading } = useSWR("/locations", fetcher);
 
@@ -27,10 +27,10 @@ export const useLocations = () => {
 };
 
 export const useLocation = (id: string) => {
-  const { get } = useApi();
+  const api = useApi();
 
   const fetcher: Fetcher<Tables<"locations">, string> = (url) =>
-    get(url).then((response: LocationResponse) => response.data.location);
+    api.get(url).then((response: LocationResponse) => response.data.location);
 
   const { data, error, isLoading } = useSWR(`/locations/${id}`, fetcher);
 

@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { ProfileForm } from "@/components/profile-form";
 
 import { useUser } from "@/hooks/useUser";
-import { useBackButton } from "@/hooks/useBackButton";
 import { useDatabase } from "@/hooks/useDatabase";
 
 import { DateTime } from "luxon";
@@ -22,8 +21,6 @@ const Profile = () => {
 
   const user = useUser();
   const database = useDatabase()
-
-  // useBackButton();
 
   if (!user) return null;
 

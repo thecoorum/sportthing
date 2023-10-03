@@ -27,7 +27,7 @@ export const useActivities = (locationId: string) => {
       })
       .catch((error: Error) => setError(error))
       .finally(() => setLoading(false));
-  }, []);
+  }, [api, locationId]);
 
   return { data: activities, error, loading };
 };
@@ -55,7 +55,7 @@ export const useActivity = (id: string) => {
       })
       .catch((error: Error) => setError(error))
       .finally(() => setLoading(false));
-  }, []);
+  }, [api, id]);
 
   return { data: activity, error, loading };
 };

@@ -40,8 +40,8 @@ export const ProfileForm = ({ onSubmit, onCancel }: Props) => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
-      name: user?.name,
-      username: user?.username,
+      name: user?.name ?? '',
+      username: user?.username ?? '',
     },
     resolver: zodResolver(formSchema),
   });

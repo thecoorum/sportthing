@@ -22,10 +22,10 @@ export const UserContext = createContext<Tables<"users"> | undefined>(
 );
 
 export const UserProvider = ({ children }: PropsWithChildren) => {
-  const { post } = useApi();
+  const api = useApi();
 
   const fetcher: Fetcher<Tables<"users">, string> = (url) =>
-    post(url).then((response: UserResponse) => response.data.user);
+    api.post(url).then((response: UserResponse) => response.data.user);
 
   const { data, error, isLoading } = useSWR("/user", fetcher);
 
@@ -36,7 +36,8 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
           <ServerCrash className="w-4 h-4" />
           <AlertTitle>Oops, something went wrong</AlertTitle>
           <AlertDescription>
-            There was an error during fetching the user, please try again
+            There was an error during fetching the user, please try again. If
+            the problem persists, please contact the support.
           </AlertDescription>
         </Alert>
       </div>
