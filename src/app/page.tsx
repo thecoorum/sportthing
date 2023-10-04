@@ -1,65 +1,20 @@
 "use client";
 
-import { useCallback, memo } from "react";
+import { Locations } from "@/features/home/locations";
 
-import { useHapticFeedback, useThemeParams } from "@twa.js/sdk-react";
-import { useRouter } from "next/navigation";
+import { useUser } from "@/hooks/useUser";
 
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/utils";
-
-const Home = memo(() => {
-  const haptic = useHapticFeedback();
-  const theme = useThemeParams();
-
-  const router = useRouter();
-
-  const handleTrigger = useCallback(() => {
-    haptic.notificationOccurred("success");
-
-    router.push("/route");
-  }, [haptic, router]);
-
-  const handleApiCall = useCallback(() => {
-    fetch("/api/message")
-      .then((res) => res.json())
-      .then((data) => {
-        haptic.notificationOccurred("success");
-
-        console.log(data);
-      })
-      .catch((err) => {
-        haptic.notificationOccurred("error");
-
-        console.error(err);
-      });
-  }, [haptic]);
+const Page = () => {
+  const user = useUser();
 
   return (
-    <div
-      className={cn(
-        "flex flex-col p-5 justify-center items-center",
-        `bg-[${theme.backgroundColor}]`,
-        `text-[${theme.textColor}]`
-      )}
-    >
-      <Alert className="mb-10">
-        <AlertTitle>sportthing</AlertTitle>
-        <AlertDescription>
-          Welcome to the new era of personal training
-        </AlertDescription>
-      </Alert>
-      <div className="flex gap-5">
-        <Button onClick={handleApiCall}>Call API</Button>
-        <Button variant="outline" onClick={handleTrigger}>
-          Navigate
-        </Button>
-      </div>
+    <div className="space-y-4 p-4">
+      <h2 className="text-md leading-none tracking-tight">
+        Welcome, {user.name}
+      </h2>
+      <Locations />
     </div>
   );
-});
+};
 
-Home.displayName = "Home";
-
-export default Home;
+export default Page;

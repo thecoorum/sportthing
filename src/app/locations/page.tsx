@@ -67,22 +67,20 @@ const Locations = () => {
 
   if (!data?.length) {
     return (
-      <div className="space-y-4">
-        <Alert>
-          <Map className="w-4 h-4" />
-          <AlertTitle>No locations found</AlertTitle>
-          {user.role === "admin" && (
-            <div className="space-y-3">
-              <AlertDescription>
-                You can create a new location by clicking the button below.
-              </AlertDescription>
-              <Link href="/locations/new" className="block">
-                <Button className="w-full">Create a new location</Button>
-              </Link>
-            </div>
-          )}
-        </Alert>
-      </div>
+      <Alert>
+        <Map className="w-4 h-4" />
+        <AlertTitle>No locations found</AlertTitle>
+        {user.role === "admin" && (
+          <div className="space-y-3">
+            <AlertDescription>
+              You can create a new location by clicking the button below.
+            </AlertDescription>
+            <Link href="/locations/new" className="block">
+              <Button className="w-full">Create a new location</Button>
+            </Link>
+          </div>
+        )}
+      </Alert>
     );
   }
 

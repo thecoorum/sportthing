@@ -21,9 +21,9 @@ const Profile = () => {
   const [editing, setEditing] = useState<boolean>(false);
 
   const user = useUser();
-  const database = useDatabase()
+  const database = useDatabase();
 
-  const { mutate } = useSWRConfig()
+  const { mutate } = useSWRConfig();
 
   if (!user) return null;
 
@@ -33,24 +33,24 @@ const Profile = () => {
     .join("");
   const withStatus = ["admin", "coach"].includes(user.role);
 
-  const handleSubmit = async (data: FormValues) => {
-    const { data: serverData, error } = await database
-      .from("users")
-      .update({
-        name: data.name,
-        username: data.username,
-      })
-      .eq("id", user.id)
-      .select('*')
-      .single();
+  // const handleSubmit = async (data: FormValues) => {
+  //   const { data: serverData, error } = await database
+  //     .from("users")
+  //     .update({
+  //       name: data.name,
+  //       username: data.username,
+  //     })
+  //     .eq("id", user.id)
+  //     .select('*')
+  //     .single();
 
-    if (error) {
-      console.error(error);
-    }
+  //   if (error) {
+  //     console.error(error);
+  //   }
 
-    mutate('/auth', serverData)
-    setEditing(false);
-  };
+  //   mutate('/auth', serverData)
+  //   setEditing(false);
+  // };
 
   const handleCancel = () => {
     setEditing(false);
@@ -64,7 +64,10 @@ const Profile = () => {
           <AvatarFallback>{initials}</AvatarFallback>
         </Avatar>
         {editing && (
-          <ProfileForm onSubmit={handleSubmit} onCancel={handleCancel} />
+          <ProfileForm
+            // onSubmit={handleSubmit}
+            onCancel={handleCancel}
+          />
         )}
         {!editing && (
           <>
