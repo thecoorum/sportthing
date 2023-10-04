@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 import { ChevronLeft } from "lucide-react";
 import { LocationForm, schema } from "@/components/location-form";
-import { PageSkeleton } from "./skeleton";
+import { Skeleton } from "./skeleton";
 
 import Link from 'next/link'
 
@@ -16,7 +16,7 @@ import { useLocation } from "@/hooks/locations";
 import * as z from "zod";
 
 const LocationEditPage = ({ params }: { params: { id: string } }) => {
-  const { data: location } = useLocation(params.id);
+  const { data: location, loading } = useLocation(params.id);
 
   const backButton = useBackButton();
 
@@ -52,7 +52,7 @@ const LocationEditPage = ({ params }: { params: { id: string } }) => {
     router.replace(`/locations/${params.id}`);
   };
 
-  if (!location) return <PageSkeleton />;
+  if (!location || loading) return <Skeleton />;
 
   return (
     <div className="space-y-4">

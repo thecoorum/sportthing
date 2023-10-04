@@ -11,11 +11,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { Tables } from "@/database.extensions";
 
 type Props = {
-  data: Tables<'activities'> & {
-    coach: Tables<'coaches'>;
-    location: Tables<'locations'>;
+  data: Tables<"activities"> & {
+    coach: Tables<"coaches">;
+    location: Tables<"locations">;
   };
-}
+};
 
 export const Activity = ({ data }: Props) => (
   <Card className="w-full">
@@ -55,4 +55,46 @@ export const Activity = ({ data }: Props) => (
       </CardFooter>
     )}
   </Card>
+);
+
+export const PlainActivity = ({ data }: Props) => (
+  <div className="space-y-6">
+    <div className="space-y-1.5">
+      <h2 className="text-3xl font-semibold leading-none tracking-tight">
+        {data.name}
+      </h2>
+      <p className="text-sm text-muted-background">{data.location.name}</p>
+      <div className="flex items-center gap-1">
+        <p className="text-sm text-muted-background">
+          {Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: "USD",
+          }).format(data.price / 100)}
+        </p>
+        <span className="text-sm text-muted-background">•</span>
+        <p className="text-sm text-muted-background">{data.duration} mins</p>
+      </div>
+    </div>
+    <div>
+      <p className="text-sm text-muted-foreground">{data.description}</p>
+    </div>
+    {data.coach && (
+      <div className="space-y-2">
+        <p className="text-sm text-muted-foreground">
+          This activity is held by:
+        </p>
+        <div className="flex items-center gap-2">
+          <Avatar>
+            <AvatarImage src={data.coach.photo_url || ""} />
+            <AvatarFallback>
+              {data.coach.name
+                .split(" ")
+                .map((part) => part.at(0)?.toUpperCase())}
+            </AvatarFallback>
+          </Avatar>
+          <h2 className="text-lg font-medium">{data.coach.name}</h2>
+        </div>
+      </div>
+    )}
+  </div>
 );
