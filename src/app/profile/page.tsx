@@ -79,7 +79,7 @@ const Profile = () => {
             )}
             <Button
               variant="outline"
-              size="sm"
+              size="lg"
               onClick={() => setEditing(true)}
             >
               Edit profile
