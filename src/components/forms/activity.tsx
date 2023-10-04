@@ -25,7 +25,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useLocations } from "@/hooks/locations";
 import { useCoaches } from "@/hooks/coaches";
 
-import * as z from "zod";
+import * as zod from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import type { Tables } from "@/database.extensions";
@@ -37,20 +37,20 @@ type Props = {
   activity?: Tables<"activities"> | null;
 };
 
-export const schema = z.object({
-  name: z.string().min(2, {
+export const schema = zod.object({
+  name: zod.string().min(2, {
     message: "Name must be at least 2 characters.",
   }),
-  description: z
+  description: zod
     .string()
     .max(512, {
       message: "Description must be less than 512 characters.",
     })
     .optional(),
-  location_id: z.string().uuid(),
-  coach_id: z.number().int().optional(),
-  duration: z.number().int().positive(),
-  price: z
+  location_id: zod.string().uuid(),
+  coach_id: zod.number().int().optional(),
+  duration: zod.number().int().positive(),
+  price: zod
     .number()
     .positive()
     .transform((value) => value * 100),
@@ -77,7 +77,7 @@ export const ActivityForm = ({
 
   const { toast } = useToast();
 
-  const form = useForm<z.infer<typeof schema>>({
+  const form = useForm<zod.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
       name: activity?.name || "",
@@ -94,7 +94,7 @@ export const ActivityForm = ({
     location_id: form.watch("location_id"),
   });
 
-  const handleSubmit = (data: z.infer<typeof schema>) => {
+  const handleSubmit = (data: zod.infer<typeof schema>) => {
     setLoading(true);
 
     onSubmit(data)

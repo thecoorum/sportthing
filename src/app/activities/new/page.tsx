@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import { useApi } from "@/hooks/useApi";
 import { useBackButton } from "@twa.js/sdk-react";
 
-import * as z from "zod";
+import * as zod from "zod";
 
 const Page = () => {
   const backButton = useBackButton();
@@ -33,7 +33,7 @@ const Page = () => {
     };
   }, [backButton, router]);
 
-  const handleSubmit = async (data: z.infer<typeof schema>) => {
+  const handleSubmit = async (data: zod.infer<typeof schema>) => {
     return api.post("/activities", data).then(() => {
       router.replace("/activities");
     });

@@ -16,23 +16,23 @@ import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useToast } from "./ui/use-toast";
 
-import * as z from "zod";
+import * as zod from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import type { Tables } from "@/database.extensions";
 
 type Props = {
-  onSubmit: (data: z.infer<typeof schema>) => Promise<void>;
+  onSubmit: (data: zod.infer<typeof schema>) => Promise<void>;
   onCancel: () => void;
   type?: "create" | "edit";
   location?: Tables<"locations"> | null;
 };
 
-export const schema = z.object({
-  name: z.string().min(2, {
+export const schema = zod.object({
+  name: zod.string().min(2, {
     message: "Name must be at least 2 characters.",
   }),
-  description: z
+  description: zod
     .string()
     .min(2, {
       message: "Description must be at least 2 characters.",
@@ -41,7 +41,7 @@ export const schema = z.object({
       message: "Description must be less than 512 characters.",
     })
     .optional(),
-  address: z
+  address: zod
     .string()
     .min(2, {
       message: "Address must be at least 2 characters.",
@@ -73,7 +73,7 @@ export const LocationForm = ({
 
   const { toast } = useToast();
 
-  const form = useForm<z.infer<typeof schema>>({
+  const form = useForm<zod.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
       name: location?.name || "",
@@ -82,7 +82,7 @@ export const LocationForm = ({
     },
   });
 
-  const handleSubmit = (data: z.infer<typeof schema>) => {
+  const handleSubmit = (data: zod.infer<typeof schema>) => {
     setLoading(true);
 
     onSubmit(data)

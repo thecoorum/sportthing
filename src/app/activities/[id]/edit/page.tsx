@@ -13,7 +13,7 @@ import { useApi } from "@/hooks/useApi";
 import { useBackButton } from "@twa.js/sdk-react";
 import { useActivity } from "@/hooks/activities";
 
-import * as z from "zod";
+import * as zod from "zod";
 
 const Page = ({ params }: { params: { id: string } }) => {
   const backButton = useBackButton();
@@ -37,7 +37,7 @@ const Page = ({ params }: { params: { id: string } }) => {
     };
   }, [backButton, router, params.id]);
 
-  const handleSubmit = async (data: z.infer<typeof schema>) => {
+  const handleSubmit = async (data: zod.infer<typeof schema>) => {
     return api
       .post(`/activities/${params.id}`, {
         id: params.id,

@@ -13,22 +13,22 @@ import { Input } from "@/components/ui/input";
 import { useUser } from "@/hooks/useUser";
 
 import { Loader2 } from "lucide-react";
-import * as z from "zod";
+import * as zod from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
-export type FormValues = z.infer<typeof formSchema>;
+export type FormValues = zod.infer<typeof formSchema>;
 
 type Props = {
   onSubmit: (data: FormValues) => void;
   onCancel: () => void;
 };
 
-const formSchema = z.object({
-  name: z.string().min(2, {
+const formSchema = zod.object({
+  name: zod.string().min(2, {
     message: "Name must be at least 2 characters.",
   }),
-  username: z.string().min(2, {
+  username: zod.string().min(2, {
     message: "Username must be at least 2 characters.",
   }),
 });
@@ -38,7 +38,7 @@ export const ProfileForm = ({ onSubmit, onCancel }: Props) => {
 
   const user = useUser();
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<zod.infer<typeof formSchema>>({
     defaultValues: {
       name: user?.name ?? '',
       username: user?.username ?? '',
@@ -46,7 +46,7 @@ export const ProfileForm = ({ onSubmit, onCancel }: Props) => {
     resolver: zodResolver(formSchema),
   });
 
-  const handleSubmit = (data: z.infer<typeof formSchema>) => {
+  const handleSubmit = (data: zod.infer<typeof formSchema>) => {
     setLoading(true);
 
     onSubmit(data);

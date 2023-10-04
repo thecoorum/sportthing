@@ -13,7 +13,7 @@ import { useApi } from "@/hooks/useApi";
 import { useBackButton } from "@twa.js/sdk-react";
 import { useLocation } from "@/hooks/locations";
 
-import * as z from "zod";
+import * as zod from "zod";
 
 const LocationEditPage = ({ params }: { params: { id: string } }) => {
   const { data: location, loading } = useLocation(params.id);
@@ -37,7 +37,7 @@ const LocationEditPage = ({ params }: { params: { id: string } }) => {
     };
   }, [backButton, router, params.id]);
 
-  const handleSubmit = async (data: z.infer<typeof schema>) => {
+  const handleSubmit = async (data: zod.infer<typeof schema>) => {
     return api
       .post(`/locations/${params.id}`, {
         id: params.id,
