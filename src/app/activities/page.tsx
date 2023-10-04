@@ -65,6 +65,12 @@ const Page = () => {
         <Alert>
           <Map className="w-4 h-4" />
           <AlertTitle>No activities found</AlertTitle>
+          {user.role !== "admin" && (
+            <AlertDescription>
+              There are no activities available at the moment. Please check back
+              later.
+            </AlertDescription>
+          )}
           {user.role === "admin" && (
             <div className="space-y-3">
               <AlertDescription>

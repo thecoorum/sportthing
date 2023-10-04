@@ -46,10 +46,10 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
 
   if (isLoading) {
     return (
-      <div className="space-y-2">
-        <Skeleton className="w-full h-[150px]" />
-        <Skeleton className="w-full h-[150px]" />
-        <Skeleton className="w-full h-[150px]" />
+      <div className="p-4 space-y-2">
+        <Skeleton className="w-[100px] h-[20px]" />
+        <Skeleton className="w-[150px] h-[20px]" />
+        <Skeleton className="w-[75px] h-[20px]" />
       </div>
     );
   }
