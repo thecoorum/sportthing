@@ -62,19 +62,27 @@ export const Sidebar = memo(({ children }: PropsWithChildren) => {
             </Button>
           </Link>
           {user.role === "admin" && (
-            <Link
-              onClick={() => handleOpenChange(false)}
-              href="/users"
-              autoFocus={false}
-            >
-              <Button variant="ghost" className="w-full justify-start">
-                Users
-              </Button>
-            </Link>
+            <>
+              <Link
+                onClick={() => handleOpenChange(false)}
+                href="/activities"
+                autoFocus={false}
+              >
+                <Button variant="ghost" className="w-full justify-start">
+                  Activities
+                </Button>
+              </Link>
+              <Link
+                onClick={() => handleOpenChange(false)}
+                href="/users"
+                autoFocus={false}
+              >
+                <Button variant="ghost" className="w-full justify-start">
+                  Users
+                </Button>
+              </Link>
+            </>
           )}
-          {/* <Button variant="ghost" className="w-full justify-start">
-            Activities
-          </Button> */}
         </div>
       </SheetContent>
     </Sheet>
