@@ -46,23 +46,23 @@ export const GET = async (req: NextRequest) => {
 
 export const POST = async (req: NextRequest) => {
   const tgWebAppData = req.headers.get("Web-App-Data");
-  const user = req.headers.get("User");
 
-  const { success } = verifyInitData(tgWebAppData);
+  const { name, description, location_id, coach_id, duration, price } =
+    await req.json();
+
+  const { success, user } = verifyInitData(tgWebAppData);
 
   if (success) {
     try {
-      const { role } = JSON.parse(user || "");
-
-      if (role !== "admin") {
-        return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-      }
-
-      const { data: activity, error } = await supabase
-        .from("activities")
-        .insert(req.body)
-        .select("*")
-        .single();
+      const { data: activity, error } = await supabase.rpc("create_activity", {
+        user_id: user?.id,
+        activity_name: name,
+        activity_description: description,
+        location_id: location_id,
+        activity_duration: duration,
+        activity_price: price,
+        coach_id: coach_id,
+      });
 
       if (error) {
         return NextResponse.json({ error }, { status: 400 });

@@ -1,0 +1,264 @@
+import { useState } from "react";
+
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Loader2 } from "lucide-react";
+
+import { useForm } from "react-hook-form";
+import { useToast } from "@/components/ui/use-toast";
+import { useLocations } from "@/hooks/locations";
+import { useCoaches } from "@/hooks/coaches";
+
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import type { Tables } from "@/database.extensions";
+
+type Props = {
+  onSubmit: (data: z.infer<typeof schema>) => Promise<void>;
+  onCancel: () => void;
+  type?: "create" | "edit";
+  activity?: Tables<"activities"> | null;
+};
+
+export const schema = z.object({
+  name: z.string().min(2, {
+    message: "Name must be at least 2 characters.",
+  }),
+  description: z
+    .string()
+    .min(2, {
+      message: "Description must be at least 2 characters.",
+    })
+    .max(512, {
+      message: "Description must be less than 512 characters.",
+    })
+    .optional(),
+  location_id: z.string().uuid(),
+  coach_id: z.number().int().optional(),
+  duration: z.number().int().positive(),
+  price: z
+    .number()
+    .positive()
+    .transform((value) => value * 100),
+});
+
+const messages = {
+  create: {
+    default: "Create",
+    loading: "Creating...",
+  },
+  edit: {
+    default: "Save",
+    loading: "Saving...",
+  },
+};
+
+export const ActivityForm = ({
+  onSubmit,
+  onCancel,
+  type = "create",
+  activity,
+}: Props) => {
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const { toast } = useToast();
+
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      name: activity?.name || "",
+      description: activity?.description || "",
+      location_id: activity?.location_id || "",
+      coach_id: activity?.coach_id || undefined,
+      duration: activity?.duration || undefined,
+      price: activity?.price || undefined,
+    },
+  });
+
+  const { data: locations } = useLocations();
+  const { data: coaches } = useCoaches({
+    location_id: form.watch("location_id"),
+  });
+
+  const handleSubmit = (data: z.infer<typeof schema>) => {
+    setLoading(true);
+
+    onSubmit(data)
+      .catch((error) => {
+        toast({
+          title: "Error",
+          description: error.message,
+        });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-3">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Personal Training" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description (optional)</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Training under personal supervision of one of our professional coaches"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="duration"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Duration (in minutes)</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  placeholder="60"
+                  {...field}
+                  {...form.register("duration", { valueAsNumber: true })}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="price"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Price</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  placeholder="250"
+                  {...field}
+                  {...form.register("price", { valueAsNumber: true })}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className="flex items-center gap-2">
+          <FormField
+            control={form.control}
+            name="location_id"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Location</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Location" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {locations?.map((location) => (
+                      <SelectItem key={location.id} value={location.id}>
+                        {location.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="coach_id"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Coach (optional)</FormLabel>
+                <Select
+                  onValueChange={(value) => field.onChange(Number(value))}
+                  defaultValue={String(field.value)}
+                  disabled={!form.watch("location_id")}
+                >
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Coach" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {coaches?.map((coach) => (
+                      <SelectItem key={coach.id} value={String(coach.id)}>
+                        {coach.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="sticky bottom-0 py-4 flex items-center gap-2 bg-white/60 backdrop-blur-sm">
+          <Button size="lg" onClick={onCancel} variant="outline">
+            Cancel
+          </Button>
+          <Button
+            size="lg"
+            type="submit"
+            disabled={
+              loading || !form.formState.isDirty || !form.formState.isValid
+            }
+            className="w-full"
+          >
+            {loading && (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {messages[type].loading}
+              </>
+            )}
+            {!loading && messages[type].default}
+          </Button>
+        </div>
+      </form>
+    </Form>
+  );
+};
