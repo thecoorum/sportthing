@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 import Link from "next/link";
 
@@ -86,40 +87,43 @@ const Locations = () => {
   }
 
   return (
-    <div className="space-y-2">
-      {data?.map((location) => (
-        <Link
-          href={`/locations/${location.id}`}
-          key={location.id}
-          className="block"
-        >
-          <Card className="w-full">
-            <CardHeader>
-              <CardTitle>{location.name}</CardTitle>
-              <div className="space-y-4">
-                {!!location.address && (
-                  <>
-                    <CardDescription>{location.address}</CardDescription>
-                    <hr />
-                  </>
-                )}
-                {!!location.description && (
-                  <CardDescription>{location.description}</CardDescription>
-                )}
-              </div>
-            </CardHeader>
-          </Card>
-        </Link>
-      ))}
-      {user.role === "admin" && (
-        <div className="sticky bottom-0 left-0 w-full py-4 bg-white/60 backdrop-blur-sm">
-          <Link href="/locations/new" className="block">
-            <Button size="lg" className="w-full">
-              Create a new location
-            </Button>
+    <div className="space-y-3">
+      <div className="flex justify-between items-center gap-2">
+        <h2 className="text-3xl font-semibold leading-none tracking-tight">
+          Locations
+        </h2>
+        {user.role === "admin" && (
+          <Link href="/locations/new">
+            <Badge className="px-4 py-3 space-x-2">Create location</Badge>
           </Link>
-        </div>
-      )}
+        )}
+      </div>
+      <div className="space-y-2">
+        {data?.map((location) => (
+          <Link
+            href={`/locations/${location.id}`}
+            key={location.id}
+            className="block"
+          >
+            <Card className="w-full">
+              <CardHeader>
+                <CardTitle>{location.name}</CardTitle>
+                <div className="space-y-4">
+                  {!!location.address && (
+                    <>
+                      <CardDescription>{location.address}</CardDescription>
+                      <hr />
+                    </>
+                  )}
+                  {!!location.description && (
+                    <CardDescription>{location.description}</CardDescription>
+                  )}
+                </div>
+              </CardHeader>
+            </Card>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 };

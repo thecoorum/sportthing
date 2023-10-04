@@ -2,7 +2,10 @@
 
 import { useEffect } from "react";
 
+import { ChevronLeft } from "lucide-react";
 import { ActivityForm, schema } from "@/components/forms/activity";
+
+import Link from "next/link";
 
 import { useRouter } from "next/navigation";
 import { useApi } from "@/hooks/useApi";
@@ -42,7 +45,15 @@ const Page = () => {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-medium">Create new activity</h2>
+      <div className="space-y-3">
+        <Link href="/activities" className="flex items-center space-x-1">
+          <ChevronLeft className="w-4 h-4" />
+          <span className="text-sm">Activities</span>
+        </Link>
+        <h2 className="text-3xl font-semibold leading-none tracking-tight">
+          Create new activity
+        </h2>
+      </div>
       <ActivityForm onSubmit={handleSubmit} onCancel={handleCancel} />
     </div>
   );

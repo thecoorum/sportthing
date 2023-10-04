@@ -2,13 +2,16 @@
 
 import { useEffect } from "react";
 
+import { ChevronLeft } from "lucide-react";
 import { LocationForm, schema } from "@/components/location-form";
+
+import Link from "next/link";
 
 import { useRouter } from "next/navigation";
 import { useApi } from "@/hooks/useApi";
 import { useBackButton } from "@twa.js/sdk-react";
 
-import * as z from "zod";
+import * as zod from "zod";
 
 const LocationCreatePage = () => {
   const backButton = useBackButton();
@@ -30,7 +33,7 @@ const LocationCreatePage = () => {
     };
   }, [backButton, router]);
 
-  const handleSubmit = async (data: z.infer<typeof schema>) => {
+  const handleSubmit = async (data: zod.infer<typeof schema>) => {
     return api.post("/locations", data).then(() => {
       router.replace("/locations");
     });
@@ -42,7 +45,13 @@ const LocationCreatePage = () => {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-medium">Create new location</h2>
+      <div className="space-y-3">
+        <Link href="/locations" className="flex items-center space-x-1">
+          <ChevronLeft className="w-4 h-4" />
+          <span className="text-sm">Locations</span>
+        </Link>
+        <h2 className="text-3xl font-semibold leading-none tracking-tight">Create new location</h2>
+      </div>
       <LocationForm onSubmit={handleSubmit} onCancel={handleCancel} />
     </div>
   );

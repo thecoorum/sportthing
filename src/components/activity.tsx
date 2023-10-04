@@ -17,7 +17,7 @@ type Props = {
   };
 };
 
-export const Activity = ({ data }: Props) => (
+export const CardActivity = ({ data }: Props) => (
   <Card className="w-full">
     <CardHeader>
       <CardTitle>{data.name}</CardTitle>

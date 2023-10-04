@@ -23,6 +23,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -31,6 +32,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -74,7 +76,7 @@ export function DataTable<TData, TValue>({
     state: {
       sorting,
       columnFilters,
-      globalFilter
+      globalFilter,
     },
   });
 
@@ -93,23 +95,29 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-3">
-      <div className="w-full flex items-center gap-2">
-        <Input
-          placeholder="Filter"
-          value={globalFilter}
-          onChange={(e) => setGlobalFilter(e.target.value)}
-        />
-        <Select value={filters.role} onValueChange={handleFilterByRole}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Filter by role" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            <SelectItem value="admin">Administrator</SelectItem>
-            <SelectItem value="coach">Coach</SelectItem>
-            <SelectItem value="user">User</SelectItem>
-          </SelectContent>
-        </Select>
+      <div className="w-full flex items-start gap-2">
+        <div className="space-y-2 w-full">
+          <Label>Filter</Label>
+          <Input
+            placeholder="Name, username, role, etc."
+            value={globalFilter}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Role</Label>
+          <Select value={filters.role} onValueChange={handleFilterByRole}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="admin">Administrator</SelectItem>
+              <SelectItem value="coach">Coach</SelectItem>
+              <SelectItem value="user">User</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
       <div className="rounded-md border">
         <Table>

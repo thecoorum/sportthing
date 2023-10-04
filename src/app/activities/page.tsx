@@ -6,7 +6,8 @@ import { Map, Activity as ActivityIcon } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { Activity } from "@/components/activity";
+import { CardActivity } from "@/components/activity";
+import { Badge } from "@/components/ui/badge";
 
 import Link from "next/link";
 
@@ -87,25 +88,28 @@ const Page = () => {
   }
 
   return (
-    <div className="space-y-2">
-      {data?.map((activity) => (
-        <Link
-          href={`/activities/${activity.id}`}
-          key={activity.id}
-          className="block"
-        >
-          <Activity data={activity} />
-        </Link>
-      ))}
-      {user.role === "admin" && (
-        <div className="sticky bottom-0 left-0 w-full py-4 bg-white/60 backdrop-blur-sm">
-          <Link href="/activities/new" className="block">
-            <Button size="lg" className="w-full">
-              Create a new activity
-            </Button>
+    <div className="space-y-3">
+      <div className="flex justify-between items-center gap-2">
+        <h2 className="text-3xl font-semibold leading-none tracking-tight">
+          Activities
+        </h2>
+        {user.role === "admin" && (
+          <Link href="/activities/new">
+            <Badge className="px-4 py-3 space-x-2">Create activity</Badge>
           </Link>
-        </div>
-      )}
+        )}
+      </div>
+      <div className="space-y-2">
+        {data?.map((activity) => (
+          <Link
+            href={`/activities/${activity.id}`}
+            key={activity.id}
+            className="block"
+          >
+            <CardActivity data={activity} />
+          </Link>
+        ))}
+      </div>
     </div>
   );
 };

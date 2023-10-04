@@ -1,16 +1,15 @@
-import { Dumbbell, UserX, ServerCrash } from "lucide-react";
+import { UserX, ServerCrash } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Card,
-  CardContent,
   CardDescription,
   CardTitle,
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Activity } from "@/components/activity";
+import { CardActivity } from "@/components/activity";
 
 import Link from "next/link";
 
@@ -128,8 +127,12 @@ const ActivitiesTab = ({ locationId }: Props) => {
   return (
     <div className="space-y-3">
       {data.map((activity) => (
-        <Link key={activity.id} href={`/coaches/${activity.id}`} className="block">
-          <Activity data={activity} />
+        <Link
+          key={activity.id}
+          href={`/coaches/${activity.id}`}
+          className="block"
+        >
+          <CardActivity data={activity} />
         </Link>
       ))}
     </div>
