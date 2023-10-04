@@ -21,11 +21,11 @@ export const Skeleton = () => (
         <SkeletonComponent className="h-[40px] w-full" />
       </div>
       <div className="flex items-start gap-2">
-        <div className="space-y-2">
+        <div className="space-y-2 w-full">
           <SkeletonComponent className="h-[16px] w-[80px]" />
           <SkeletonComponent className="h-[40px] w-full" />
         </div>
-        <div className="space-y-2">
+        <div className="space-y-2 w-full">
           <SkeletonComponent className="h-[16px] w-[80px]" />
           <SkeletonComponent className="h-[40px] w-full" />
         </div>

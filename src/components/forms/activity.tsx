@@ -43,9 +43,6 @@ export const schema = z.object({
   }),
   description: z
     .string()
-    .min(2, {
-      message: "Description must be at least 2 characters.",
-    })
     .max(512, {
       message: "Description must be less than 512 characters.",
     })
@@ -245,7 +242,7 @@ export const ActivityForm = ({
             size="lg"
             type="submit"
             disabled={
-              loading || !form.formState.isDirty || !form.formState.isValid
+              loading || !form.formState.isDirty
             }
             className="w-full"
           >

@@ -8,9 +8,9 @@ import { Skeleton } from "./skeleton";
 import { useRouter } from "next/navigation";
 import { useApi } from "@/hooks/useApi";
 import { useBackButton } from "@twa.js/sdk-react";
+import { useActivity } from "@/hooks/activities";
 
 import * as z from "zod";
-import { useLocation } from "@/hooks/locations";
 
 const Page = ({ params }: { params: { id: string } }) => {
   const backButton = useBackButton();
@@ -18,7 +18,7 @@ const Page = ({ params }: { params: { id: string } }) => {
   const api = useApi();
   const router = useRouter();
 
-  const { data: location, loading } = useLocation(params.id);
+  const { data: activity, loading } = useActivity(params.id);
 
   useEffect(() => {
     const handleGoBack = () => {
@@ -35,21 +35,31 @@ const Page = ({ params }: { params: { id: string } }) => {
   }, [backButton, router, params.id]);
 
   const handleSubmit = async (data: z.infer<typeof schema>) => {
-    return api.post("/activities", data).then(() => {
-      router.replace(`/activities/${params.id}`);
-    });
+    return api
+      .post(`/activities/${params.id}`, {
+        id: params.id,
+        ...data,
+      })
+      .then(() => {
+        router.replace(`/activities/${params.id}`);
+      });
   };
 
   const handleCancel = () => {
     router.replace(`/activities/${params.id}`);
   };
 
-  if (!location || loading) return <Skeleton />;
+  if (!activity || loading) return <Skeleton />;
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-medium">Create new activity</h2>
-      <ActivityForm onSubmit={handleSubmit} onCancel={handleCancel} />
+      <h2 className="text-2xl font-medium">Edit activity</h2>
+      <ActivityForm
+        onSubmit={handleSubmit}
+        onCancel={handleCancel}
+        activity={activity}
+        type="edit"
+      />
     </div>
   );
 };

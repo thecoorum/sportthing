@@ -33,7 +33,7 @@ const Page = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     const handleGoBack = () => {
-      router.push("/locations");
+      router.push("/activities");
     };
 
     backButton.show();
@@ -151,7 +151,7 @@ const Page = ({ params }: { params: { id: string } }) => {
             )}
             {!deletePending && "Delete"}
           </Button>
-          <Link href={`/locations/${params.id}/edit`} className="block w-full">
+          <Link href={`/activities/${params.id}/edit`} className="block w-full">
             <Button size="lg" className="w-full" variant="outline">
               Edit
             </Button>
