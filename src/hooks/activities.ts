@@ -1,61 +1,45 @@
-import { useEffect, useState } from "react";
-
-import { useApi } from "./useApi";
+import useSWR, { Fetcher } from "swr";
 
 import { Tables } from "@/database.extensions";
+import { useApi } from "./useApi";
 
-export const useActivities = (locationId: string) => {
-  const [activities, setActivities] = useState<Tables<"activities">[] | []>([]);
-  const [error, setError] = useState<Error | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+type Activity = Tables<"activities"> & {
+  coach: Tables<"coaches">;
+  location: Tables<"locations">;
+};
 
+type ActivityResponse = {
+  data: {
+    activity: Activity;
+  };
+};
+
+type ActivitiesResponse = {
+  data: {
+    activities: Activity[];
+  };
+};
+
+export const useActivities = () => {
   const api = useApi();
 
-  useEffect(() => {
-    setLoading(true);
-
+  const fetcher: Fetcher<Activity[], string> = (url) =>
     api
-      .get("/activities", {
-        params: {
-          location_id: locationId,
-        },
-      })
-      .then((response) => {
-        const data = response.data as Tables<"activities">[];
+      .get(url)
+      .then((response: ActivitiesResponse) => response.data.activities);
 
-        setActivities(data);
-      })
-      .catch((error: Error) => setError(error))
-      .finally(() => setLoading(false));
-  }, [api, locationId]);
+  const { data, error, isLoading } = useSWR("/activities", fetcher);
 
-  return { data: activities, error, loading };
+  return { data, error, loading: isLoading };
 };
 
 export const useActivity = (id: string) => {
-  const [activity, setActivity] = useState<Tables<"activities"> | null>(null);
-  const [error, setError] = useState<Error | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-
   const api = useApi();
 
-  useEffect(() => {
-    setLoading(true);
+  const fetcher: Fetcher<Activity, string> = (url) =>
+    api.get(url).then((response: ActivityResponse) => response.data.activity);
 
-    api
-      .get("/activities", {
-        params: {
-          id,
-        },
-      })
-      .then((response) => {
-        const data = response.data as Tables<"activities">;
+  const { data, error, isLoading } = useSWR(`/activities/${id}`, fetcher);
 
-        setActivity(data);
-      })
-      .catch((error: Error) => setError(error))
-      .finally(() => setLoading(false));
-  }, [api, id]);
-
-  return { data: activity, error, loading };
+  return { data, error, loading: isLoading };
 };

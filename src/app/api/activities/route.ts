@@ -5,24 +5,14 @@ import { supabase } from "@/supabase";
 
 export const GET = async (req: NextRequest) => {
   const tgWebAppData = req.headers.get("Web-App-Data");
-  const user = req.headers.get("User");
-
-  const { location_id } = await req.json();
 
   const { success } = verifyInitData(tgWebAppData);
 
   if (success) {
     try {
-      const { role } = JSON.parse(user || "");
-
-      if (role !== "admin") {
-        return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-      }
-
       const { data: activities, error } = await supabase
         .from("activities")
-        .select("*")
-        .eq("location_id", location_id);
+        .select('*, coach:coaches(*), location:locations(*)');
 
       if (error) {
         return NextResponse.json({ error }, { status: 400 });
