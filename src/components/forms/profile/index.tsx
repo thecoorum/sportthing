@@ -1,18 +1,21 @@
 import { useState } from "react";
 
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
+import { OperatingRules } from "./operating-rules";
+
 import { useUser } from "@/hooks/useUser";
 
-import { Loader2 } from "lucide-react";
 import * as zod from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -20,17 +23,26 @@ import { useForm } from "react-hook-form";
 export type FormValues = zod.infer<typeof formSchema>;
 
 type Props = {
-  onSubmit: (data: FormValues) => void;
+  onSubmit?: (data: FormValues) => void;
   onCancel: () => void;
 };
 
-const formSchema = zod.object({
+export const formSchema = zod.object({
   name: zod.string().min(2, {
     message: "Name must be at least 2 characters.",
   }),
   username: zod.string().min(2, {
     message: "Username must be at least 2 characters.",
   }),
+  operating_rules: zod
+    .array(
+      zod.object({
+        day: zod.string(),
+        start_time: zod.string(),
+        end_time: zod.string(),
+      })
+    )
+    .optional(),
 });
 
 export const ProfileForm = ({ onSubmit, onCancel }: Props) => {
@@ -40,8 +52,8 @@ export const ProfileForm = ({ onSubmit, onCancel }: Props) => {
 
   const form = useForm<zod.infer<typeof formSchema>>({
     defaultValues: {
-      name: user?.name ?? '',
-      username: user?.username ?? '',
+      name: user?.name ?? "",
+      username: user?.username ?? "",
     },
     resolver: zodResolver(formSchema),
   });
@@ -49,19 +61,25 @@ export const ProfileForm = ({ onSubmit, onCancel }: Props) => {
   const handleSubmit = (data: zod.infer<typeof formSchema>) => {
     setLoading(true);
 
-    onSubmit(data);
+    console.log(data)
+
+    // onSubmit(data);
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-3">
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className="w-full space-y-3"
+      >
         <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="Your name" {...field} />
+                <Input placeholder="John Doe" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -72,6 +90,7 @@ export const ProfileForm = ({ onSubmit, onCancel }: Props) => {
           name="username"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>Username</FormLabel>
               <FormControl>
                 <Input placeholder="@username" {...field} />
               </FormControl>
@@ -79,14 +98,16 @@ export const ProfileForm = ({ onSubmit, onCancel }: Props) => {
             </FormItem>
           )}
         />
-        <div className="flex justify-center items-center gap-2">
-          <Button size="sm" onClick={onCancel} variant="outline">
+        <OperatingRules control={form.control} watch={form.watch} />
+        <div className="flex items-center gap-2">
+          <Button size="lg" onClick={onCancel} variant="outline">
             Cancel
           </Button>
           <Button
-            size="sm"
+            size="lg"
             type="submit"
             disabled={loading || !form.formState.isDirty}
+            className="w-full"
           >
             {loading && (
               <>
