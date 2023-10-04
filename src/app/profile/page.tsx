@@ -48,7 +48,7 @@ const Profile = () => {
       console.error(error);
     }
 
-    mutate('/user', serverData)
+    mutate('/auth', serverData)
     setEditing(false);
   };
 

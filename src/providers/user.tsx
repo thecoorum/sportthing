@@ -27,7 +27,7 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
   const fetcher: Fetcher<Tables<"users">, string> = (url) =>
     api.post(url).then((response: UserResponse) => response.data.user);
 
-  const { data, error, isLoading } = useSWR("/user", fetcher);
+  const { data, error, isLoading } = useSWR("/auth", fetcher);
 
   if (error) {
     return (
