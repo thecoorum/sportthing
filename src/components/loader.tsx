@@ -10,7 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export const Loader = ({ children }: PropsWithChildren) => {
   const { didInit, components, error } = useSDK();
 
-  if (!didInit || components === null) {
+  if (!didInit || !components) {
     return (
       <div className="p-5">
         <Skeleton className="w-[100px] h-[20px] mb-2" />
@@ -20,11 +20,13 @@ export const Loader = ({ children }: PropsWithChildren) => {
     );
   }
 
-  if (error !== null) {
+  if (error) {
     return (
       <Alert>
-        <AlertTitle>Oops</AlertTitle>
-        <AlertDescription>Something went wrong...</AlertDescription>
+        <AlertTitle>Oops, something went wrong</AlertTitle>
+        <AlertDescription>
+          Please try again. If the problem persists, please contact support.
+        </AlertDescription>
       </Alert>
     );
   }

@@ -93,7 +93,7 @@ const Locations = () => {
           key={location.id}
           className="block"
         >
-          <Card key={location.id} className="w-full">
+          <Card className="w-full">
             <CardHeader>
               <CardTitle>{location.name}</CardTitle>
               <div className="space-y-4">
