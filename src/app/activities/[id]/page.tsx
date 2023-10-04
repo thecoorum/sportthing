@@ -1,11 +1,23 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect } from "react";
 
-import { Activity, Loader2, ChevronLeft, ServerCrash } from "lucide-react";
+import { PlainActivity } from "@/components/activity";
+import { Activity, ChevronLeft, ServerCrash } from "lucide-react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 import Link from "next/link";
 
@@ -15,11 +27,8 @@ import { useRouter } from "next/navigation";
 import { useApi } from "@/hooks/useApi";
 import { useToast } from "@/components/ui/use-toast";
 import { useActivity } from "@/hooks/activities";
-import { PlainActivity } from "@/components/activity";
 
 const Page = ({ params }: { params: { id: string } }) => {
-  const [deletePending, setDeletePending] = useState<boolean>(false);
-
   const user = useUser();
 
   const api = useApi();
@@ -29,7 +38,6 @@ const Page = ({ params }: { params: { id: string } }) => {
   const { toast } = useToast();
 
   const backButton = useBackButton();
-  const popup = usePopup();
 
   useEffect(() => {
     const handleGoBack = () => {
@@ -47,48 +55,21 @@ const Page = ({ params }: { params: { id: string } }) => {
 
   const { data: activity, error, loading } = useActivity(params.id);
 
-  const handleDelete = useCallback(async () => {
-    setDeletePending(true);
+  const handleDeleteActivity = async () => {
+    api
+      .delete(`/activities/${params.id}`)
+      .then(() => {
+        router.replace("/activities");
+      })
+      .catch((error: Error) => {
+        console.error(error);
 
-    const action = await popup.open({
-      title: "Are you sure?",
-      message: "This action cannot be undone.",
-      buttons: [
-        {
-          id: "cancel",
-          type: "cancel",
-        },
-        {
-          id: "confirm",
-          type: "destructive",
-          text: "Delete",
-        },
-      ],
-    });
-
-    if (action === "confirm") {
-      api
-        .delete(`/activities/${params.id}`)
-        .then(() => {
-          router.replace("/activities");
-        })
-        .catch((error: Error) => {
-          console.error(error);
-
-          toast({
-            title: "Error occured",
-            description: error.message,
-          });
-        })
-        .finally(() => {
-          setDeletePending(false);
+        toast({
+          title: "Error occured",
+          description: error.message,
         });
-    }
-
-    if (action === "cancel") {
-      setDeletePending(false);
-    }
-  }, [params.id, popup, api, toast, router]);
+      });
+  };
 
   if (!user) return null;
 
@@ -129,7 +110,7 @@ const Page = ({ params }: { params: { id: string } }) => {
   return (
     <div className="flex flex-col space-y-6">
       <div className="space-y-1.5">
-        <Link href="/activities" className="flex items-center space-x-1">
+        <Link href="/activities" className="flex items-center space-x-1 mb-2">
           <ChevronLeft className="w-4 h-4" />
           <span className="text-sm">Activities</span>
         </Link>
@@ -137,20 +118,28 @@ const Page = ({ params }: { params: { id: string } }) => {
       </div>
       {user.role === "admin" && (
         <div className="sticky bottom-0 flex items-center gap-2 py-4 bg-white/60 backdrop-blur-sm">
-          <Button
-            size="lg"
-            onClick={handleDelete}
-            disabled={deletePending}
-            variant="destructive"
-          >
-            {deletePending && (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Deleting...
-              </>
-            )}
-            {!deletePending && "Delete"}
-          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger>
+              <Button size="lg" variant="destructive">
+                Delete
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete
+                  this activity.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDeleteActivity}>
+                  Continue
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
           <Link href={`/activities/${params.id}/edit`} className="block w-full">
             <Button size="lg" className="w-full" variant="outline">
               Edit

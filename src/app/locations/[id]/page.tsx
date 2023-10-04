@@ -1,11 +1,22 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect } from "react";
 
-import { Activity, Loader2, ChevronLeft } from "lucide-react";
+import { Activity, ChevronLeft } from "lucide-react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 import { TabsComponent as Tabs } from "./tabs";
 
@@ -13,14 +24,12 @@ import Link from "next/link";
 
 import { useLocation } from "@/hooks/locations";
 import { useUser } from "@/hooks/useUser";
-import { useBackButton, usePopup } from "@twa.js/sdk-react";
+import { useBackButton } from "@twa.js/sdk-react";
 import { useRouter } from "next/navigation";
 import { useApi } from "@/hooks/useApi";
 import { useToast } from "@/components/ui/use-toast";
 
-const LocationPage = ({ params }: { params: { id: string } }) => {
-  const [deletePending, setDeletePending] = useState<boolean>(false);
-
+const Page = ({ params }: { params: { id: string } }) => {
   const user = useUser();
 
   const api = useApi();
@@ -30,7 +39,6 @@ const LocationPage = ({ params }: { params: { id: string } }) => {
   const { toast } = useToast();
 
   const backButton = useBackButton();
-  const popup = usePopup();
 
   useEffect(() => {
     const handleGoBack = () => {
@@ -48,48 +56,21 @@ const LocationPage = ({ params }: { params: { id: string } }) => {
 
   const { data: location, error, loading } = useLocation(params.id);
 
-  const handleDelete = useCallback(async () => {
-    setDeletePending(true);
+  const handleDeleteLocation = async () => {
+    api
+      .delete(`/locations/${params.id}`)
+      .then(() => {
+        router.replace("/locations");
+      })
+      .catch((error: Error) => {
+        console.error(error);
 
-    const action = await popup.open({
-      title: "Are you sure?",
-      message: "This action cannot be undone.",
-      buttons: [
-        {
-          id: "cancel",
-          type: "cancel",
-        },
-        {
-          id: "confirm",
-          type: "destructive",
-          text: "Delete",
-        },
-      ],
-    });
-
-    if (action === "confirm") {
-      api
-        .delete(`/locations/${params.id}`)
-        .then(() => {
-          router.replace("/locations");
-        })
-        .catch((error: Error) => {
-          console.error(error);
-
-          toast({
-            title: "Error occured",
-            description: error.message,
-          });
-        })
-        .finally(() => {
-          setDeletePending(false);
+        toast({
+          title: "Error occured",
+          description: error.message,
         });
-    }
-
-    if (action === "cancel") {
-      setDeletePending(false);
-    }
-  }, [params.id, popup, api, toast, router]);
+      });
+  };
 
   if (!user) return null;
 
@@ -143,20 +124,28 @@ const LocationPage = ({ params }: { params: { id: string } }) => {
       <Tabs locationId={params.id} />
       {user.role === "admin" && (
         <div className="sticky bottom-0 flex items-center gap-2 py-4 bg-white/60 backdrop-blur-sm">
-          <Button
-            size="lg"
-            onClick={handleDelete}
-            disabled={deletePending}
-            variant="destructive"
-          >
-            {deletePending && (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Deleting...
-              </>
-            )}
-            {!deletePending && "Delete"}
-          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger>
+              <Button size="lg" variant="destructive">
+                Delete
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete
+                  this location.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDeleteLocation}>
+                  Continue
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
           <Link href={`/locations/${params.id}/edit`} className="block w-full">
             <Button size="lg" className="w-full" variant="outline">
               Edit
@@ -168,4 +157,4 @@ const LocationPage = ({ params }: { params: { id: string } }) => {
   );
 };
 
-export default LocationPage;
+export default Page;
