@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { ProfileForm } from "@/components/profile-form";
+import { ProfileForm } from "@/components/forms/profile";
 
 import { useUser } from "@/hooks/useUser";
 import { useDatabase } from "@/hooks/useDatabase";
@@ -14,7 +14,7 @@ import { DateTime } from "luxon";
 
 import { STATUS_MAP } from "@/constants";
 
-import type { FormValues } from "@/components/profile-form";
+import type { FormValues } from "@/components/forms/profile";
 import { Button } from "@/components/ui/button";
 
 const Profile = () => {

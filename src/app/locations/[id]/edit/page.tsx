@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 
 import { ChevronLeft } from "lucide-react";
-import { LocationForm, schema } from "@/components/location-form";
+import { LocationForm, schema } from "@/components/forms/location";
 import { Skeleton } from "./skeleton";
 
 import Link from 'next/link'

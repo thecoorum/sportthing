@@ -31,7 +31,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { Tables } from "@/database.extensions";
 
 type Props = {
-  onSubmit: (data: z.infer<typeof schema>) => Promise<void>;
+  onSubmit: (data: zod.infer<typeof schema>) => Promise<void>;
   onCancel: () => void;
   type?: "create" | "edit";
   activity?: Tables<"activities"> | null;

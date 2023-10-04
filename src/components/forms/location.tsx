@@ -14,7 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react";
 
 import { useForm } from "react-hook-form";
-import { useToast } from "./ui/use-toast";
+import { useToast } from "../ui/use-toast";
 
 import * as zod from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
