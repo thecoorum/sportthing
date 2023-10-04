@@ -2,16 +2,11 @@
 
 import { useEffect } from "react";
 
-import { Map, Activity } from "lucide-react";
+import { Map, Activity as ActivityIcon } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Activity } from "@/components/activity";
 
 import Link from "next/link";
 
@@ -19,7 +14,6 @@ import { useActivities } from "@/hooks/activities";
 import { useUser } from "@/hooks/useUser";
 import { useBackButton } from "@twa.js/sdk-react";
 import { useRouter } from "next/navigation";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Page = () => {
   const user = useUser();
@@ -46,7 +40,7 @@ const Page = () => {
   if (error) {
     return (
       <Alert>
-        <Activity className="w-4 h-4" />
+        <ActivityIcon className="w-4 h-4" />
         <AlertTitle>Something went wrong...</AlertTitle>
         <AlertDescription>
           Try to reload the page. If the issue persists, contact support.
@@ -94,46 +88,7 @@ const Page = () => {
           key={activity.id}
           className="block"
         >
-          <Card className="w-full">
-            <CardHeader>
-              <CardTitle>{activity.name}</CardTitle>
-              <CardDescription>{activity.location.name}</CardDescription>
-              <div className="flex items-center gap-1">
-                <CardDescription>
-                  {Intl.NumberFormat("en-US", {
-                    style: "currency",
-                    currency: "USD",
-                  }).format(activity.price / 100)}
-                </CardDescription>
-                <span className="text-sm text-muted-foreground">•</span>
-                <CardDescription>{activity.duration} mins</CardDescription>
-              </div>
-              {activity.description && (
-                <CardDescription>{activity.description}</CardDescription>
-              )}
-              {activity.coach && (
-                <>
-                  <hr />
-                  <div className="mt-2 space-y-2">
-                    <CardDescription>This activity is held by:</CardDescription>
-                    <div className="flex items-center gap-2">
-                      <Avatar>
-                        <AvatarImage src={activity.coach.photo_url || ""} />
-                        <AvatarFallback>
-                          {activity.coach.name
-                            .split(" ")
-                            .map((part) => part.at(0)?.toUpperCase())}
-                        </AvatarFallback>
-                      </Avatar>
-                      <h2 className="text-lg font-medium">
-                        {activity.coach.name}
-                      </h2>
-                    </div>
-                  </div>
-                </>
-              )}
-            </CardHeader>
-          </Card>
+          <Activity data={activity} />
         </Link>
       ))}
       {user.role === "admin" && (

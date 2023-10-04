@@ -1,18 +1,32 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { parse } from "url";
+
 import { verifyInitData } from "@/utils";
 import { supabase } from "@/supabase";
 
 export const GET = async (req: NextRequest) => {
   const tgWebAppData = req.headers.get("Web-App-Data");
 
+  const { query } = parse(req.url, true);
+
   const { success } = verifyInitData(tgWebAppData);
 
   if (success) {
     try {
-      const { data: activities, error } = await supabase
+      let queryBuilder = supabase
         .from("activities")
-        .select('*, coach:coaches(*), location:locations(*)');
+        .select("*, coach:coaches(*), location:locations(*)");
+
+      if (query.location_id) {
+        queryBuilder = queryBuilder.eq("location_id", query.location_id);
+      }
+
+      if (query.coach_id) {
+        queryBuilder = queryBuilder.eq("coach_id", query.coach_id);
+      }
+
+      const { data: activities, error } = await queryBuilder;
 
       if (error) {
         return NextResponse.json({ error }, { status: 400 });

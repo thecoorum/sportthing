@@ -2,11 +2,12 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-import { Activity, Dumbbell, Loader2, ChevronLeft, UserX } from "lucide-react";
+import { Activity, Loader2, ChevronLeft } from "lucide-react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+import { TabsComponent as Tabs } from "./tabs";
 
 import Link from "next/link";
 
@@ -139,54 +140,9 @@ const LocationPage = ({ params }: { params: { id: string } }) => {
           )}
         </div>
       </div>
-      <Tabs defaultValue="activities" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="activities">Activities</TabsTrigger>
-          <TabsTrigger value="coaches">Coaches</TabsTrigger>
-        </TabsList>
-        <TabsContent value="activities" className="py-3">
-          <div className="space-y-3">
-            <h2 className="text-2xl font-semibold leading-none tracking-tight">
-              Activities in this location
-            </h2>
-            <Alert>
-              <Dumbbell className="w-4 h-4" />
-              <AlertTitle>No activities</AlertTitle>
-              <AlertDescription>
-                No activities in this location at the moment. Please come back
-                later.
-                {user.role === "admin" && (
-                  <Button className="w-full mt-2" size="lg" variant="outline">
-                    Create activity in this location
-                  </Button>
-                )}
-              </AlertDescription>
-            </Alert>
-          </div>
-        </TabsContent>
-        <TabsContent value="coaches" className="py-3">
-          <div className="space-y-3">
-            <h2 className="text-2xl font-semibold leading-none tracking-tight">
-              Coaches at this location
-            </h2>
-            <Alert>
-              <UserX className="w-4 h-4" />
-              <AlertTitle>No coaches</AlertTitle>
-              <AlertDescription>
-                No coaches at this location at the moment. Please come back
-                later.
-                {user.role === "admin" && (
-                  <Button className="w-full mt-2" size="lg" variant="outline">
-                    Add coach to this location
-                  </Button>
-                )}
-              </AlertDescription>
-            </Alert>
-          </div>
-        </TabsContent>
-      </Tabs>
+      <Tabs locationId={params.id} />
       {user.role === "admin" && (
-        <div className="flex items-center gap-2">
+        <div className="sticky bottom-0 flex items-center gap-2 py-4 bg-white/60 backdrop-blur-sm">
           <Button
             size="lg"
             onClick={handleDelete}

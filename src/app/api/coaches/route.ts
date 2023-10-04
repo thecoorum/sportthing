@@ -1,0 +1,45 @@
+import { NextRequest, NextResponse } from "next/server";
+
+import { parse } from "url";
+
+import { verifyInitData } from "@/utils";
+import { supabase } from "@/supabase";
+
+export const GET = async (req: NextRequest) => {
+  const tgWebAppData = req.headers.get("Web-App-Data");
+
+  const { query } = parse(req.url, true);
+
+  const { success } = verifyInitData(tgWebAppData);
+
+  if (success) {
+    try {
+      let queryBuilder = supabase
+        .from("coaches")
+        .select("*, activities(*), location:locations(*)");
+
+      if (query.location_id) {
+        queryBuilder = queryBuilder.eq("location_id", query.location_id);
+      }
+
+      if (query.activity_id) {
+        queryBuilder = queryBuilder.eq("activity_id", query.activity_id);
+      }
+
+      const { data: coaches, error } = await queryBuilder;
+
+      if (error) {
+        return NextResponse.json({ error }, { status: 400 });
+      }
+
+      return NextResponse.json({ coaches }, { status: 200 });
+    } catch (error) {
+      return NextResponse.json({ error }, { status: 400 });
+    }
+  }
+
+  return NextResponse.json(
+    { message: "Invalid data provided" },
+    { status: 400 }
+  );
+};

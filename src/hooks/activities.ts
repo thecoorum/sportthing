@@ -8,6 +8,11 @@ type Activity = Tables<"activities"> & {
   location: Tables<"locations">;
 };
 
+type ActivitiesParams = {
+  location_id?: string | string[];
+  coach_id?: string | string[];
+};
+
 type ActivityResponse = {
   data: {
     activity: Activity;
@@ -20,12 +25,12 @@ type ActivitiesResponse = {
   };
 };
 
-export const useActivities = () => {
+export const useActivities = (params: ActivitiesParams = {}) => {
   const api = useApi();
 
   const fetcher: Fetcher<Activity[], string> = (url) =>
     api
-      .get(url)
+      .get(url, { params })
       .then((response: ActivitiesResponse) => response.data.activities);
 
   const { data, error, isLoading } = useSWR("/activities", fetcher);
