@@ -66,7 +66,13 @@ export const Locations = () => {
           Locations
         </h2>
         {count && count > per && (
-          <Link href="/locations" className="flex items-center gap-1">
+          <Link
+            href={{
+              pathname: "/locations",
+              query: { from: "/", fromLabel: "Home" },
+            }}
+            className="flex items-center gap-1"
+          >
             <span className="text-sm">View all</span>
             <ChevronRight className="w-4 h-4" />
           </Link>
@@ -76,7 +82,10 @@ export const Locations = () => {
         {data.map((location) => (
           <Link
             key={location.id}
-            href={`/locations/${location.id}`}
+            href={{
+              pathname: `/locations/${location.id}`,
+              query: { from: "/", fromLabel: "Home" },
+            }}
             className="block"
           >
             <LocationCard data={location} />

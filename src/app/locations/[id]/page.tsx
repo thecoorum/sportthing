@@ -29,7 +29,13 @@ import { useRouter } from "next/navigation";
 import { useApi } from "@/hooks/useApi";
 import { useToast } from "@/components/ui/use-toast";
 
-const Page = ({ params }: { params: { id: string } }) => {
+const Page = ({
+  params,
+  searchParams,
+}: {
+  params: { id: string };
+  searchParams: { from: string; fromLabel: string };
+}) => {
   const user = useUser();
 
   const api = useApi();
@@ -42,7 +48,7 @@ const Page = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     const handleGoBack = () => {
-      router.push("/locations");
+      router.push(searchParams.from || "/locations");
     };
 
     backButton.show();
@@ -52,7 +58,7 @@ const Page = ({ params }: { params: { id: string } }) => {
       backButton.off("click", handleGoBack);
       backButton.hide();
     };
-  }, [backButton, router]);
+  }, [backButton, router, searchParams.from]);
 
   const { data: location, error, loading } = useLocation(params.id);
 
@@ -60,7 +66,7 @@ const Page = ({ params }: { params: { id: string } }) => {
     api
       .delete(`/locations/${params.id}`)
       .then(() => {
-        router.replace("/locations");
+        router.replace(searchParams.from || "/locations");
       })
       .catch((error: Error) => {
         console.error(error);
@@ -99,9 +105,14 @@ const Page = ({ params }: { params: { id: string } }) => {
     <div className="flex flex-col space-y-6">
       <div className="space-y-1.5">
         <div className="space-y-3">
-          <Link href="/locations" className="flex items-center space-x-1">
+          <Link
+            href={searchParams.from || "/locations"}
+            className="flex items-center space-x-1"
+          >
             <ChevronLeft className="w-4 h-4" />
-            <span className="text-sm">Locations</span>
+            <span className="text-sm">
+              {searchParams.fromLabel || "Locations"}
+            </span>
           </Link>
           <h2 className="text-3xl font-semibold leading-none tracking-tight">
             {location?.name}
