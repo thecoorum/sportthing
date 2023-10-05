@@ -53,3 +53,26 @@ export const verifyInitData = (
 
   return { success: false, user: null };
 };
+
+export const generateTimes = ({
+  from,
+  till,
+}: { from?: string; till?: string } = {}) => {
+  const times = [];
+  const [fromHour, fromMinute] = !!from ? from.split(":").map(Number) : [0, 0];
+  const [tillHour, tillMinute] = !!till ? till.split(":").map(Number) : [24, 0];
+
+  for (let i = fromHour; i <= tillHour; i++) {
+    const startMinute = i === fromHour ? fromMinute + 15 : 0;
+    const endMinute = i === tillHour ? tillMinute : 60;
+
+    for (let j = startMinute; j < endMinute; j += 15) {
+      const hour = i < 10 ? `0${i}` : `${i}`;
+      const minute = j === 0 ? "00" : `${j}`;
+
+      times.push(`${hour}:${minute}`);
+    }
+  }
+
+  return times;
+};

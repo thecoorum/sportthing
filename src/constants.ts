@@ -2,8 +2,20 @@ interface IStatusMap {
   [key: string]: string;
 }
 
-export const STATUS_MAP: IStatusMap = {
+export const statuses: IStatusMap = {
   admin: "Administrator",
   coach: "Coach",
   user: "User",
 };
+
+export const days = [
+  { name: "Sunday", value: "sunday" },
+  { name: "Monday", value: "monday" },
+  { name: "Tuesday", value: "tuesday" },
+  { name: "Wednesday", value: "wednesday" },
+  { name: "Thursday", value: "thursday" },
+  { name: "Friday", value: "friday" },
+  { name: "Saturday", value: "saturday" },
+  { name: "Weekdays", value: "weekdays" },
+  { name: "Weekends", value: "weekends" },
+];

@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 
-import { STATUS_MAP } from "@/constants";
+import { statuses } from "@/constants";
 
 import type { Tables } from "@/database.extensions";
 
@@ -74,7 +74,7 @@ export const columns: ColumnDef<Tables<"users">>[] = [
           variant={role === "admin" ? "default" : "secondary"}
           className="py-2 px-4"
         >
-          {STATUS_MAP[role]}
+          {statuses[role]}
         </Badge>
       );
     },
