@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar } from "@/components/ui/avatar";
 
 import type { Tables } from "@/database.extensions";
 
@@ -42,14 +42,7 @@ export const CardActivity = ({ data }: Props) => (
       <CardFooter className="flex-col items-start space-y-2">
         <CardDescription>This activity is held by:</CardDescription>
         <div className="flex items-center gap-2">
-          <Avatar>
-            <AvatarImage src={data.coach.photo_url || ""} />
-            <AvatarFallback>
-              {data.coach.name
-                .split(" ")
-                .map((part) => part.at(0)?.toUpperCase())}
-            </AvatarFallback>
-          </Avatar>
+          <Avatar name={data.coach.name} image={data.coach.photo_url} />
           <h2 className="text-lg font-medium">{data.coach.name}</h2>
         </div>
       </CardFooter>
@@ -84,14 +77,7 @@ export const PlainActivity = ({ data }: Props) => (
           This activity is held by:
         </p>
         <div className="flex items-center gap-2">
-          <Avatar>
-            <AvatarImage src={data.coach.photo_url || ""} />
-            <AvatarFallback>
-              {data.coach.name
-                .split(" ")
-                .map((part) => part.at(0)?.toUpperCase())}
-            </AvatarFallback>
-          </Avatar>
+          <Avatar name={data.coach.name} image={data.coach.photo_url} />
           <h2 className="text-lg font-medium">{data.coach.name}</h2>
         </div>
       </div>

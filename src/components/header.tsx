@@ -4,11 +4,11 @@ import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sidebar } from "@/components/sidebar";
 
-import Link from 'next/link'
+import Link from "next/link";
 
 export const Header = memo(() => {
   return (
-    <header className="sticky left-0 top-0 w-full flex justify-between items-center px-4 py-3 gap-4 bg-white/60 backdrop-blur-sm">
+    <header className="sticky left-0 top-0 w-full flex justify-between items-center px-4 py-3 gap-4 bg-white/60 backdrop-blur-sm z-50">
       <Link href="/">
         <svg
           width="30%"

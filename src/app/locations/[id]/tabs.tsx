@@ -8,7 +8,7 @@ import {
   CardDescription,
   CardTitle,
 } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar } from "@/components/ui/avatar";
 import { CardActivity } from "@/components/activity";
 
 import Link from "next/link";
@@ -65,15 +65,7 @@ const CoachesTab = ({ locationId }: Props) => {
       {data.map((coach) => (
         <Link key={coach.id} href={`/coaches/${coach.id}`} className="block">
           <Card className="flex items-start gap-2 p-6">
-            <Avatar>
-              <AvatarImage src={coach.photo_url || ""} />
-              <AvatarFallback>
-                {coach.name
-                  .split(" ")
-                  .map((part) => part.at(0)?.toUpperCase())
-                  .join("")}
-              </AvatarFallback>
-            </Avatar>
+            <Avatar name={coach.name} image={coach.photo_url} />
             <div>
               <CardTitle className="text-xl">{coach.name}</CardTitle>
               <CardDescription>{coach.description}</CardDescription>
