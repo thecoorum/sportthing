@@ -23,7 +23,7 @@ import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/components/ui/use-toast";
 import { useLocations } from "@/hooks/locations";
-import { useCoaches } from "@/hooks/coaches";
+import { useEmployees } from "@/hooks/employees";
 
 import * as zod from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -90,7 +90,7 @@ export const ActivityForm = ({
   });
 
   const { data: locations } = useLocations();
-  const { data: coaches } = useCoaches({
+  const { data: coaches } = useEmployees({
     location_id: form.watch("location_id"),
   });
 

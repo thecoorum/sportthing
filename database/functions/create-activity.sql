@@ -1,0 +1,2 @@
+create
+or replace function create_activity (user_id integer, activity_name text, activity_description text, location_id uuid, activity_duration integer, activity_price integer, coach_id integer default null)

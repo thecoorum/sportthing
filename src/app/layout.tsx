@@ -11,7 +11,6 @@ import { Toaster } from "@/components/ui/toaster";
 
 import { UserProvider } from "@/providers/user";
 import { ApiProvider } from "@/providers/api";
-import { DatabaseProvider } from "@/providers/database";
 
 import { cn } from "@/utils";
 
@@ -28,13 +27,11 @@ export default function RootLayout({
         <SDKProvider>
           <Loader>
             <ApiProvider>
-              <DatabaseProvider>
-                <UserProvider>
-                  <Header />
-                  {children}
-                  <Toaster />
-                </UserProvider>
-              </DatabaseProvider>
+              <UserProvider>
+                <Header />
+                {children}
+                <Toaster />
+              </UserProvider>
             </ApiProvider>
           </Loader>
         </SDKProvider>

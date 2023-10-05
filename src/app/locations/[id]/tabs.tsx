@@ -3,18 +3,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Card,
-  CardDescription,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { Avatar } from "@/components/ui/avatar";
 import { CardActivity } from "@/components/activity";
 
 import Link from "next/link";
 
 import { useUser } from "@/hooks/useUser";
-import { useCoaches } from "@/hooks/coaches";
+import { useEmployees } from "@/hooks/employees";
 import { useActivities } from "@/hooks/activities";
 
 type Props = {
@@ -24,7 +20,7 @@ type Props = {
 const CoachesTab = ({ locationId }: Props) => {
   const user = useUser();
 
-  const { data, loading, error } = useCoaches({ location_id: locationId });
+  const { data, loading, error } = useEmployees({ location_id: locationId });
 
   if (loading) {
     return <Skeleton className="w-full h-[150px]" />;
@@ -50,7 +46,7 @@ const CoachesTab = ({ locationId }: Props) => {
         <AlertTitle>No coaches</AlertTitle>
         <AlertDescription>
           No coaches at this location at the moment. Please come back later.
-          {user.role === "admin" && (
+          {user.role === "administrator" && (
             <Button className="w-full mt-2" size="lg" variant="outline">
               Add coach to this location
             </Button>
@@ -62,13 +58,19 @@ const CoachesTab = ({ locationId }: Props) => {
 
   return (
     <div className="space-y-2">
-      {data.map((coach) => (
-        <Link key={coach.id} href={`/coaches/${coach.id}`} className="block">
+      {data.map((employee) => (
+        <Link
+          key={employee.id}
+          href={`/employees/${employee.id}`}
+          className="block"
+        >
           <Card className="flex items-start gap-2 p-6">
-            <Avatar name={coach.name} image={coach.photo_url} />
+            <Avatar name={employee.name} image={employee.photo_url} />
             <div>
-              <CardTitle className="text-xl">{coach.name}</CardTitle>
-              <CardDescription>{coach.description}</CardDescription>
+              <CardTitle className="text-xl">{employee.name}</CardTitle>
+              {employee.description && (
+                <CardDescription>{employee.description}</CardDescription>
+              )}
             </div>
           </Card>
         </Link>
@@ -106,7 +108,7 @@ const ActivitiesTab = ({ locationId }: Props) => {
         <AlertTitle>No activities</AlertTitle>
         <AlertDescription>
           No activities at this location at the moment. Please come back later.
-          {user.role === "admin" && (
+          {user.role === "administrator" && (
             <Button className="w-full mt-2" size="lg" variant="outline">
               Add coach to this location
             </Button>

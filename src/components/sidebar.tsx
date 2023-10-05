@@ -61,7 +61,7 @@ export const Sidebar = memo(({ children }: PropsWithChildren) => {
               Locations
             </Button>
           </Link>
-          {user.role === "admin" && (
+          {user.role === "administrator" && (
             <>
               <Link
                 onClick={() => handleOpenChange(false)}

@@ -9,8 +9,8 @@ export const GET = async (req: NextRequest) => {
   const { success, user } = verifyInitData(tgWebAppData);
 
   if (success && user) {
-    const { data: users, error } = await supabase.rpc("get_users_by_admin", {
-      user_id: user.id,
+    const { data: users, error } = await supabase.rpc("get_users", {
+      requestor_id: user.id,
     });
 
     if (error) {

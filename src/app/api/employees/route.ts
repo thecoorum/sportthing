@@ -15,8 +15,8 @@ export const GET = async (req: NextRequest) => {
   if (success) {
     try {
       let queryBuilder = supabase
-        .from("coaches")
-        .select("*, activities(*), location:locations(*)");
+        .from("employees")
+        .select("*, activities(*), location:locations(*), user!inner(*)");
 
       if (query.location_id) {
         queryBuilder = queryBuilder.eq("location_id", query.location_id);
@@ -26,13 +26,27 @@ export const GET = async (req: NextRequest) => {
         queryBuilder = queryBuilder.eq("activity_id", query.activity_id);
       }
 
-      const { data: coaches, error } = await queryBuilder;
+      if (query.page && query.per) {
+        const from = (Number(query.page) - 1) * Number(query.per);
+        const to = from + Number(query.per);
+
+        queryBuilder = queryBuilder.range(from, to);
+      } else if (query.per) {
+        queryBuilder = queryBuilder.limit(Number(query.per));
+      } else if (query.page) {
+        const from = (Number(query.page) - 1) * 10;
+        const to = from + 10;
+
+        queryBuilder = queryBuilder.range(from, to);
+      }
+
+      const { data: employees, error } = await queryBuilder;
 
       if (error) {
         return NextResponse.json({ error }, { status: 400 });
       }
 
-      return NextResponse.json({ coaches }, { status: 200 });
+      return NextResponse.json({ employees }, { status: 200 });
     } catch (error) {
       return NextResponse.json({ error }, { status: 400 });
     }

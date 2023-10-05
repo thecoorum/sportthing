@@ -10,21 +10,22 @@ import { ServerCrash } from "lucide-react";
 
 import type { Tables } from "@/database.extensions";
 
+type User = Tables<"users"> & Tables<'employees'>;
+
 interface UserResponse {
   data: {
-    user: Tables<"users">;
-    success: boolean;
+    user: User;
   };
 }
 
-export const UserContext = createContext<Tables<"users"> | undefined>(
+export const UserContext = createContext<User | undefined>(
   undefined
 );
 
 export const UserProvider = ({ children }: PropsWithChildren) => {
   const api = useApi();
 
-  const fetcher: Fetcher<Tables<"users">, string> = (url) =>
+  const fetcher: Fetcher<User, string> = (url) =>
     api.post(url).then((response: UserResponse) => response.data.user);
 
   const { data, error, isLoading } = useSWR("/auth", fetcher);

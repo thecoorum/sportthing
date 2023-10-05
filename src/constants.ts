@@ -3,7 +3,7 @@ interface IStatusMap {
 }
 
 export const statuses: IStatusMap = {
-  admin: "Administrator",
+  administrator: "Administrator",
   coach: "Coach",
   user: "User",
 };

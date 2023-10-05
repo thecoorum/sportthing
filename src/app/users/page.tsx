@@ -16,7 +16,7 @@ const UsersPage = () => {
 
   if (!user) return;
 
-  if (user.role !== "admin") {
+  if (user.role !== "administrator") {
     return (
       <Alert>
         <UserX className="w-4 h-4" />

@@ -70,7 +70,7 @@ const Locations = () => {
       <Alert>
         <Map className="w-4 h-4" />
         <AlertTitle>No locations found</AlertTitle>
-        {user.role === "admin" && (
+        {user.role === "administrator" && (
           <div className="space-y-3">
             <AlertDescription>
               You can create a new location by clicking the button below.
@@ -90,7 +90,7 @@ const Locations = () => {
         <h2 className="text-3xl font-semibold leading-none tracking-tight">
           Locations
         </h2>
-        {user.role === "admin" && (
+        {user.role === "administrator" && (
           <Link href="/locations/new">
             <Badge className="px-4 py-3 space-x-2">Create location</Badge>
           </Link>

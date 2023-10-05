@@ -39,7 +39,7 @@ export const Locations = () => {
         <Alert>
           <Map className="w-4 h-4" />
           <AlertTitle>No locations found</AlertTitle>
-          {user.role === "admin" && (
+          {user.role === "administrator" && (
             <div className="space-y-3">
               <AlertDescription>
                 You can create a new location by clicking the button below.
@@ -49,7 +49,7 @@ export const Locations = () => {
               </Link>
             </div>
           )}
-          {user.role !== "admin" && (
+          {user.role !== "administrator" && (
             <AlertDescription>
               This organization has no locations yet. Please come back later.
             </AlertDescription>

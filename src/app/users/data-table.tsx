@@ -23,7 +23,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -90,7 +89,7 @@ export function DataTable<TData, TValue>({
       role = "";
     }
 
-    table.getColumn("role")?.setFilterValue(role);
+    table.getColumn("user_role")?.setFilterValue(role);
   };
 
   return (
@@ -112,7 +111,7 @@ export function DataTable<TData, TValue>({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All</SelectItem>
-              <SelectItem value="admin">Administrator</SelectItem>
+              <SelectItem value="administrator">Administrator</SelectItem>
               <SelectItem value="coach">Coach</SelectItem>
               <SelectItem value="user">User</SelectItem>
             </SelectContent>

@@ -8,23 +8,30 @@ export const POST = async (req: NextRequest) => {
 
   const { success, user } = verifyInitData(tgWebAppData);
 
-  if (success && user) {
-    const { data, error } = await supabase.rpc("get_or_create_user", {
-      requestor_id: user.id,
-      name: [user.first_name, user.last_name].filter(Boolean).join(" "),
-      username: user.username,
-      photo_url: user.photo_url,
-    });
+  const data = await req.json();
 
-    if (error) {
+  if (success) {
+    try {
+      const { data: role, error } = await supabase
+        .rpc("update_role", {
+          requestor_id: user?.id,
+          ...data,
+        })
+        .select("*")
+        .single();
+
+      if (error) {
+        return NextResponse.json({ error }, { status: 400 });
+      }
+
+      return NextResponse.json({ user: role }, { status: 200 });
+    } catch (error) {
       return NextResponse.json({ error }, { status: 400 });
     }
-
-    return NextResponse.json({ user: data }, { status: 200 });
   }
 
   return NextResponse.json(
     { message: "Invalid data provided" },
     { status: 400 }
   );
-};
+}

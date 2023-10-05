@@ -20,7 +20,7 @@ import type { Tables } from "@/database.extensions";
 
 export const columns: ColumnDef<Tables<"users">>[] = [
   {
-    accessorKey: "id",
+    accessorKey: "user_id",
     header: "ID",
   },
   {
@@ -55,7 +55,7 @@ export const columns: ColumnDef<Tables<"users">>[] = [
     },
   },
   {
-    accessorKey: "role",
+    accessorKey: "user_role",
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -67,11 +67,11 @@ export const columns: ColumnDef<Tables<"users">>[] = [
       </Button>
     ),
     cell: ({ row }) => {
-      const role = String(row.getValue("role"));
+      const role = String(row.getValue("user_role"));
 
       return (
         <Badge
-          variant={role === "admin" ? "default" : "secondary"}
+          variant={role === "administrator" ? "default" : "secondary"}
           className="py-2 px-4"
         >
           {statuses[role]}

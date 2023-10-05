@@ -11,45 +11,39 @@ export interface Database {
     Tables: {
       activities: {
         Row: {
-          coach_id: number | null
+          coach_id: string | null
           created_at: string
           description: string | null
           duration: number
           id: string
-          location_id: string
+          location_id: string | null
           name: string
           price: number
           updated_at: string
         }
         Insert: {
-          coach_id?: number | null
+          coach_id?: string | null
           created_at?: string
           description?: string | null
           duration: number
           id?: string
-          location_id: string
+          location_id?: string | null
           name: string
           price: number
           updated_at?: string
         }
         Update: {
-          coach_id?: number | null
+          coach_id?: string | null
           created_at?: string
           description?: string | null
           duration?: number
           id?: string
-          location_id?: string
+          location_id?: string | null
           name?: string
           price?: number
           updated_at?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "activities_coach_id_fkey"
-            columns: ["coach_id"]
-            referencedRelation: "coaches"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "activities_location_id_fkey"
             columns: ["location_id"]
@@ -61,9 +55,8 @@ export interface Database {
       bookings: {
         Row: {
           activity_id: string
-          coach_id: number
+          booking_date: string
           created_at: string
-          date: string
           end_time: string
           id: string
           start_time: string
@@ -73,21 +66,19 @@ export interface Database {
         }
         Insert: {
           activity_id: string
-          coach_id: number
+          booking_date: string
           created_at?: string
-          date: string
           end_time: string
-          id: string
+          id?: string
           start_time: string
-          status?: string
+          status: string
           updated_at?: string
           user_id: number
         }
         Update: {
           activity_id?: string
-          coach_id?: number
+          booking_date?: string
           created_at?: string
-          date?: string
           end_time?: string
           id?: string
           start_time?: string
@@ -103,12 +94,6 @@ export interface Database {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "bookings_coach_id_fkey"
-            columns: ["coach_id"]
-            referencedRelation: "coaches"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "bookings_user_id_fkey"
             columns: ["user_id"]
             referencedRelation: "users"
@@ -116,14 +101,13 @@ export interface Database {
           }
         ]
       }
-      coaches: {
+      employees: {
         Row: {
           created_at: string
           description: string | null
           id: number
           location_id: string | null
-          name: string
-          photo_url: string | null
+          role: string
           updated_at: string
         }
         Insert: {
@@ -131,8 +115,7 @@ export interface Database {
           description?: string | null
           id: number
           location_id?: string | null
-          name: string
-          photo_url?: string | null
+          role: string
           updated_at?: string
         }
         Update: {
@@ -140,19 +123,18 @@ export interface Database {
           description?: string | null
           id?: number
           location_id?: string | null
-          name?: string
-          photo_url?: string | null
+          role?: string
           updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: "coaches_id_fkey"
+            foreignKeyName: "employees_id_fkey"
             columns: ["id"]
             referencedRelation: "users"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "coaches_location_id_fkey"
+            foreignKeyName: "employees_location_id_fkey"
             columns: ["location_id"]
             referencedRelation: "locations"
             referencedColumns: ["id"]
@@ -188,7 +170,7 @@ export interface Database {
       }
       operating_rules: {
         Row: {
-          coach_id: number
+          coach_id: string
           created_at: string
           day: string
           end_time: string
@@ -197,16 +179,16 @@ export interface Database {
           updated_at: string
         }
         Insert: {
-          coach_id: number
+          coach_id: string
           created_at?: string
           day: string
           end_time: string
-          id: string
+          id?: string
           start_time: string
           updated_at?: string
         }
         Update: {
-          coach_id?: number
+          coach_id?: string
           created_at?: string
           day?: string
           end_time?: string
@@ -214,35 +196,31 @@ export interface Database {
           start_time?: string
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "operating_rules_coach_id_fkey"
-            columns: ["coach_id"]
-            referencedRelation: "coaches"
-            referencedColumns: ["id"]
-          }
-        ]
+        Relationships: []
       }
       users: {
         Row: {
           created_at: string
           id: number
           name: string
-          role: string
+          photo_url: string | null
+          updated_at: string
           username: string | null
         }
         Insert: {
           created_at?: string
-          id?: number
+          id: number
           name: string
-          role?: string
+          photo_url?: string | null
+          updated_at?: string
           username?: string | null
         }
         Update: {
           created_at?: string
           id?: number
           name?: string
-          role?: string
+          photo_url?: string | null
+          updated_at?: string
           username?: string | null
         }
         Relationships: []
@@ -254,29 +232,18 @@ export interface Database {
     Functions: {
       get_or_create_user: {
         Args: {
-          user_id: number
+          requestor_id: number
           name: string
           username: string
+          photo_url?: string
         }
-        Returns: {
-          created_at: string
-          id: number
-          name: string
-          role: string
-          username: string | null
-        }
+        Returns: Record<string, unknown>
       }
-      get_users_by_admin: {
+      get_users: {
         Args: {
-          user_id: number
+          requestor_id: number
         }
-        Returns: {
-          created_at: string
-          id: number
-          name: string
-          role: string
-          username: string | null
-        }[]
+        Returns: Record<string, unknown>[]
       }
     }
     Enums: {

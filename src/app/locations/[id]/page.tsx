@@ -133,7 +133,7 @@ const Page = ({
         </div>
       </div>
       <Tabs locationId={params.id} />
-      {user.role === "admin" && (
+      {user.role === "administrator" && (
         <div className="sticky bottom-0 flex items-center gap-2 py-4 bg-white/60 backdrop-blur-sm">
           <AlertDialog>
             <AlertDialogTrigger>
