@@ -24,7 +24,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={cn("h-[100vh]", inter.className)}>
+      <body className={cn(inter.className)}>
         <SDKProvider>
           <Loader>
             <ApiProvider>
