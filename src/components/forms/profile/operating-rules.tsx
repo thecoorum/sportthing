@@ -5,64 +5,29 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
-
-import {
-  Control,
-  UseFormRegister,
-  UseFormWatch,
-  useFieldArray,
-} from "react-hook-form";
-
-import { formSchema } from ".";
-
-import * as zod from "zod";
 import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { X } from "lucide-react";
+
+import { Control, UseFormWatch, useFieldArray } from "react-hook-form";
+
+import { formSchema } from ".";
+
+import { days } from '@/constants'
+import { generateTimes } from "@/utils";
+
+import * as zod from "zod";
 
 type Props = {
   control: Control<zod.infer<typeof formSchema>>;
   watch: UseFormWatch<zod.infer<typeof formSchema>>;
-};
-
-const days = [
-  { name: "Sunday", value: "sunday" },
-  { name: "Monday", value: "monday" },
-  { name: "Tuesday", value: "tuesday" },
-  { name: "Wednesday", value: "wednesday" },
-  { name: "Thursday", value: "thursday" },
-  { name: "Friday", value: "friday" },
-  { name: "Saturday", value: "saturday" },
-  { name: "Weekdays", value: "weekdays" },
-  { name: "Weekends", value: "weekends" },
-];
-
-const generateTimes = ({
-  from,
-  till,
-}: { from?: string; till?: string } = {}) => {
-  const times = [];
-  const [fromHour, fromMinute] = !!from ? from.split(":").map(Number) : [0, 0];
-  const [tillHour, tillMinute] = !!till ? till.split(":").map(Number) : [24, 0];
-
-  for (let i = fromHour; i <= tillHour; i++) {
-    const startMinute = i === fromHour ? fromMinute : 0;
-    const endMinute = i === tillHour ? tillMinute : 60;
-
-    for (let j = startMinute; j < endMinute; j += 15) {
-      const hour = i < 10 ? `0${i}` : `${i}`;
-      const minute = j === 0 ? "00" : `${j}`;
-
-      times.push(`${hour}:${minute}`);
-    }
-  }
-
-  return times;
 };
 
 export const OperatingRules = ({ control, watch }: Props) => {
@@ -75,23 +40,45 @@ export const OperatingRules = ({ control, watch }: Props) => {
     append({ day: "monday", start_time: "", end_time: "" });
   };
 
-  console.log(fields);
-
   return (
     <div className="space-y-3">
-      <div className="space-y-2">
+      <Label>Operating rules</Label>
+      {!fields.length && (
+        <div className="flex justify-center items-center p-6">
+          <span className="text-sm text-muted-foreground">
+            You have no operating rules configured
+          </span>
+        </div>
+      )}
+      <div className="grid grid-cols-[repeat(3,_1fr)_max-content] gap-2">
+        {!!fields.length && (
+          <>
+            <Label className="w-full text-muted-foreground">Day</Label>
+            <Label className="w-full text-muted-foreground">From</Label>
+            <Label className="w-full text-muted-foreground col-span-2">
+              Till
+            </Label>
+          </>
+        )}
         {fields.map((field, index) => {
           const from = watch(`operating_rules.${index}.start_time`);
           const till = watch(`operating_rules.${index}.end_time`);
 
+          const handleRemoveRule = () => {
+            if (field.id) {
+              // TODO: Remove from database
+            }
+
+            remove(index);
+          };
+
           return (
-            <div key={`${field.id}_day`} className="flex items-start gap-2">
+            <>
               <FormField
                 control={control}
                 name={`operating_rules.${index}.day` as const}
                 render={({ field: dayField }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Day</FormLabel>
+                  <FormItem>
                     <Select
                       onValueChange={dayField.onChange}
                       defaultValue={dayField.value}
@@ -109,6 +96,7 @@ export const OperatingRules = ({ control, watch }: Props) => {
                         ))}
                       </SelectContent>
                     </Select>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -116,8 +104,7 @@ export const OperatingRules = ({ control, watch }: Props) => {
                 control={control}
                 name={`operating_rules.${index}.start_time` as const}
                 render={({ field: startTimeField }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>From</FormLabel>
+                  <FormItem>
                     <Select
                       onValueChange={startTimeField.onChange}
                       defaultValue={startTimeField.value}
@@ -137,6 +124,7 @@ export const OperatingRules = ({ control, watch }: Props) => {
                         </ScrollArea>
                       </SelectContent>
                     </Select>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -144,8 +132,7 @@ export const OperatingRules = ({ control, watch }: Props) => {
                 control={control}
                 name={`operating_rules.${index}.end_time` as const}
                 render={({ field: endTimeField }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Till</FormLabel>
+                  <FormItem>
                     <Select
                       onValueChange={endTimeField.onChange}
                       defaultValue={endTimeField.value}
@@ -165,10 +152,14 @@ export const OperatingRules = ({ control, watch }: Props) => {
                         </ScrollArea>
                       </SelectContent>
                     </Select>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
-            </div>
+              <Button variant="ghost" onClick={handleRemoveRule}>
+                <X className="w-4 h-4" />
+              </Button>
+            </>
           );
         })}
       </div>

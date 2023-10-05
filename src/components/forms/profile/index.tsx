@@ -37,9 +37,16 @@ export const formSchema = zod.object({
   operating_rules: zod
     .array(
       zod.object({
-        day: zod.string(),
-        start_time: zod.string(),
-        end_time: zod.string(),
+        id: zod.string().uuid().optional(),
+        day: zod.string().nonempty({
+          message: "Day is required.",
+        }),
+        start_time: zod.string().nonempty({
+          message: "From time is required.",
+        }),
+        end_time: zod.string().nonempty({
+          message: "Till time is required.",
+        }),
       })
     )
     .optional(),
@@ -50,10 +57,13 @@ export const ProfileForm = ({ onSubmit, onCancel }: Props) => {
 
   const user = useUser();
 
+  // Add a hook to fetch the operating rules based on user id
+
   const form = useForm<zod.infer<typeof formSchema>>({
     defaultValues: {
       name: user?.name ?? "",
       username: user?.username ?? "",
+      // operating_rules: user?.operating_rules ?? [],
     },
     resolver: zodResolver(formSchema),
   });
@@ -61,10 +71,12 @@ export const ProfileForm = ({ onSubmit, onCancel }: Props) => {
   const handleSubmit = (data: zod.infer<typeof formSchema>) => {
     setLoading(true);
 
-    console.log(data)
+    console.log(data);
 
     // onSubmit(data);
   };
+
+  console.log(form.formState.errors);
 
   return (
     <Form {...form}>
