@@ -48,7 +48,7 @@ export const schema = zod.object({
     })
     .optional(),
   location_id: zod.string().uuid(),
-  coach_id: zod.number().int().optional(),
+  employee_id: zod.number().int().optional(),
   duration: zod.number().int().positive(),
   price: zod
     .number()
@@ -83,7 +83,7 @@ export const ActivityForm = ({
       name: activity?.name || "",
       description: activity?.description || "",
       location_id: activity?.location_id || "",
-      coach_id: activity?.coach_id || undefined,
+      employee_id: activity?.coach_id || undefined,
       duration: activity?.duration || undefined,
       price: activity?.price || undefined,
     },

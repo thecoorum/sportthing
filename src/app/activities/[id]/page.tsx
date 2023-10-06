@@ -22,14 +22,15 @@ import {
 import Link from "next/link";
 
 import { useUser } from "@/hooks/useUser";
-import { useBackButton, usePopup } from "@twa.js/sdk-react";
-import { useRouter } from "next/navigation";
+import { useBackButton } from "@twa.js/sdk-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useApi } from "@/hooks/useApi";
 import { useToast } from "@/components/ui/use-toast";
 import { useActivity } from "@/hooks/activities";
 
-const Page = ({ params }: { params: { id: string } }) => {
+const Page = () => {
   const user = useUser();
+  const searchParams = useSearchParams();
 
   const api = useApi();
 
@@ -53,11 +54,15 @@ const Page = ({ params }: { params: { id: string } }) => {
     };
   }, [backButton, router]);
 
-  const { data: activity, error, loading } = useActivity(params.id);
+  const {
+    data: activity,
+    error,
+    loading,
+  } = useActivity(searchParams.get("id"));
 
   const handleDeleteActivity = async () => {
     api
-      .delete(`/activities/${params.id}`)
+      .delete(`/activities/${searchParams.get("id")}`)
       .then(() => {
         router.replace("/activities");
       })
@@ -140,7 +145,10 @@ const Page = ({ params }: { params: { id: string } }) => {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-          <Link href={`/activities/${params.id}/edit`} className="block w-full">
+          <Link
+            href={`/activities/${searchParams.get("id")}/edit`}
+            className="block w-full"
+          >
             <Button size="lg" className="w-full" variant="outline">
               Edit
             </Button>

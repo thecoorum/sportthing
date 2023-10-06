@@ -8,9 +8,11 @@ import { DataTable } from "./data-table";
 
 import { useUser } from "@/hooks/useUser";
 import { useExternalUsers } from "@/hooks/users";
+import { useSearchParams } from "next/navigation";
 
 const UsersPage = () => {
   const user = useUser();
+  const searchParams = useSearchParams();
 
   const { data, error, loading } = useExternalUsers();
 
@@ -46,7 +48,7 @@ const UsersPage = () => {
   }
 
   return (
-    <DataTable columns={columns} data={data} />
+    <DataTable columns={columns} data={data} query={searchParams.get('id')} />
   );
 };
 

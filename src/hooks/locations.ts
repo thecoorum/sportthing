@@ -46,7 +46,7 @@ export const useLocations = (
   };
 };
 
-export const useLocation = (id: string) => {
+export const useLocation = (id: string | null) => {
   const api = useApi();
 
   const fetcher: Fetcher<Tables<"locations">, string> = (url) =>

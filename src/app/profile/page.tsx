@@ -7,12 +7,13 @@ import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ProfileForm, FormValues } from "@/components/forms/profile";
 
+import { DateTime } from "luxon";
+import Link from "next/link";
+
 import { useUser } from "@/hooks/useUser";
 import { useApi } from "@/hooks/useApi";
 import { useToast } from "@/components/ui/use-toast";
 import { useSWRConfig } from "swr";
-
-import { DateTime } from "luxon";
 
 import { statuses } from "@/constants";
 
@@ -71,7 +72,7 @@ const Profile = () => {
             )}
             <span className="text-sm text-muted-foreground">
               Member since{" "}
-              {DateTime.fromISO(user.created_at || '')
+              {DateTime.fromISO(user.created_at || "")
                 .setLocale("en")
                 .toLocaleString({
                   month: "long",
@@ -79,14 +80,19 @@ const Profile = () => {
                   year: "numeric",
                 })}
             </span>
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={() => setEditing(true)}
-              className="w-full"
-            >
-              Edit profile
-            </Button>
+            <div className="flex items-center self-start w-full gap-2">
+              <Link href="/code" className="block w-full">
+                <Button size="lg" className="w-full">Personal Code</Button>
+              </Link>
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => setEditing(true)}
+                className="w-full"
+              >
+                Edit profile
+              </Button>
+            </div>
           </>
         )}
       </div>

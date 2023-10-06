@@ -4,7 +4,7 @@ import { Tables } from "@/database.extensions";
 import { useApi } from "./useApi";
 
 type Activity = Tables<"activities"> & {
-  coach: Tables<"coaches">;
+  employee: Tables<"users"> & Tables<"employees">;
   location: Tables<"locations">;
 };
 
@@ -38,7 +38,7 @@ export const useActivities = (params: ActivitiesParams = {}) => {
   return { data, error, loading: isLoading };
 };
 
-export const useActivity = (id: string) => {
+export const useActivity = (id: string | null) => {
   const api = useApi();
 
   const fetcher: Fetcher<Activity, string> = (url) =>
