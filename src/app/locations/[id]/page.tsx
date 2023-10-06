@@ -103,36 +103,40 @@ const Page = ({
 
   return (
     <div className="flex flex-col space-y-6">
-      <div className="space-y-1.5">
-        <div className="space-y-3">
-          <Link
-            href={searchParams.from || "/locations"}
-            className="flex items-center space-x-1"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            <span className="text-sm">
-              {searchParams.fromLabel || "Locations"}
-            </span>
-          </Link>
-          <h2 className="text-3xl font-semibold leading-none tracking-tight">
-            {location?.name}
-          </h2>
-        </div>
-        <div className="space-y-4">
-          {location?.address && (
-            <p className="text-sm text-muted-foreground">{location.address}</p>
-          )}
-          {location?.description && (
-            <>
-              <hr />
+      <div className="pb-20">
+        <div className="space-y-1.5">
+          <div className="space-y-3">
+            <Link
+              href={searchParams.from || "/locations"}
+              className="flex items-center space-x-1"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              <span className="text-sm">
+                {searchParams.fromLabel || "Locations"}
+              </span>
+            </Link>
+            <h2 className="text-3xl font-semibold leading-none tracking-tight">
+              {location?.name}
+            </h2>
+          </div>
+          <div className="space-y-4">
+            {location?.address && (
               <p className="text-sm text-muted-foreground">
-                {location.description}
+                {location.address}
               </p>
-            </>
-          )}
+            )}
+            {location?.description && (
+              <>
+                <hr />
+                <p className="text-sm text-muted-foreground">
+                  {location.description}
+                </p>
+              </>
+            )}
+          </div>
         </div>
+        <Tabs locationId={params.id} />
       </div>
-      <Tabs locationId={params.id} />
       {user.role === "administrator" && (
         <div className="sticky bottom-0 flex items-center gap-2 py-4 bg-white/60 backdrop-blur-sm">
           <AlertDialog>

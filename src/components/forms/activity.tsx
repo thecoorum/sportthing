@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -83,7 +84,7 @@ export const ActivityForm = ({
       name: activity?.name || "",
       description: activity?.description || "",
       location_id: activity?.location_id || "",
-      employee_id: activity?.coach_id || undefined,
+      employee_id: activity?.employee_id || undefined,
       duration: activity?.duration || undefined,
       price: activity?.price || undefined,
     },
@@ -111,128 +112,138 @@ export const ActivityForm = ({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-3">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Personal Training" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description (optional)</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Training under personal supervision of one of our professional coaches"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="duration"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Duration (in minutes)</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  placeholder="60"
-                  {...field}
-                  {...form.register("duration", { valueAsNumber: true })}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="price"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Price</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  placeholder="250"
-                  {...field}
-                  {...form.register("price", { valueAsNumber: true })}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="flex items-center gap-2">
+      <form onSubmit={form.handleSubmit(handleSubmit)}>
+        <div className="pb-20 space-y-3">
           <FormField
             control={form.control}
-            name="location_id"
+            name="name"
             render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Location</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Location" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {locations?.map((location) => (
-                      <SelectItem key={location.id} value={location.id}>
-                        {location.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="Personal Training" {...field} />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
           <FormField
             control={form.control}
-            name="coach_id"
+            name="description"
             render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Coach (optional)</FormLabel>
-                <Select
-                  onValueChange={(value) => field.onChange(Number(value))}
-                  defaultValue={String(field.value)}
-                  disabled={!form.watch("location_id")}
-                >
-                  <FormControl>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Coach" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {coaches?.map((coach) => (
-                      <SelectItem key={coach.id} value={String(coach.id)}>
-                        {coach.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              <FormItem>
+                <FormLabel>Description (optional)</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Training under personal supervision of one of our professional coaches"
+                    {...field}
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="duration"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Duration (in minutes)</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="60"
+                    {...field}
+                    {...form.register("duration", { valueAsNumber: true })}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="price"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Price</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="250"
+                    {...field}
+                    {...form.register("price", { valueAsNumber: true })}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="flex items-start gap-2">
+            <FormField
+              control={form.control}
+              name="location_id"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Location (optional)</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Location" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {locations?.map((location) => (
+                        <SelectItem key={location.id} value={location.id}>
+                          {location.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>
+                    If the location is not selected that means that this
+                    activity will be available in all locations
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="employee_id"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Coach (optional)</FormLabel>
+                  <Select
+                    onValueChange={(value) => field.onChange(Number(value))}
+                    defaultValue={String(field.value)}
+                    disabled={!form.watch("location_id")}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Coach" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {coaches?.map((coach) => (
+                        <SelectItem key={coach.id} value={String(coach.id)}>
+                          {coach.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>
+                    If the coach is not selected that means that any coach can
+                    pick this activity
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
         </div>
         <div className="sticky bottom-0 py-4 flex items-center gap-2 bg-white/60 backdrop-blur-sm">
           <Button size="lg" onClick={onCancel} variant="outline">
@@ -241,9 +252,7 @@ export const ActivityForm = ({
           <Button
             size="lg"
             type="submit"
-            disabled={
-              loading || !form.formState.isDirty
-            }
+            disabled={loading || !form.formState.isDirty}
             className="w-full"
           >
             {loading && (

@@ -75,6 +75,11 @@ const CoachesTab = ({ locationId }: Props) => {
           </Card>
         </Link>
       ))}
+      {user.role === "administrator" && (
+        <Button className="w-full" size="lg" variant="outline">
+          Add coach to this location
+        </Button>
+      )}
     </div>
   );
 };
@@ -129,6 +134,11 @@ const ActivitiesTab = ({ locationId }: Props) => {
           <CardActivity data={activity} />
         </Link>
       ))}
+      {user.role === "administrator" && (
+        <Button className="w-full" size="lg" variant="outline">
+          Add activity to this location
+        </Button>
+      )}
     </div>
   );
 };
