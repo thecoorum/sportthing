@@ -11,10 +11,10 @@ export interface Database {
     Tables: {
       activities: {
         Row: {
-          coach_id: string | null
           created_at: string
           description: string | null
           duration: number
+          employee_id: number | null
           id: string
           location_id: string | null
           name: string
@@ -22,10 +22,10 @@ export interface Database {
           updated_at: string
         }
         Insert: {
-          coach_id?: string | null
           created_at?: string
           description?: string | null
           duration: number
+          employee_id?: number | null
           id?: string
           location_id?: string | null
           name: string
@@ -33,10 +33,10 @@ export interface Database {
           updated_at?: string
         }
         Update: {
-          coach_id?: string | null
           created_at?: string
           description?: string | null
           duration?: number
+          employee_id?: number | null
           id?: string
           location_id?: string | null
           name?: string
@@ -44,6 +44,12 @@ export interface Database {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "activities_employee_id_fkey"
+            columns: ["employee_id"]
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "activities_location_id_fkey"
             columns: ["location_id"]
@@ -230,6 +236,27 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
+      create_activity: {
+        Args: {
+          requestor_id: number
+          activity_name: string
+          activity_duration: number
+          activity_price: number
+          activity_description?: string
+          activity_location_id?: string
+          activity_employee_id?: number
+        }
+        Returns: Record<string, unknown>
+      }
+      create_location: {
+        Args: {
+          requestor_id: number
+          location_name: string
+          location_description?: string
+          location_address?: string
+        }
+        Returns: Record<string, unknown>
+      }
       get_or_create_user: {
         Args: {
           requestor_id: number
@@ -243,7 +270,17 @@ export interface Database {
         Args: {
           requestor_id: number
         }
-        Returns: Record<string, unknown>[]
+        Returns: {
+          user_id: number
+          name: string
+          username: string
+          photo_url: string
+          description: string
+          user_role: string
+          location_id: string
+          created_at: string
+          updated_at: string
+        }[]
       }
     }
     Enums: {
