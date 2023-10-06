@@ -114,9 +114,17 @@ const ActivitiesTab = ({ locationId }: Props) => {
         <AlertDescription>
           No activities at this location at the moment. Please come back later.
           {user.role === "administrator" && (
-            <Button className="w-full mt-2" size="lg" variant="outline">
-              Add coach to this location
-            </Button>
+            <Link
+              className="block mt-2"
+              href={{
+                pathname: "/activities/new",
+                query: { location_id: locationId },
+              }}
+            >
+              <Button className="w-full" size="lg" variant="outline">
+                Add activity to this location
+              </Button>
+            </Link>
           )}
         </AlertDescription>
       </Alert>
@@ -135,9 +143,17 @@ const ActivitiesTab = ({ locationId }: Props) => {
         </Link>
       ))}
       {user.role === "administrator" && (
-        <Button className="w-full" size="lg" variant="outline">
-          Add activity to this location
-        </Button>
+        <Link
+          className="block"
+          href={{
+            pathname: "/activities/new",
+            query: { location_id: locationId },
+          }}
+        >
+          <Button className="w-full" size="lg" variant="outline">
+            Add activity to this location
+          </Button>
+        </Link>
       )}
     </div>
   );

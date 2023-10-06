@@ -36,6 +36,7 @@ type Props = {
   onCancel: () => void;
   type?: "create" | "edit";
   activity?: Tables<"activities"> | null;
+  locationId?: string | null;
 };
 
 export const schema = zod.object({
@@ -48,7 +49,7 @@ export const schema = zod.object({
       message: "Description must be less than 512 characters.",
     })
     .optional(),
-  location_id: zod.string().uuid(),
+  location_id: zod.string().uuid().optional(),
   employee_id: zod.number().int().optional(),
   duration: zod.number().int().positive(),
   price: zod
@@ -73,6 +74,7 @@ export const ActivityForm = ({
   onCancel,
   type = "create",
   activity,
+  locationId,
 }: Props) => {
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -83,7 +85,7 @@ export const ActivityForm = ({
     defaultValues: {
       name: activity?.name || "",
       description: activity?.description || "",
-      location_id: activity?.location_id || "",
+      location_id: locationId || activity?.location_id || "",
       employee_id: activity?.employee_id || undefined,
       duration: activity?.duration || undefined,
       price: activity?.price || undefined,
@@ -204,8 +206,8 @@ export const ActivityForm = ({
                     </SelectContent>
                   </Select>
                   <FormDescription>
-                    If the location is not selected that means that this
-                    activity will be available in all locations
+                    If the location is not selected then this activity will be
+                    available in all locations
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -236,8 +238,8 @@ export const ActivityForm = ({
                     </SelectContent>
                   </Select>
                   <FormDescription>
-                    If the coach is not selected that means that any coach can
-                    pick this activity
+                    If the coach is not selected then any coach can pick this
+                    activity
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

@@ -7,13 +7,15 @@ import { ActivityForm, schema } from "@/components/forms/activity";
 
 import Link from "next/link";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useApi } from "@/hooks/useApi";
 import { useBackButton } from "@twa.js/sdk-react";
 
 import * as zod from "zod";
 
 const Page = () => {
+  const searchParams = useSearchParams();
+
   const backButton = useBackButton();
 
   const api = useApi();
@@ -54,7 +56,7 @@ const Page = () => {
           Create new activity
         </h2>
       </div>
-      <ActivityForm onSubmit={handleSubmit} onCancel={handleCancel} />
+      <ActivityForm onSubmit={handleSubmit} onCancel={handleCancel} locationId={searchParams.get('location_id')} />
     </div>
   );
 };
