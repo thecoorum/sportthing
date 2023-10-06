@@ -3,22 +3,24 @@ import useSWR, { Fetcher } from "swr";
 import { Tables } from "@/database.extensions";
 import { useApi } from "./useApi";
 
+type User = Tables<"users"> & Tables<'employees'>
+
 type UserResponse = {
   data: {
-    user: Tables<"users">;
+    user: User;
   };
 };
 
 type UsersResponse = {
   data: {
-    users: Tables<"users">[];
+    users: User[];
   };
 };
 
 export const useExternalUsers = () => {
   const api = useApi();
 
-  const fetcher: Fetcher<Tables<"users">[], string> = (url) =>
+  const fetcher: Fetcher<User[], string> = (url) =>
     api.get(url).then((response: UsersResponse) => response.data.users);
 
   const { data, error, isLoading } = useSWR("/users", fetcher);
@@ -29,7 +31,7 @@ export const useExternalUsers = () => {
 export const useExternalUser = (id: string) => {
   const api = useApi();
 
-  const fetcher: Fetcher<Tables<"users">, string> = (url) =>
+  const fetcher: Fetcher<User, string> = (url) =>
     api.get(url).then((response: UserResponse) => response.data.user);
 
   const { data, error, isLoading } = useSWR(`/users/${id}`, fetcher);

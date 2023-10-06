@@ -8,25 +8,24 @@ import { Skeleton } from "./skeleton";
 
 import Link from "next/link";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useApi } from "@/hooks/useApi";
 import { useBackButton } from "@twa.js/sdk-react";
 import { useActivity } from "@/hooks/activities";
 
 import * as zod from "zod";
 
-const Page = () => {
+const Page = ({ params }: { params: { id: string } }) => {
   const backButton = useBackButton();
 
   const api = useApi();
   const router = useRouter();
-  const searchParams = useSearchParams();
 
-  const { data: activity, loading } = useActivity(searchParams.get('id'));
+  const { data: activity, loading } = useActivity(params.id);
 
   useEffect(() => {
     const handleGoBack = () => {
-      router.replace(`/activities/${searchParams.get('id')}`);
+      router.replace(`/activities/${params.id}`);
     };
 
     backButton.show();
@@ -36,21 +35,21 @@ const Page = () => {
       backButton.off("click", handleGoBack);
       backButton.hide();
     };
-  }, [backButton, router, searchParams]);
+  }, [backButton, router, params.id]);
 
   const handleSubmit = async (data: zod.infer<typeof schema>) => {
     return api
-      .post(`/activities/${searchParams.get('id')}`, {
-        id: searchParams.get('id'),
+      .post(`/activities/${params.id}`, {
+        id: params.id,
         ...data,
       })
       .then(() => {
-        router.replace(`/activities/${searchParams.get('id')}`);
+        router.replace(`/activities/${params.id}`);
       });
   };
 
   const handleCancel = () => {
-    router.replace(`/activities/${searchParams.get('id')}`);
+    router.replace(`/activities/${params.id}`);
   };
 
   if (!activity || loading) return <Skeleton />;
@@ -59,7 +58,7 @@ const Page = () => {
     <div className="space-y-4">
       <div className="space-y-3">
         <Link
-          href={`/activities/${searchParams.get('id')}`}
+          href={`/activities/${params.id}`}
           className="flex items-center space-x-1"
         >
           <ChevronLeft className="w-4 h-4" />

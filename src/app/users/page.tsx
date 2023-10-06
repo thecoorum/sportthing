@@ -48,7 +48,12 @@ const UsersPage = () => {
   }
 
   return (
-    <DataTable columns={columns} data={data} query={searchParams.get('id')} />
+    <DataTable
+      columns={columns}
+      data={data}
+      query={searchParams.get("id")}
+      role={searchParams.get("role")}
+    />
   );
 };
 

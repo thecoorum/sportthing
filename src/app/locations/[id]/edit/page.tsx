@@ -16,9 +16,7 @@ import { useLocation } from "@/hooks/locations";
 import * as zod from "zod";
 
 const LocationEditPage = ({ params }: { params: { id: string } }) => {
-  const searchParams = useSearchParams();
-
-  const { data: location, loading } = useLocation(searchParams.get('id'));
+  const { data: location, loading } = useLocation(params.id);
 
   const backButton = useBackButton();
 
@@ -27,7 +25,7 @@ const LocationEditPage = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     const handleGoBack = () => {
-      router.replace(`/locations/${searchParams.get('id')}`);
+      router.replace(`/locations/${params.id}`);
     };
 
     backButton.show();
@@ -37,21 +35,21 @@ const LocationEditPage = ({ params }: { params: { id: string } }) => {
       backButton.off("click", handleGoBack);
       backButton.hide();
     };
-  }, [backButton, router, searchParams]);
+  }, [backButton, router, params.id]);
 
   const handleSubmit = async (data: zod.infer<typeof schema>) => {
     return api
-      .post(`/locations/${searchParams.get('id')}`, {
-        id: searchParams.get('id'),
+      .post(`/locations/${params.id}`, {
+        id: params.id,
         ...data,
       })
       .then(() => {
-        router.replace(`/locations/${searchParams.get('id')}/`);
+        router.replace(`/locations/${params.id}/`);
       });
   };
 
   const handleCancel = () => {
-    router.replace(`/locations/${searchParams.get('id')}`);
+    router.replace(`/locations/${params.id}`);
   };
 
   if (!location || loading) return <Skeleton />;

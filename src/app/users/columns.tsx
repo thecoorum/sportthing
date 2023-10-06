@@ -18,7 +18,9 @@ import { statuses } from "@/constants";
 
 import type { Tables } from "@/database.extensions";
 
-export const columns: ColumnDef<Tables<"users">>[] = [
+type Columns = Tables<"users"> & Tables<"employees">;
+
+export const columns: ColumnDef<Columns>[] = [
   {
     accessorKey: "user_id",
     header: "ID",
@@ -78,6 +80,10 @@ export const columns: ColumnDef<Tables<"users">>[] = [
         </Badge>
       );
     },
+  },
+  {
+    accessorKey: "location_id",
+    header: "Location ID",
   },
   {
     id: "actions",

@@ -15,6 +15,7 @@ import {
 
 import Link from "next/link";
 import QRCode from "react-qr-code";
+import { DateTime } from "luxon";
 
 import { useUser } from "@/hooks/useUser";
 import { useQRScanner, useWebApp } from "@twa.js/sdk-react";
@@ -48,20 +49,40 @@ const Page = () => {
       <div className="flex items-center gap-2">
         <Sheet>
           <SheetTrigger className="w-full">
-            <Button variant="outline" className="w-full">
+            <Button size="lg" variant="outline" className="w-full">
               <QRCodeIcon className="w-6 h-6" />
             </Button>
           </SheetTrigger>
-          <SheetContent
-            side="bottom"
-            className="flex items-center justify-center"
-          >
-            <div className="p-6">
-              <QRCode
-                size={256}
-                style={{ height: "auto", width: "100%" }}
-                value={String(user.id)}
-              />
+          <SheetContent side="bottom">
+            <div className="flex gap-2 items-start pt-6">
+              <div className="w-full space-y-2">
+                <Avatar name={user.name} className="h-16 w-16" />
+                <h3 className="text-lg leading-none tracking-tight">
+                  {user.name}
+                </h3>
+                <span className="text-sm text-muted-foreground tracking-tight leading-none">
+                  Member since{" "}
+                  {DateTime.fromISO(user.created_at || "")
+                    .setLocale("en")
+                    .toLocaleString({
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                </span>
+              </div>
+              <div className="px-6 pb-6 relative">
+                <span className="absolute left-[-35px] top-[50%] text-sm text-muted-foreground rotate-90">
+                  {user.id}
+                </span>
+                <div className="pt-6">
+                  <QRCode
+                    size={256}
+                    style={{ height: "auto", width: "100%" }}
+                    value={String(user.id)}
+                  />
+                </div>
+              </div>
             </div>
           </SheetContent>
         </Sheet>
@@ -70,6 +91,7 @@ const Page = () => {
             <Tooltip>
               <TooltipTrigger className="w-full">
                 <Button
+                  size="lg"
                   className="w-full"
                   onClick={handleOpenScanner}
                   disabled={platform === "web"}

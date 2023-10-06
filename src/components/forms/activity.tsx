@@ -222,7 +222,7 @@ export const ActivityForm = ({
                   <Select
                     onValueChange={(value) => field.onChange(Number(value))}
                     defaultValue={String(field.value)}
-                    disabled={!form.watch("location_id")}
+                    disabled={!form.watch("location_id") || !coaches?.length}
                   >
                     <FormControl>
                       <SelectTrigger>

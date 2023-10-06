@@ -23,14 +23,13 @@ import Link from "next/link";
 
 import { useUser } from "@/hooks/useUser";
 import { useBackButton } from "@twa.js/sdk-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useApi } from "@/hooks/useApi";
 import { useToast } from "@/components/ui/use-toast";
 import { useActivity } from "@/hooks/activities";
 
-const Page = () => {
+const Page = ({ params }: { params: { id: string } }) => {
   const user = useUser();
-  const searchParams = useSearchParams();
 
   const api = useApi();
 
@@ -54,15 +53,11 @@ const Page = () => {
     };
   }, [backButton, router]);
 
-  const {
-    data: activity,
-    error,
-    loading,
-  } = useActivity(searchParams.get("id"));
+  const { data: activity, error, loading } = useActivity(params.id);
 
   const handleDeleteActivity = async () => {
     api
-      .delete(`/activities/${searchParams.get("id")}`)
+      .delete(`/activities/${params.id}`)
       .then(() => {
         router.replace("/activities");
       })
@@ -145,10 +140,7 @@ const Page = () => {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-          <Link
-            href={`/activities/${searchParams.get("id")}/edit`}
-            className="block w-full"
-          >
+          <Link href={`/activities/${params.id}/edit`} className="block w-full">
             <Button size="lg" className="w-full" variant="outline">
               Edit
             </Button>

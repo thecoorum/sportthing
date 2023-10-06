@@ -8,7 +8,6 @@ import { Badge } from "@/components/ui/badge";
 import { ProfileForm, FormValues } from "@/components/forms/profile";
 
 import { DateTime } from "luxon";
-import Link from "next/link";
 
 import { useUser } from "@/hooks/useUser";
 import { useApi } from "@/hooks/useApi";
@@ -81,9 +80,6 @@ const Profile = () => {
                 })}
             </span>
             <div className="flex items-center self-start w-full gap-2">
-              <Link href="/code" className="block w-full">
-                <Button size="lg" className="w-full">Personal Code</Button>
-              </Link>
               <Button
                 variant="outline"
                 size="lg"

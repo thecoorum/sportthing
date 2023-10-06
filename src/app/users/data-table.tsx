@@ -11,9 +11,7 @@ import {
   getFilteredRowModel,
   getSortedRowModel,
   useReactTable,
-  FilterFn,
 } from "@tanstack/react-table";
-import { rankItem } from "@tanstack/match-sorter-utils";
 
 import {
   Table,
@@ -33,33 +31,29 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+import { fuzzyFilter } from "@/utils";
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   query?: string | null;
+  role?: string | null;
 }
-
-const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
-  const itemRank = rankItem(row.getValue(columnId), value);
-
-  addMeta({
-    itemRank,
-  });
-
-  return itemRank.passed;
-};
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  query
+  query,
+  role,
 }: DataTableProps<TData, TValue>) {
   const [filters, setFilters] = useState({
-    role: "all",
+    role: role || "all",
   });
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [globalFilter, setGlobalFilter] = useState<string>(query || '');
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [globalFilter, setGlobalFilter] = useState<string>(query || "");
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([
+    ...(role ? [{ id: "user_role", value: role }] : []),
+  ]);
 
   const table = useReactTable({
     data,

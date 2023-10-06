@@ -14,7 +14,18 @@ create or replace function get_users(
 begin
   if exists (select 1 from employees where id = requestor_id and role = 'administrator') then
     return query
-      select u.id, u.name, u.username, u.photo_url, e.description, e.role, e.location_id, u.created_at, u.updated_at from users u join employees e on u.id = e.id;
+      select
+        u.id,
+        u.name,
+        u.username,
+        u.photo_url,
+        e.description,
+        e.role,
+        e.location_id,
+        u.created_at,
+        u.updated_at
+      from users u
+      left join employees e on u.id = e.id;
   else
     raise exception 'Unauthorized';
   end if;

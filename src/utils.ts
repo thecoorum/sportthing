@@ -1,6 +1,8 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import crypto from "crypto";
+import { FilterFn } from "@tanstack/react-table";
+import { rankItem } from "@tanstack/match-sorter-utils";
 
 type User = {
   id: number;
@@ -63,10 +65,10 @@ export const generateTimes = ({
   const [tillHour, tillMinute] = !!till ? till.split(":").map(Number) : [24, 0];
 
   for (let i = fromHour; i <= tillHour; i++) {
-    const startMinute = i === fromHour ? fromMinute + 15 : 0;
+    const startMinute = i === fromHour ? fromMinute + 30 : 0;
     const endMinute = i === tillHour ? tillMinute : 60;
 
-    for (let j = startMinute; j < endMinute; j += 15) {
+    for (let j = startMinute; j < endMinute; j += 30) {
       const hour = i < 10 ? `0${i}` : `${i}`;
       const minute = j === 0 ? "00" : `${j}`;
 
@@ -75,4 +77,14 @@ export const generateTimes = ({
   }
 
   return times;
+};
+
+export const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
+  const itemRank = rankItem(row.getValue(columnId), value);
+
+  addMeta({
+    itemRank,
+  });
+
+  return itemRank.passed;
 };

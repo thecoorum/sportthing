@@ -47,9 +47,11 @@ const CoachesTab = ({ locationId }: Props) => {
         <AlertDescription>
           No coaches at this location at the moment. Please come back later.
           {user.role === "administrator" && (
-            <Button className="w-full mt-2" size="lg" variant="outline">
-              Add coach to this location
-            </Button>
+            <Link href={{ pathname: "/users", query: { role: "coach" } }}>
+              <Button className="w-full mt-2" size="lg" variant="outline">
+                Add coach to this location
+              </Button>
+            </Link>
           )}
         </AlertDescription>
       </Alert>
@@ -76,9 +78,11 @@ const CoachesTab = ({ locationId }: Props) => {
         </Link>
       ))}
       {user.role === "administrator" && (
-        <Button className="w-full" size="lg" variant="outline">
-          Add coach to this location
-        </Button>
+        <Link href={{ pathname: "/users", query: { role: "coach" } }}>
+          <Button className="w-full" size="lg" variant="outline">
+            Add coach to this location
+          </Button>
+        </Link>
       )}
     </div>
   );
@@ -136,7 +140,7 @@ const ActivitiesTab = ({ locationId }: Props) => {
       {data.map((activity) => (
         <Link
           key={activity.id}
-          href={`/coaches/${activity.id}`}
+          href={`/activities/${activity.id}`}
           className="block"
         >
           <CardActivity data={activity} />

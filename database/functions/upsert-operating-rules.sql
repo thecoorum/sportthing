@@ -1,26 +1,37 @@
-create
-or replace function upsert_operating_rules (rules operating_rules[]) returns table (
-  inserted operating_rules[],
-  updated operating_rules[]
-) as $$
-BEGIN
-    INSERT INTO operating_rules (id, coach_id, day, start_time, end_time, created_at, updated_at)
-    SELECT r.id, r.coach_id, r.day, r.start_time, r.end_time, r.created_at, r.updated_at
-    FROM unnest(rules) AS r
-    ON CONFLICT (id) DO UPDATE
-    SET coach_id = excluded.coach_id,
-        day = excluded.day,
-        start_time = excluded.start_time,
-        end_time = excluded.end_time,
-        updated_at = excluded.updated_at
-    RETURNING *
-    INTO inserted;
+create type operating_rule as (
+  id uuid,
+  employee_id integer,
+  day text,
+  start_time time,
+  end_time time
+);
 
-    SELECT *
-    FROM unnest(rules) AS r
-    WHERE r.id IS NOT NULL
-    INTO updated;
-
-    RETURN;
-END;
+create or replace function upsert_operating_rules(
+  requestor_id integer,
+  upserted_operating_rules operating_rule[]
+) returns operating_rule[] as $$
+declare
+  operating_rule_record operating_rule;
+begin
+  foreach operating_rule_record in array upserted_operating_rules LOOP
+    if operating_rule_record.id is not null then
+      update operating_rules set
+        employee_id = operating_rule_record.employee_id,
+        day = operating_rule_record.day,
+        start_time = operating_rule_record.start_time,
+        end_time = operating_rule_record.end_time,
+        updated_at = now()
+      where id = operating_rule_record.id;
+    else
+      insert into operating_rules (employee_id, day, start_time, end_time)
+      values (operating_rule_record.employee_id, operating_rule_record.day, operating_rule_record.start_time, operating_rule_record.end_time);
+    end if;
+  end loop;
+  return upserted_operating_rules;
+end
 $$ language plpgsql;
+
+-- select upsert_operating_rules(1, array[
+--   row('d0c2c0e0-2b0a-4b9a-8b9a-0e0b0c2d0e0f', 1, 'monday', '09:00', '17:00')::operating_rule,
+--   row(null, 1, 'tuesday', '09:00', '17:00')::operating_rule
+-- ])
