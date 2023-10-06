@@ -21,7 +21,7 @@ export const CardActivity = ({ data }: Props) => (
   <Card className="w-full">
     <CardHeader>
       <CardTitle>{data.name}</CardTitle>
-      <CardDescription>{data.location.name}</CardDescription>
+      {data.location && <CardDescription>{data.location.name}</CardDescription>}
       <div className="flex items-center gap-1">
         <CardDescription>
           {Intl.NumberFormat("en-US", {
@@ -56,7 +56,9 @@ export const PlainActivity = ({ data }: Props) => (
       <h2 className="text-3xl font-semibold leading-none tracking-tight">
         {data.name}
       </h2>
-      <p className="text-sm text-muted-background">{data.location.name}</p>
+      {data.location && (
+        <p className="text-sm text-muted-background">{data.location.name}</p>
+      )}
       <div className="flex items-center gap-1">
         <p className="text-sm text-muted-background">
           {Intl.NumberFormat("en-US", {

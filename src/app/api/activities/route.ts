@@ -16,10 +16,10 @@ export const GET = async (req: NextRequest) => {
     try {
       let queryBuilder = supabase
         .from("activities")
-        .select("*, coach:coaches(*), location:locations(*)");
+        .select("*, coach:employees(*), location:locations(*)");
 
       if (query.location_id) {
-        queryBuilder = queryBuilder.eq("location_id", query.location_id);
+        queryBuilder = queryBuilder.or(`location_id.eq.${query.location_id},location_id.is.null`);
       }
 
       if (query.coach_id) {
