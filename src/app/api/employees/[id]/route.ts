@@ -14,7 +14,7 @@ export const GET = async (req: NextRequest) => {
     try {
       const { data: employee, error } = await supabase
         .from("employees")
-        .select("*, activities(*), location:locations(*), user!inner(*)")
+        .select("*, activities(*), location:locations(*), user:users!inner(*)")
         .eq("id", id)
         .single();
 

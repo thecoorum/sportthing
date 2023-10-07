@@ -16,7 +16,7 @@ export const GET = async (req: NextRequest) => {
     try {
       let queryBuilder = supabase
         .from("employees")
-        .select("*, activities(*), location:locations(*), users!inner(*)")
+        .select("*, activities(*), location:locations(*), user:users!inner(*)")
         .eq("role", "coach");
 
       if (query.location_id) {

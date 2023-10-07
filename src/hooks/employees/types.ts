@@ -1,8 +1,9 @@
 import type { Tables } from "@/database.extensions";
 
-export type Employee = Tables<"users"> & Tables<"employees"> & {
+export type Employee = Tables<"employees"> & {
   activities?: Tables<"activities">[];
   location: Tables<"locations">;
+  user: Tables<"users">;
 };
 
 export type Params = {
