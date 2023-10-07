@@ -109,44 +109,57 @@ const Page = ({ params }: { params: { id: string } }) => {
 
   return (
     <div className="flex flex-col space-y-6">
-      <div className="space-y-1.5">
-        <Link href="/activities" className="flex items-center space-x-1 mb-2">
+      <div className="space-y-3.5">
+        <Link href="/activities" className="flex items-center space-x-1">
           <ChevronLeft className="w-4 h-4" />
           <span className="text-sm">Activities</span>
         </Link>
         <PlainActivity data={activity} />
       </div>
-      {user.role === "administrator" && (
-        <div className="sticky bottom-0 flex items-center gap-2 py-4 bg-white/60 backdrop-blur-sm">
-          <AlertDialog>
-            <AlertDialogTrigger>
-              <Button size="lg" variant="destructive">
-                Delete
+      <div className="flex flex-col sticky bottom-0 py-4 bg-white/60 backdrop-blur-sm space-y-2">
+        <Link
+          href={{ pathname: "/book", query: { activity: params.id } }}
+          className="block w-full"
+        >
+          <Button size="lg" className="w-full">
+            Book activity
+          </Button>
+        </Link>
+        {user.role === "administrator" && (
+          <div className="flex items-center gap-2">
+            <AlertDialog>
+              <AlertDialogTrigger>
+                <Button size="lg" variant="destructive">
+                  Delete
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete
+                    this activity.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDeleteActivity}>
+                    Continue
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+            <Link
+              href={`/activities/${params.id}/edit`}
+              className="block w-full"
+            >
+              <Button size="lg" className="w-full" variant="outline">
+                Edit
               </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete
-                  this activity.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDeleteActivity}>
-                  Continue
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-          <Link href={`/activities/${params.id}/edit`} className="block w-full">
-            <Button size="lg" className="w-full" variant="outline">
-              Edit
-            </Button>
-          </Link>
-        </div>
-      )}
+            </Link>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
