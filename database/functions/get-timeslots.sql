@@ -1,4 +1,4 @@
-create or replace function get_timeslots(p_activity_id uuid, p_employee_id int, p_date date)
+create or replace function get_timeslots(p_activity_id uuid, p_employee_id int, p_date timestamp)
 returns table(timeslot time) as $$
 declare
     r_activity record;
@@ -37,7 +37,9 @@ begin
     end if;
 
     -- Calculate timeslots with interval 30 minutes
-    r_start_time := r_rules.start_time;
+    r_start_time := greatest(r_rules.start_time, 
+                              (date_trunc('hour', p_date) + 
+                               ceil(date_part('minute', p_date)::float / 30) * interval '30 minutes')::time);
     r_end_time := r_rules.end_time;
 
     while r_start_time < r_end_time loop

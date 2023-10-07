@@ -29,9 +29,14 @@ export const Selected = ({ id, onDeselect }: Props) => {
 
   if (loading) {
     return (
-      <div className="flex items-center gap-2">
-        <Skeleton className="h-10 w-10 rounded-full" />
-        <Skeleton className="h-[18px] w-[100px]" />
+      <div className="space-y-3">
+        <h2 className="text-lg font-medium leading-none tracking-tight">
+          Employee
+        </h2>
+        <div className="flex items-center gap-2 w-full px-4 py-3 rounded-md border">
+          <Skeleton className="h-10 w-10 rounded-full" />
+          <Skeleton className="h-[18px] w-[100px]" />
+        </div>
       </div>
     );
   }
@@ -53,7 +58,7 @@ export const Selected = ({ id, onDeselect }: Props) => {
       <h2 className="text-lg font-medium leading-none tracking-tight">
         Employee
       </h2>
-      <div className="flex items-center justify-between px-4 py-3 border rounded-md bg-slate-50">
+      <div className="flex items-center justify-between gap-2 w-full px-4 py-3 border rounded-md bg-slate-50">
         <div className="flex items-center gap-2 font-medium text-sm">
           <Avatar name={data.user.name} image={data.user.photo_url} />
           <p>{data.user.name}</p>

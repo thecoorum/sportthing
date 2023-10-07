@@ -8,11 +8,12 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { PlainActivity } from "@/components/ui/activity";
 import { Calendar } from "@/features/book/calendar";
 import { Employees } from "@/features/book/employee";
+import { Timeslots } from "@/features/book/timeslots";
 
 import Link from "next/link";
 import * as zod from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import format from "date-fns/format";
+import { isEqual, isSameDay } from "date-fns";
 
 import { useActivity } from "@/hooks/activities";
 import { useSearchParams } from "next/navigation";
@@ -20,9 +21,9 @@ import { useForm } from "react-hook-form";
 
 const schema = zod.object({
   id: zod.string().uuid(),
-  employee_id: zod.number().int().or(zod.undefined()),
-  date: zod.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  timeslot: zod.string().regex(/^\d{2}:\d{2}$/),
+  employee_id: zod.number().int(),
+  date: zod.date(),
+  timeslot: zod.string().regex(/^\d{2}:\d{2}:\d{2}$/),
 });
 
 const Page = () => {
@@ -42,11 +43,19 @@ const Page = () => {
     },
   });
 
+  const [id, employee, date, timeslot] = form.watch([
+    "id",
+    "employee_id",
+    "date",
+    "timeslot",
+  ]);
+
   useEffect(() => {
     if (activity) {
       form.reset({
         id: activity.id,
         employee_id: activity.employee_id || undefined,
+        date: new Date(),
       });
     }
   }, [form, activity]);
@@ -56,14 +65,27 @@ const Page = () => {
   };
 
   const handleDeselectEmployee = () => {
-    form.setValue("employee_id", undefined);
+    form.reset({
+      id: activity?.id,
+      date: new Date(),
+    });
   };
 
-  const handleSelectDate = (date: Date) => {
-    form.setValue("date", format(date, "yyyy-MM-dd"));
+  const handleSelectDate = (input: Date) => {
+    if (!isEqual(input, date)) {
+      form.setValue("timeslot", "");
+    }
+
+    if (isSameDay(input, new Date())) {
+      input = new Date();
+    }
+
+    form.setValue("date", input);
   };
 
-  console.log(form.watch("date"));
+  const handleSelectTimeslot = (timeslot: string) => {
+    form.setValue("timeslot", timeslot);
+  };
 
   if (error) {
     return (
@@ -108,15 +130,26 @@ const Page = () => {
         <Employees
           onSelect={handleSelectEmployee}
           onDeselect={handleDeselectEmployee}
-          selected={form.watch("employee_id")}
+          selected={employee}
         />
       )}
-      {!!form.watch("employee_id") && (
-        <Calendar
-          selected={new Date(form.watch("date"))}
-          onDateSelect={handleSelectDate}
-        />
-      )}
+      <div>
+        {!!employee && (
+          <Calendar
+            selected={date}
+            onDateSelect={handleSelectDate}
+          />
+        )}
+        {!!date && !!employee && (
+          <Timeslots
+            activityId={id}
+            employeeId={employee}
+            date={date}
+            selected={timeslot}
+            onTimeslotSelect={handleSelectTimeslot}
+          />
+        )}
+      </div>
     </div>
   );
 };

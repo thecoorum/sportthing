@@ -20,6 +20,7 @@ import { DateTime } from "luxon";
 import { useUser } from "@/hooks/useUser";
 import { useQRScanner, useWebApp } from "@twa.js/sdk-react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const Page = () => {
   const user = useUser();

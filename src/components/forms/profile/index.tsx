@@ -76,8 +76,6 @@ export const ProfileForm = ({ onSubmit, onCancel }: Props) => {
     // onSubmit(data);
   };
 
-  console.log(form.formState.errors);
-
   return (
     <Form {...form}>
       <form

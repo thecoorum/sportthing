@@ -2,7 +2,7 @@ import { memo } from "react";
 
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sidebar } from "@/components/sidebar";
+import { Sidebar } from "@/components/ui/sidebar";
 
 import Link from "next/link";
 

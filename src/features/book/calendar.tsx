@@ -18,15 +18,16 @@ export const Calendar = ({ selected, onDateSelect }: Props) => (
     animate={{ opacity: 1, translateY: 0 }}
     exit={{ opacity: 0, translateY: 20 }}
     transition={{ duration: 0.3 }}
+    className="space-y-3"
   >
+    <h2 className="text-lg font-medium leading-none tracking-tight">
+      Date and time
+    </h2>
     <CalendarComponent
       mode="single"
       selected={selected || new Date()}
       fromDate={new Date()}
       toDate={addMonths(new Date(), 1)}
-      components={{
-        Head: () => null,
-      }}
       hidden={isPastDate}
       onDayClick={onDateSelect}
       showOutsideDays={false}

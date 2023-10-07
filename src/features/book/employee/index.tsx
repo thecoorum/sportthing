@@ -9,8 +9,6 @@ import { motion } from "framer-motion";
 import { useEmployees } from "@/hooks/employees";
 import { Button } from "@/components/ui/button";
 
-const MotionButton = motion(Button);
-
 type Props = {
   onSelect: (id: number) => void;
   onDeselect: () => void;
@@ -35,14 +33,29 @@ export const Employees = ({ onSelect, onDeselect, selected }: Props) => {
 
   if (loading) {
     return (
-      <div className="space-y-2">
-        <div className="flex items-center gap-2">
-          <Skeleton className="h-10 w-10 rounded-full" />
-          <Skeleton className="h-[18px] w-[100px]" />
-        </div>
-        <div className="flex items-center gap-2">
-          <Skeleton className="h-10 w-10 rounded-full" />
-          <Skeleton className="h-[18px] w-[100px]" />
+      <div className="space-y-3">
+        <h2 className="text-lg font-medium leading-none tracking-tight">
+          Employee
+        </h2>
+        <div className="space-y-2">
+          <motion.div
+            initial={{ opacity: 0, translateY: 20 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ duration: 0.3 }}
+            className="flex items-center gap-2 w-full px-4 py-3 rounded-md border"
+          >
+            <Skeleton className="h-10 w-10 rounded-full" />
+            <Skeleton className="h-[18px] w-[100px]" />
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, translateY: 20 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ delay: 0.2, duration: 0.3 }}
+            className="flex items-center gap-2 w-full px-4 py-3 rounded-md border"
+          >
+            <Skeleton className="h-10 w-10 rounded-full" />
+            <Skeleton className="h-[18px] w-[100px]" />
+          </motion.div>
         </div>
       </div>
     );
@@ -71,14 +84,11 @@ export const Employees = ({ onSelect, onDeselect, selected }: Props) => {
       </h2>
       <div className="space-y-2">
         {employees.map((employee, index) => (
-          <MotionButton
+          <Button
             key={employee.id}
             onClick={() => onSelect(employee.id)}
             variant="ghost"
             className="w-full flex justify-start items-center gap-2 px-4 py-3 h-auto border"
-            initial={{ opacity: 0, translateY: 20 }}
-            animate={{ opacity: 1, translateY: 0 }}
-            transition={{ delay: 0.2 * index, duration: 0.3 }}
           >
             <Avatar
               className="block"
@@ -86,7 +96,7 @@ export const Employees = ({ onSelect, onDeselect, selected }: Props) => {
               image={employee.user.photo_url}
             />
             <p>{employee.user.name}</p>
-          </MotionButton>
+          </Button>
         ))}
       </div>
     </div>

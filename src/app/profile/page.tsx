@@ -38,7 +38,7 @@ const Profile = () => {
       })
       .catch((error: Error) => {
         toast({
-          title: "An error occured",
+          title: "Error occured",
           description: error.message,
         });
       })

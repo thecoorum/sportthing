@@ -67,9 +67,9 @@ const CoachesTab = ({ locationId }: Props) => {
           className="block"
         >
           <Card className="flex items-start gap-2 p-6">
-            <Avatar name={employee.name} image={employee.photo_url} />
+            <Avatar name={employee.user.name} image={employee.user.photo_url} />
             <div>
-              <CardTitle className="text-xl">{employee.name}</CardTitle>
+              <CardTitle className="text-xl">{employee.user.name}</CardTitle>
               {employee.description && (
                 <CardDescription>{employee.description}</CardDescription>
               )}

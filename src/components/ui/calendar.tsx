@@ -1,6 +1,8 @@
 import * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { DayPicker } from "react-day-picker";
+import { DayPicker, Day, DayProps, useDayRender } from "react-day-picker";
+
+import { Button } from "@/components/ui/button";
 
 import { cn } from "@/utils";
 import { buttonVariants } from "@/components/ui/button";
@@ -16,10 +18,9 @@ function Calendar({
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
-      className={cn("p-3", className)}
+      className={className}
       classNames={{
-        months:
-          "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
+        months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
         month: "space-y-4",
         caption: "flex justify-center pt-1 relative items-center sticky left-0",
         caption_label: "text-sm font-medium",
@@ -34,7 +35,7 @@ function Calendar({
         head_row: "flex",
         head_cell:
           "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
-        row: "flex w-full mt-2 pb-3",
+        row: "flex w-full mt-2 pb-5",
         cell: "text-center text-sm p-0 relative [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
         day: cn(
           buttonVariants({ variant: "ghost" }),
@@ -56,6 +57,12 @@ function Calendar({
       components={{
         IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" />,
         IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" />,
+        Head: () => null,
+        Day: ({ ...props }) => (
+          <Button variant="ghost" className="p-0">
+            <Day {...props} />
+          </Button>
+        ),
       }}
       {...props}
     />

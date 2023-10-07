@@ -103,7 +103,7 @@ export const ActivityForm = ({
     onSubmit(data)
       .catch((error) => {
         toast({
-          title: "Error",
+          title: "Error occured",
           description: error.message,
         });
       })
