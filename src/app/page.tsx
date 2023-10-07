@@ -39,7 +39,7 @@ const Page = () => {
   return (
     <div className="space-y-4 p-4">
       <div className="space-y-3">
-        <Link href="/profile">
+        <Link href="/profile" className="inline-flex">
           <Avatar name={user.name} className="h-16 w-16" />
         </Link>
         <h2 className="text-md leading-none tracking-tight">
@@ -60,16 +60,20 @@ const Page = () => {
                 <h3 className="text-lg leading-none tracking-tight">
                   {user.name}
                 </h3>
-                <span className="text-sm text-muted-foreground tracking-tight leading-none">
-                  Member since{" "}
-                  {DateTime.fromISO(user.created_at || "")
-                    .setLocale("en")
-                    .toLocaleString({
-                      month: "long",
-                      day: "numeric",
-                      year: "numeric",
-                    })}
-                </span>
+                <div className="flex flex-col space-y-1.5">
+                  <span className="text-sm text-muted-foreground tracking-tight leading-none">
+                    Member since
+                  </span>
+                  <span className="text-sm text-muted-foreground tracking-tight leading-none">
+                    {DateTime.fromISO(user.created_at || "")
+                      .setLocale("en")
+                      .toLocaleString({
+                        month: "long",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                  </span>
+                </div>
               </div>
               <div className="px-6 pb-6 relative">
                 <span className="absolute left-[-35px] top-[50%] text-sm text-muted-foreground rotate-90">

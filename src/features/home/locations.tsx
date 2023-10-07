@@ -7,7 +7,7 @@ import Link from "next/link";
 
 import { useLocations } from "@/hooks/locations";
 import { useUser } from "@/hooks/useUser";
-import { LocationCard } from "@/components/location";
+import { LocationCard } from "@/components/ui/location";
 
 const per = 3;
 

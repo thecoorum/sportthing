@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-import { PlainActivity } from "@/components/activity";
+import { PlainActivity } from "@/components/ui/activity";
 import { Activity, ChevronLeft, ServerCrash } from "lucide-react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { Avatar } from "@/components/ui/avatar";
-import { CardActivity } from "@/components/activity";
+import { CardActivity } from "@/components/ui/activity";
 
 import Link from "next/link";
 

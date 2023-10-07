@@ -13,17 +13,12 @@ type Props = {
 
 export const LocationCard = ({ data }: Props) => (
   <Card className="w-full">
-    <CardHeader>
+    <CardHeader className="space-y-3">
       <CardTitle>{data.name}</CardTitle>
-      <div className="space-y-4">
-        {!!data.address && (
-          <>
-            <CardDescription>{data.address}</CardDescription>
-            <hr />
-          </>
-        )}
+      <div className="space-y-1.5">
+        {!!data.address && <CardDescription>{data.address}</CardDescription>}
         {!!data.description && (
-          <CardDescription>{data.description}</CardDescription>
+          <CardDescription className="text-md text-black">{data.description}</CardDescription>
         )}
       </div>
     </CardHeader>

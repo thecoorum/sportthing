@@ -103,7 +103,7 @@ const Page = ({
 
   return (
     <div className="flex flex-col space-y-6">
-      <div className="pb-20">
+      <div className="space-y-6">
         <div className="space-y-1.5">
           <div className="space-y-3">
             <Link
@@ -119,19 +119,16 @@ const Page = ({
               {location?.name}
             </h2>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-2">
             {location?.address && (
               <p className="text-sm text-muted-foreground">
                 {location.address}
               </p>
             )}
             {location?.description && (
-              <>
-                <hr />
-                <p className="text-sm text-muted-foreground">
-                  {location.description}
-                </p>
-              </>
+              <p className="text-md">
+                {location.description}
+              </p>
             )}
           </div>
         </div>
