@@ -12,8 +12,7 @@ export const POST = async (req: NextRequest) => {
     const { data, error } = await supabase.rpc("get_or_create_user", {
       requestor_id: user.id,
       name: [user.first_name, user.last_name].filter(Boolean).join(" "),
-      username: user.username,
-      photo_url: user.photo_url,
+      username: user.username
     });
 
     if (error) {
