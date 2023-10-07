@@ -6,11 +6,12 @@ import { Inter } from "next/font/google";
 import { SDKProvider } from "@twa.js/sdk-react";
 
 import { Loader } from "@/components/loader";
-import { Header } from "@/components/header";
+import { Header } from "@/components/ui/header";
 import { Toaster } from "@/components/ui/toaster";
 
 import { UserProvider } from "@/providers/user";
 import { ApiProvider } from "@/providers/api";
+import { TermsProvider } from "@/providers/terms";
 
 import { cn } from "@/utils";
 
@@ -26,13 +27,15 @@ export default function RootLayout({
       <body className={cn(inter.className)}>
         <SDKProvider>
           <Loader>
-            <ApiProvider>
-              <UserProvider>
-                <Header />
-                {children}
-                <Toaster />
-              </UserProvider>
-            </ApiProvider>
+            <TermsProvider>
+              <ApiProvider>
+                <UserProvider>
+                  <Header />
+                  {children}
+                  <Toaster />
+                </UserProvider>
+              </ApiProvider>
+            </TermsProvider>
           </Loader>
         </SDKProvider>
       </body>
