@@ -57,17 +57,17 @@ export const PlainActivity = ({ data }: Props) => (
         {data.name}
       </h2>
       {data.location && (
-        <p className="text-sm text-muted-background">{data.location.name}</p>
+        <p className="text-sm text-muted-foreground">{data.location.name}</p>
       )}
       <div className="flex items-center gap-1">
-        <p className="text-sm text-muted-background">
+        <p className="text-sm text-muted-foreground">
           {Intl.NumberFormat("en-US", {
             style: "currency",
             currency: "USD",
           }).format(data.price / 100)}
         </p>
-        <span className="text-sm text-muted-background">•</span>
-        <p className="text-sm text-muted-background">{data.duration} mins</p>
+        <span className="text-sm text-muted-foreground">•</span>
+        <p className="text-sm text-muted-foreground">{data.duration} mins</p>
       </div>
     </div>
     <div>
