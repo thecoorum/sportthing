@@ -1,8 +1,10 @@
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 
-import { differenceInCalendarDays } from "date-fns";
+import { motion } from "framer-motion";
+import { addMonths, differenceInCalendarDays } from "date-fns";
 
 type Props = {
+  selected: Date | null;
   onDateSelect: (date: Date) => void;
 };
 
@@ -10,15 +12,24 @@ const isPastDate = (date: Date) => {
   return differenceInCalendarDays(date, new Date()) < 0;
 };
 
-export const Calendar = ({ onDateSelect }: Props) => (
-  <CalendarComponent
-    mode="single"
-    fromDate={new Date()}
-    components={{
-      Head: () => null
-    }}
-    hidden={isPastDate}
-    onDayClick={onDateSelect}
-    showOutsideDays={false}
-  />
+export const Calendar = ({ selected, onDateSelect }: Props) => (
+  <motion.div
+    initial={{ opacity: 0, translateY: 20 }}
+    animate={{ opacity: 1, translateY: 0 }}
+    exit={{ opacity: 0, translateY: 20 }}
+    transition={{ duration: 0.3 }}
+  >
+    <CalendarComponent
+      mode="single"
+      selected={selected || new Date()}
+      fromDate={new Date()}
+      toDate={addMonths(new Date(), 1)}
+      components={{
+        Head: () => null,
+      }}
+      hidden={isPastDate}
+      onDayClick={onDateSelect}
+      showOutsideDays={false}
+    />
+  </motion.div>
 );

@@ -232,7 +232,7 @@ export const ActivityForm = ({
                     <SelectContent>
                       {coaches?.map((coach) => (
                         <SelectItem key={coach.id} value={String(coach.id)}>
-                          {coach.name}
+                          {coach.user.name}
                         </SelectItem>
                       ))}
                     </SelectContent>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect } from "react";
 
 import { ServerCrash, ChevronLeft } from "lucide-react";
 import { Skeleton } from "./skeleton";
@@ -10,13 +10,22 @@ import { Calendar } from "@/features/book/calendar";
 import { Employees } from "@/features/book/employee";
 
 import Link from "next/link";
+import * as zod from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import format from "date-fns/format";
 
 import { useActivity } from "@/hooks/activities";
 import { useSearchParams } from "next/navigation";
+import { useForm } from "react-hook-form";
+
+const schema = zod.object({
+  id: zod.string().uuid(),
+  employee_id: zod.number().int().or(zod.undefined()),
+  date: zod.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  timeslot: zod.string().regex(/^\d{2}:\d{2}$/),
+});
 
 const Page = () => {
-  const [selected, setSelected] = useState<number | null>(null);
-
   const searchParams = useSearchParams();
 
   const {
@@ -25,13 +34,36 @@ const Page = () => {
     loading,
   } = useActivity(searchParams.get("activity"));
 
+  const form = useForm<zod.infer<typeof schema>>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      id: searchParams.get("activity") || "",
+      employee_id: activity?.employee_id || undefined,
+    },
+  });
+
+  useEffect(() => {
+    if (activity) {
+      form.reset({
+        id: activity.id,
+        employee_id: activity.employee_id || undefined,
+      });
+    }
+  }, [form, activity]);
+
   const handleSelectEmployee = (id: number) => {
-    setSelected(id);
+    form.setValue("employee_id", id);
   };
 
   const handleDeselectEmployee = () => {
-    setSelected(null);
+    form.setValue("employee_id", undefined);
   };
+
+  const handleSelectDate = (date: Date) => {
+    form.setValue("date", format(date, "yyyy-MM-dd"));
+  };
+
+  console.log(form.watch("date"));
 
   if (error) {
     return (
@@ -76,10 +108,15 @@ const Page = () => {
         <Employees
           onSelect={handleSelectEmployee}
           onDeselect={handleDeselectEmployee}
-          selected={selected}
+          selected={form.watch("employee_id")}
         />
       )}
-      {selected && <Calendar onDateSelect={(date) => {}} />}
+      {!!form.watch("employee_id") && (
+        <Calendar
+          selected={new Date(form.watch("date"))}
+          onDateSelect={handleSelectDate}
+        />
+      )}
     </div>
   );
 };

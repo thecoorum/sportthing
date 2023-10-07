@@ -14,7 +14,7 @@ const MotionButton = motion(Button);
 type Props = {
   onSelect: (id: number) => void;
   onDeselect: () => void;
-  selected: number | null;
+  selected: number | undefined;
 };
 
 export const Employees = ({ onSelect, onDeselect, selected }: Props) => {
