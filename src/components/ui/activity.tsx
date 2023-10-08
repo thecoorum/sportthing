@@ -12,7 +12,9 @@ import type { Tables } from "@/database.extensions";
 
 type Props = {
   data: Tables<"activities"> & {
-    employee: Tables<"users"> & Tables<"employees">;
+    employee: Tables<"employees"> & {
+      user: Tables<"users">;
+    };
     location: Tables<"locations">;
   };
 };
@@ -33,17 +35,12 @@ export const CardActivity = ({ data }: Props) => (
         <CardDescription>{data.duration} mins</CardDescription>
       </div>
     </CardHeader>
-    {data.description && (
-      <CardContent>
-        <CardDescription>{data.description}</CardDescription>
-      </CardContent>
-    )}
     {data.employee && (
       <CardFooter className="flex-col items-start space-y-2">
         <CardDescription>This activity is held by:</CardDescription>
         <div className="flex items-center gap-2">
-          <Avatar name={data.employee.name} image={data.employee.photo_url} />
-          <h2 className="text-lg font-medium">{data.employee.name}</h2>
+          <Avatar name={data.employee.user.name} image={data.employee.user.photo_url} />
+          <h2 className="text-lg font-medium">{data.employee.user.name}</h2>
         </div>
       </CardFooter>
     )}
@@ -79,8 +76,8 @@ export const PlainActivity = ({ data }: Props) => (
           This activity is held by:
         </p>
         <div className="flex items-center gap-2">
-          <Avatar name={data.employee.name} image={data.employee.photo_url} />
-          <h2 className="text-lg font-medium">{data.employee.name}</h2>
+          <Avatar name={data.employee.user.name} image={data.employee.user.photo_url} />
+          <h2 className="text-lg font-medium">{data.employee.user.name}</h2>
         </div>
       </div>
     )}

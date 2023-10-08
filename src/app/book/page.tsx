@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-import { ServerCrash, ChevronLeft } from "lucide-react";
+import { ServerCrash, ChevronLeft, Loader2 } from "lucide-react";
 import { Skeleton } from "./skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { PlainActivity } from "@/components/ui/activity";
@@ -14,13 +14,14 @@ import { Timeslots } from "@/features/book/timeslots";
 import Link from "next/link";
 import * as zod from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { formatISO, isEqual, isSameDay } from "date-fns";
+import { formatISO, isEqual, isSameDay, format } from "date-fns";
 import { motion } from "framer-motion";
 
 import { useActivity } from "@/hooks/activities";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useApi } from "@/hooks/useApi";
+import { useToast } from "@/components/ui/use-toast";
 
 import { cn } from "@/utils";
 
@@ -32,9 +33,14 @@ const schema = zod.object({
 });
 
 const Page = () => {
+  const [submitting, setSubmitting] = useState<boolean>(false);
+
   const searchParams = useSearchParams();
 
   const api = useApi();
+  const { toast } = useToast();
+
+  const router = useRouter();
 
   const {
     data: activity,
@@ -71,6 +77,8 @@ const Page = () => {
   }, [form, activity]);
 
   const handleBookActivity = () => {
+    setSubmitting(true);
+
     api
       .post("/book", {
         employee_id: employee,
@@ -78,11 +86,25 @@ const Page = () => {
         date: formatISO(date),
         timeslot,
       })
-      .then((response) => {
-        console.log({ response });
+      .then(() => {
+        toast({
+          title: "Activity booked",
+          description: `We will be waiting for you on ${format(
+            date,
+            "MMMM do yyyy"
+          )} at ${timeslot}!`,
+        });
+
+        router.replace("/");
       })
       .catch((error: Error) => {
-        console.error(error);
+        toast({
+          title: "Could not book activity",
+          description: error.message,
+        });
+      })
+      .finally(() => {
+        setSubmitting(false);
       });
   };
 
@@ -185,12 +207,18 @@ const Page = () => {
         )}
       >
         <Button
-          disabled={!canSubmit}
+          disabled={!canSubmit || submitting}
           onClick={handleBookActivity}
           className="w-full"
           size="lg"
         >
-          Book activity
+          {submitting && (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Booking
+            </>
+          )}
+          {!submitting && "Book activity"}
         </Button>
       </motion.div>
     </div>

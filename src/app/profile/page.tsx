@@ -80,7 +80,7 @@ const Profile = () => {
               </span>
             )}
             {user.description && (
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground text-center">
                 {user.description}
               </p>
             )}

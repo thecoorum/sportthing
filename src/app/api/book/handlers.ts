@@ -1,0 +1,124 @@
+import { NextResponse } from "next/server";
+
+import { supabase } from "@/supabase";
+
+import { format } from "date-fns";
+
+import { Tables } from "@/database.extensions";
+
+type Props = {
+  booking: Tables<"bookings"> & {
+    user_name: string;
+    activity_name: string;
+  };
+  userId: number;
+  employeeId: number;
+  activityId: number;
+};
+
+export const handleSendBookingMessage = async (props: Props) => {
+  const body = new FormData();
+
+  body.append("chat_id", String(props.employeeId));
+  body.append(
+    "text",
+    `${props.booking.user_name} booked "${
+      props.booking.activity_name
+    }" on ${format(new Date(props.booking.booking_date), "MMMM do, yyyy")} at ${
+      props.booking.start_time
+    }`
+  );
+
+  const messageRequest = await fetch(
+    `https://api.telegram.org/bot${process.env.BOT_TOKEN}/sendMessage`,
+    {
+      method: "POST",
+      body,
+    }
+  );
+
+  if (!messageRequest.ok) {
+    return NextResponse.json({ error: messageRequest }, { status: 500 });
+  }
+};
+
+export const handleSendConfirmationMessage = async (props: Props) => {
+  const body = new FormData();
+
+  body.append("chat_id", String(props.booking.user_id));
+  body.append(
+    "text",
+    `You successfully booked "${props.booking.activity_name}" on ${format(
+      new Date(props.booking.booking_date),
+      "MMMM do, yyyy"
+    )} at ${props.booking.start_time}. We will be waiting for you!`
+  );
+
+  const messageRequest = await fetch(
+    `https://api.telegram.org/bot${process.env.BOT_TOKEN}/sendMessage`,
+    {
+      method: "POST",
+      body,
+    }
+  );
+
+  if (!messageRequest.ok) {
+    return NextResponse.json({ error: messageRequest }, { status: 500 });
+  }
+};
+
+export const handleSendPaymentMessage = async (
+  props: Props & {
+    paymentToken?: string;
+  }
+) => {
+  if (!props.paymentToken) return
+
+  console.log('send payment message')
+
+  const { data, error } = await supabase
+    .from("activities")
+    .select("name, price")
+    .eq("id", props.activityId)
+    .single();
+
+  if (error) {
+    return NextResponse.json({ error }, { status: 500 });
+  }
+
+  const body = new FormData();
+
+  body.append("chat_id", String(props.booking.user_id));
+  body.append("title", "Payment for booking");
+  body.append(
+    "description",
+    "Not to wait in line after the activity, you can pay for the booking right now. Click the button below to pay."
+  );
+  body.append(
+    "payload",
+    `user_id=${props.userId}&activity_id=${props.activityId}`
+  );
+  body.append("provider_token", props.paymentToken);
+  body.append("currency", "USD");
+  body.append(
+    "prices",
+    JSON.stringify([
+      {
+        label: data.name,
+        amount: data.price,
+      },
+    ])
+  );
+
+  const messageRequest = await fetch(
+    `https://api.telegram.org/bot${process.env.BOT_TOKEN}/sendInvoice`,
+    {
+      method: "POST",
+      body,
+    }
+  );
+
+  if (!messageRequest.ok) {
+    return NextResponse.json({ error: messageRequest }, { status: 500 });
+  }
+};

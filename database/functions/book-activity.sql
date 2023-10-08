@@ -5,10 +5,10 @@ create or replace function book_activity(
     p_date date,
     p_start_time time
 )
-returns bookings as $$
+returns record as $$
 declare
     v_overlap boolean;
-    v_new_booking bookings%rowtype;
+    v_new_booking record;
     v_duration integer;
     v_end_time time;
 begin
@@ -51,7 +51,7 @@ begin
             v_end_time,
             'pending'
         )
-        returning * into v_new_booking;
+        returning *, (select name from users where id = requestor_id) as user_name, (select name from activities where id = p_activity_id) as activity_name into v_new_booking;
     end if;
 
     return v_new_booking;

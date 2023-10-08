@@ -14,7 +14,7 @@ export const GET = async (req: NextRequest) => {
     try {
       const { data: activity, error } = await supabase
         .from("activities")
-        .select("*, coach:employees(*), location:locations(*)")
+        .select("*, employee:employees(*, user:users!inner(*)), location:locations(*)")
         .eq("id", id)
         .single();
 
@@ -47,7 +47,7 @@ export const POST = async (req: NextRequest) => {
         .from("activities")
         .update(data)
         .eq("id", data.id)
-        .select("*, coach:employees(*), location:locations(*)")
+        .select("*, employee:employees(*), location:locations(*)")
         .single();
 
       if (error) {

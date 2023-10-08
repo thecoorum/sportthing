@@ -3,6 +3,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyInitData } from "@/utils";
 import { supabase } from "@/supabase";
 
+import {
+  handleSendBookingMessage,
+  handleSendConfirmationMessage,
+  handleSendPaymentMessage,
+} from "./handlers";
+
 export const POST = async (req: NextRequest) => {
   const tgWebAppData = req.headers.get("Web-App-Data");
 
@@ -23,6 +29,23 @@ export const POST = async (req: NextRequest) => {
       if (error) {
         return NextResponse.json({ error }, { status: 400 });
       }
+
+      const handlersPayload = {
+        booking,
+        employeeId: data.employee_id,
+        userId: user.id,
+        activityId: data.activity_id,
+      };
+
+      await Promise.all([
+        handleSendBookingMessage(handlersPayload),
+        handleSendConfirmationMessage(handlersPayload),
+      ]);
+
+      await handleSendPaymentMessage({
+        ...handlersPayload,
+        paymentToken: process.env.BOT_PAYMENT_TOKEN,
+      });
 
       return NextResponse.json({ booking }, { status: 200 });
     } catch (error) {

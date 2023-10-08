@@ -63,6 +63,7 @@ export interface Database {
           activity_id: string
           booking_date: string
           created_at: string
+          employee_id: number
           end_time: string
           id: string
           start_time: string
@@ -74,6 +75,7 @@ export interface Database {
           activity_id: string
           booking_date: string
           created_at?: string
+          employee_id: number
           end_time: string
           id?: string
           start_time: string
@@ -85,6 +87,7 @@ export interface Database {
           activity_id?: string
           booking_date?: string
           created_at?: string
+          employee_id?: number
           end_time?: string
           id?: string
           start_time?: string
@@ -97,6 +100,12 @@ export interface Database {
             foreignKeyName: "bookings_activity_id_fkey"
             columns: ["activity_id"]
             referencedRelation: "activities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_employee_id_fkey"
+            columns: ["employee_id"]
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
           {
@@ -176,33 +185,40 @@ export interface Database {
       }
       operating_rules: {
         Row: {
-          coach_id: string
           created_at: string
           day: string
+          employee_id: number
           end_time: string
           id: string
           start_time: string
           updated_at: string
         }
         Insert: {
-          coach_id: string
           created_at?: string
           day: string
+          employee_id: number
           end_time: string
           id?: string
           start_time: string
           updated_at?: string
         }
         Update: {
-          coach_id?: string
           created_at?: string
           day?: string
+          employee_id?: number
           end_time?: string
           id?: string
           start_time?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "operating_rules_employee_id_fkey"
+            columns: ["employee_id"]
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       users: {
         Row: {
@@ -236,6 +252,16 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
+      book_activity: {
+        Args: {
+          requestor_id: number
+          p_employee_id: number
+          p_activity_id: string
+          p_date: string
+          p_start_time: string
+        }
+        Returns: Record<string, unknown>
+      }
       create_activity: {
         Args: {
           requestor_id: number
@@ -266,6 +292,16 @@ export interface Database {
         }
         Returns: Record<string, unknown>
       }
+      get_timeslots: {
+        Args: {
+          p_activity_id: string
+          p_employee_id: number
+          p_date: string
+        }
+        Returns: {
+          timeslot: string
+        }[]
+      }
       get_users: {
         Args: {
           requestor_id: number
@@ -282,12 +318,35 @@ export interface Database {
           updated_at: string
         }[]
       }
+      update_user: {
+        Args: {
+          requestor_id: number
+          requestor_name: string
+          requestor_username?: string
+          requestor_description?: string
+          operating_rules?: Database["public"]["CompositeTypes"]["operating_rule"][]
+        }
+        Returns: Record<string, unknown>
+      }
+      upsert_operating_rules: {
+        Args: {
+          requestor_id: number
+          upserted_operating_rules: Database["public"]["CompositeTypes"]["operating_rule"][]
+        }
+        Returns: unknown
+      }
     }
     Enums: {
       [_ in never]: never
     }
     CompositeTypes: {
-      [_ in never]: never
+      operating_rule: {
+        id: string
+        employee_id: number
+        day: string
+        start_time: string
+        end_time: string
+      }
     }
   }
 }
