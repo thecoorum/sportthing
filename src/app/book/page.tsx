@@ -6,6 +6,7 @@ import { ServerCrash, ChevronLeft } from "lucide-react";
 import { Skeleton } from "./skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { PlainActivity } from "@/components/ui/activity";
+import { Button } from "@/components/ui/button";
 import { Calendar } from "@/features/book/calendar";
 import { Employees } from "@/features/book/employee";
 import { Timeslots } from "@/features/book/timeslots";
@@ -13,11 +14,15 @@ import { Timeslots } from "@/features/book/timeslots";
 import Link from "next/link";
 import * as zod from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { isEqual, isSameDay } from "date-fns";
+import { formatISO, isEqual, isSameDay } from "date-fns";
+import { motion } from "framer-motion";
 
 import { useActivity } from "@/hooks/activities";
 import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { useApi } from "@/hooks/useApi";
+
+import { cn } from "@/utils";
 
 const schema = zod.object({
   id: zod.string().uuid(),
@@ -28,6 +33,8 @@ const schema = zod.object({
 
 const Page = () => {
   const searchParams = useSearchParams();
+
+  const api = useApi();
 
   const {
     data: activity,
@@ -41,6 +48,7 @@ const Page = () => {
       id: searchParams.get("activity") || "",
       employee_id: activity?.employee_id || undefined,
     },
+    reValidateMode: "onChange",
   });
 
   const [id, employee, date, timeslot] = form.watch([
@@ -49,6 +57,8 @@ const Page = () => {
     "date",
     "timeslot",
   ]);
+
+  const canSubmit = !!id && !!employee && !!date && !!timeslot;
 
   useEffect(() => {
     if (activity) {
@@ -59,6 +69,22 @@ const Page = () => {
       });
     }
   }, [form, activity]);
+
+  const handleBookActivity = () => {
+    api
+      .post("/book", {
+        employee_id: employee,
+        activity_id: id,
+        date: formatISO(date),
+        timeslot,
+      })
+      .then((response) => {
+        console.log({ response });
+      })
+      .catch((error: Error) => {
+        console.error(error);
+      });
+  };
 
   const handleSelectEmployee = (id: number) => {
     form.setValue("employee_id", id);
@@ -117,7 +143,7 @@ const Page = () => {
   }
 
   return (
-    <div className="space-y-3.5">
+    <div className="space-y-3.5 pb-20">
       <Link
         href={`/activities/${searchParams.get("activity")}`}
         className="flex items-center space-x-1"
@@ -135,10 +161,7 @@ const Page = () => {
       )}
       <div>
         {!!employee && (
-          <Calendar
-            selected={date}
-            onDateSelect={handleSelectDate}
-          />
+          <Calendar selected={date} onDateSelect={handleSelectDate} />
         )}
         {!!date && !!employee && (
           <Timeslots
@@ -150,6 +173,26 @@ const Page = () => {
           />
         )}
       </div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{
+          opacity: canSubmit ? 1 : 0,
+        }}
+        transition={{ type: "spring" }}
+        className={cn(
+          "sticky bottom-0 py-4 bg-white/60 backdrop-blur-smp",
+          !canSubmit && "pointer-events-none"
+        )}
+      >
+        <Button
+          disabled={!canSubmit}
+          onClick={handleBookActivity}
+          className="w-full"
+          size="lg"
+        >
+          Book activity
+        </Button>
+      </motion.div>
     </div>
   );
 };

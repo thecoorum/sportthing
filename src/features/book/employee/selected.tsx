@@ -1,4 +1,4 @@
-import { ServerCrash, Trash, UserCircle2 } from "lucide-react";
+import { ServerCrash, X, UserCircle2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -64,7 +64,7 @@ export const Selected = ({ id, onDeselect }: Props) => {
           <p>{data.user.name}</p>
         </div>
         <Button onClick={onDeselect} variant="ghost">
-          <Trash className="w-4 h-4" />
+          <X className="w-4 h-4" />
         </Button>
       </div>
     </div>
