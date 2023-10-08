@@ -25,6 +25,7 @@ begin
         select 1
         from bookings
         where employee_id = p_employee_id
+        and status != 'cancelled'
         and booking_date = p_date
         and (start_time, end_time) overlaps (p_start_time, v_end_time)
     ) into v_overlap;
