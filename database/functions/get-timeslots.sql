@@ -50,9 +50,9 @@ begin
 
         -- Check if the timeslot is unavailable due to a booking
         select * into r_booking from bookings 
-        where bookings.employee_id = p_employee_id and bookings.booking_date = p_date 
+        where bookings.employee_id = p_employee_id and bookings.booking_date = date_trunc('day', p_date) 
         and ((r_start_time >= bookings.start_time and r_start_time < bookings.end_time) 
-        OR (r_start_time + r_activity.duration * interval '1 minute' > bookings.start_time and r_start_time + r_activity.duration * interval '1 minute' <= bookings.end_time));
+        or (r_start_time + r_activity.duration * interval '1 minute' > bookings.start_time and r_start_time + r_activity.duration * interval '1 minute' <= bookings.end_time));
 
         -- If the timeslot is not booked, return it
         if not found then
