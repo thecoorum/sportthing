@@ -10,7 +10,9 @@ import { ServerCrash } from "lucide-react";
 
 import type { Tables } from "@/database.extensions";
 
-type User = Tables<"users"> & Tables<'employees'>;
+type User = Tables<"users"> & Tables<'employees'> & {
+  operating_rules: Tables<'operating_rules'>[];
+};
 
 interface UserResponse {
   data: {

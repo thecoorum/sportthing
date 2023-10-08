@@ -14,30 +14,36 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { X } from "lucide-react";
+import { RotateCcw, Trash } from "lucide-react";
 
-import { Control, UseFormWatch, useFieldArray } from "react-hook-form";
+import { useFormContext, useFieldArray } from "react-hook-form";
 
 import { formSchema } from ".";
 
-import { days } from '@/constants'
+import { days } from "@/constants";
 import { generateTimes } from "@/utils";
 
 import * as zod from "zod";
 
-type Props = {
-  control: Control<zod.infer<typeof formSchema>>;
-  watch: UseFormWatch<zod.infer<typeof formSchema>>;
-};
+export const OperatingRules = () => {
+  const { control, watch, setValue } =
+    useFormContext<zod.infer<typeof formSchema>>();
 
-export const OperatingRules = ({ control, watch }: Props) => {
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append } = useFieldArray({
     control,
     name: "operating_rules",
   });
 
   const handleAddRule = () => {
-    append({ day: "monday", start_time: "", end_time: "" });
+    append({ day: "monday", start_time: "", end_time: "", _delete: false });
+  };
+
+  const handleToggleRemove = (index: number) => {
+    const pendingDelete = watch(`operating_rules.${index}._delete`);
+
+    setValue(`operating_rules.${index}._delete`, !pendingDelete, {
+      shouldDirty: true,
+    });
   };
 
   return (
@@ -50,38 +56,32 @@ export const OperatingRules = ({ control, watch }: Props) => {
           </span>
         </div>
       )}
-      <div className="grid grid-cols-[repeat(3,_1fr)_max-content] gap-2">
+      <div className="grid grid-cols-3 gap-2 overflow-x-auto">
         {!!fields.length && (
           <>
-            <Label className="w-full text-muted-foreground">Day</Label>
-            <Label className="w-full text-muted-foreground">From</Label>
-            <Label className="w-full text-muted-foreground col-span-2">
-              Till
-            </Label>
+            <Label className="text-muted-foreground">Day</Label>
+            <Label className="text-muted-foreground">From</Label>
+            <Label className="text-muted-foreground">Till</Label>
           </>
         )}
-        {fields.map((field, index) => {
-          const from = watch(`operating_rules.${index}.start_time`);
-          const till = watch(`operating_rules.${index}.end_time`);
-
-          const handleRemoveRule = () => {
-            if (field.id) {
-              // TODO: Remove from database
-            }
-
-            remove(index);
-          };
+        {fields.map((_, index) => {
+          const [from, till, pendingDelete] = watch([
+            `operating_rules.${index}.start_time`,
+            `operating_rules.${index}.end_time`,
+            `operating_rules.${index}._delete`,
+          ]);
 
           return (
             <>
               <FormField
                 control={control}
                 name={`operating_rules.${index}.day` as const}
-                render={({ field: dayField }) => (
+                render={({ field }) => (
                   <FormItem>
                     <Select
-                      onValueChange={dayField.onChange}
-                      defaultValue={dayField.value}
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      disabled={pendingDelete}
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -103,11 +103,12 @@ export const OperatingRules = ({ control, watch }: Props) => {
               <FormField
                 control={control}
                 name={`operating_rules.${index}.start_time` as const}
-                render={({ field: startTimeField }) => (
+                render={({ field }) => (
                   <FormItem>
                     <Select
-                      onValueChange={startTimeField.onChange}
-                      defaultValue={startTimeField.value}
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      disabled={pendingDelete}
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -131,11 +132,12 @@ export const OperatingRules = ({ control, watch }: Props) => {
               <FormField
                 control={control}
                 name={`operating_rules.${index}.end_time` as const}
-                render={({ field: endTimeField }) => (
+                render={({ field }) => (
                   <FormItem>
                     <Select
-                      onValueChange={endTimeField.onChange}
-                      defaultValue={endTimeField.value}
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      disabled={pendingDelete}
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -156,8 +158,18 @@ export const OperatingRules = ({ control, watch }: Props) => {
                   </FormItem>
                 )}
               />
-              <Button variant="ghost" onClick={handleRemoveRule}>
-                <X className="w-4 h-4" />
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleToggleRemove(index)}
+                type="button"
+                className="col-span-3"
+              >
+                {pendingDelete ? (
+                  <RotateCcw className="w-4 h-4" />
+                ) : (
+                  <Trash className="w-4 h-4" />
+                )}
               </Button>
             </>
           );

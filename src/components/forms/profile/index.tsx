@@ -10,6 +10,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 
 import { OperatingRules } from "./operating-rules";
@@ -18,12 +19,12 @@ import { useUser } from "@/hooks/useUser";
 
 import * as zod from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 
 export type FormValues = zod.infer<typeof formSchema>;
 
 type Props = {
-  onSubmit?: (data: FormValues) => void;
+  onSubmit: (data: FormValues) => void;
   onCancel: () => void;
 };
 
@@ -34,19 +35,26 @@ export const formSchema = zod.object({
   username: zod.string().min(2, {
     message: "Username must be at least 2 characters.",
   }),
+  description: zod
+    .string()
+    .min(2, {
+      message: "Description must be at least 2 characters.",
+    })
+    .optional(),
   operating_rules: zod
     .array(
       zod.object({
         id: zod.string().uuid().optional(),
-        day: zod.string().nonempty({
+        day: zod.string().min(1, {
           message: "Day is required.",
         }),
-        start_time: zod.string().nonempty({
+        start_time: zod.string().min(1, {
           message: "From time is required.",
         }),
-        end_time: zod.string().nonempty({
+        end_time: zod.string().min(1, {
           message: "Till time is required.",
         }),
+        _delete: zod.boolean().optional(),
       })
     )
     .optional(),
@@ -57,13 +65,12 @@ export const ProfileForm = ({ onSubmit, onCancel }: Props) => {
 
   const user = useUser();
 
-  // Add a hook to fetch the operating rules based on user id
-
   const form = useForm<zod.infer<typeof formSchema>>({
     defaultValues: {
       name: user?.name ?? "",
       username: user?.username ?? "",
-      // operating_rules: user?.operating_rules ?? [],
+      description: user?.description ?? "",
+      operating_rules: user?.operating_rules ?? [],
     },
     resolver: zodResolver(formSchema),
   });
@@ -71,9 +78,7 @@ export const ProfileForm = ({ onSubmit, onCancel }: Props) => {
   const handleSubmit = (data: zod.infer<typeof formSchema>) => {
     setLoading(true);
 
-    console.log(data);
-
-    // onSubmit(data);
+    onSubmit(data);
   };
 
   return (
@@ -108,7 +113,29 @@ export const ProfileForm = ({ onSubmit, onCancel }: Props) => {
             </FormItem>
           )}
         />
-        <OperatingRules control={form.control} watch={form.watch} />
+        {user.role === "coach" && (
+          <>
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="A professional coach with more than 20 years of experience"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormProvider {...form}>
+              <OperatingRules />
+            </FormProvider>
+          </>
+        )}
         <div className="flex items-center gap-2">
           <Button size="lg" onClick={onCancel} variant="outline">
             Cancel

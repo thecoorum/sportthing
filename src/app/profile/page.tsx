@@ -31,6 +31,16 @@ const Profile = () => {
   const withStatus = ["administrator", "coach"].includes(user.role);
 
   const handleSubmit = async (data: FormValues) => {
+    const { operating_rules } = data;
+
+    const pendingDelete = operating_rules
+      ?.filter((rule) => rule._delete)
+      .map(({ id }) => id);
+
+    if (pendingDelete?.length) {
+      api.delete("/operating-rules", { data: pendingDelete });
+    }
+
     api
       .post(`/users/${user.id}`, data)
       .then((response) => {
@@ -68,6 +78,11 @@ const Profile = () => {
               <span className="text-sm text-muted-foreground">
                 @{user.username}
               </span>
+            )}
+            {user.description && (
+              <p className="text-sm text-muted-foreground">
+                {user.description}
+              </p>
             )}
             <span className="text-sm text-muted-foreground">
               Member since{" "}

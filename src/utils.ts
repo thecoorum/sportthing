@@ -72,7 +72,7 @@ export const generateTimes = ({
       const hour = i < 10 ? `0${i}` : `${i}`;
       const minute = j === 0 ? "00" : `${j}`;
 
-      times.push(`${hour}:${minute}`);
+      times.push(`${hour}:${minute}:00`);
     }
   }
 
