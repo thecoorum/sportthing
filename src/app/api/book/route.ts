@@ -39,7 +39,7 @@ export const POST = async (req: NextRequest) => {
 
       await Promise.all([
         handleSendBookingMessage(handlersPayload),
-        handleSendConfirmationMessage(handlersPayload),
+        // handleSendConfirmationMessage(handlersPayload),
       ]);
 
       await handleSendPaymentMessage({

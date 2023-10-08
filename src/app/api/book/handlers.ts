@@ -72,9 +72,7 @@ export const handleSendPaymentMessage = async (
     paymentToken?: string;
   }
 ) => {
-  if (!props.paymentToken) return
-
-  console.log('send payment message')
+  if (!props.paymentToken) return;
 
   const { data, error } = await supabase
     .from("activities")
@@ -92,11 +90,11 @@ export const handleSendPaymentMessage = async (
   body.append("title", "Payment for booking");
   body.append(
     "description",
-    "Not to wait in line after the activity, you can pay for the booking right now. Click the button below to pay."
+    "You need to pay for your booking in order to confirm it. You have 15 minutes to pay. If you don't pay in time, your booking will be cancelled. To proceed with payment, enter the following card credentials: 4242 4242 4242 4242"
   );
   body.append(
     "payload",
-    `user_id=${props.userId}&activity_id=${props.activityId}`
+    `booking_id=${props.booking.id}`
   );
   body.append("provider_token", props.paymentToken);
   body.append("currency", "USD");
