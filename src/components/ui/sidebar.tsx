@@ -1,5 +1,6 @@
-import { PropsWithChildren, memo, useState } from "react";
+import { memo, useState } from "react";
 
+import { Dumbbell, Home, Map, UserCircle2, Users2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
@@ -7,7 +8,7 @@ import Link from "next/link";
 
 import { useUser } from "@/hooks/useUser";
 
-export const Sidebar = memo(({ children }: PropsWithChildren) => {
+export const Sidebar = memo(({ children }: { children: React.ReactNode }) => {
   const [open, setOpen] = useState<boolean>(false);
 
   const user = useUser();
@@ -36,48 +37,70 @@ export const Sidebar = memo(({ children }: PropsWithChildren) => {
         <div className="space-y-1 py-4">
           <Link
             onClick={() => handleOpenChange(false)}
-            href="/"
+            href="/profile"
             autoFocus={false}
+            className="block mb-5"
           >
-            <Button variant="ghost" className="w-full justify-start">
-              Home
+            <Button
+              variant="ghost"
+              className="w-full justify-start items-center gap-2"
+            >
+              <UserCircle2 className="w-4 h-4" />
+              Profile
             </Button>
           </Link>
           <Link
             onClick={() => handleOpenChange(false)}
-            href="/profile"
+            href="/"
             autoFocus={false}
+            className="block"
           >
-            <Button variant="ghost" className="w-full justify-start">
-              Profile
+            <Button
+              variant="ghost"
+              className="w-full justify-start items-center gap-2"
+            >
+              <Home className="w-4 h-4" />
+              Home
             </Button>
           </Link>
           <Link
             onClick={() => handleOpenChange(false)}
             href="/locations"
             autoFocus={false}
+            className="block"
           >
-            <Button variant="ghost" className="w-full justify-start">
+            <Button
+              variant="ghost"
+              className="w-full justify-start items-center gap-2"
+            >
+              <Map className="w-4 h-4" />
               Locations
+            </Button>
+          </Link>
+          <Link
+            onClick={() => handleOpenChange(false)}
+            href="/activities"
+            autoFocus={false}
+            className="block mt-5"
+          >
+            <Button variant="ghost" className="w-full justify-start items-center gap-2">
+              <Dumbbell className="w-4 h-4" />
+              Activities
             </Button>
           </Link>
           {user.role === "administrator" && (
             <>
               <Link
                 onClick={() => handleOpenChange(false)}
-                href="/activities"
-                autoFocus={false}
-              >
-                <Button variant="ghost" className="w-full justify-start">
-                  Activities
-                </Button>
-              </Link>
-              <Link
-                onClick={() => handleOpenChange(false)}
                 href="/users"
                 autoFocus={false}
+                className="block"
               >
-                <Button variant="ghost" className="w-full justify-start">
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start items-center gap-2"
+                >
+                  <Users2 />
                   Users
                 </Button>
               </Link>

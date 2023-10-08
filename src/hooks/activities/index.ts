@@ -1,29 +1,13 @@
 import useSWR, { Fetcher } from "swr";
 
-import { Tables } from "@/database.extensions";
-import { useApi } from "./useApi";
+import { useApi } from "../useApi";
 
-type Activity = Tables<"activities"> & {
-  employee: Tables<"users"> & Tables<"employees">;
-  location: Tables<"locations">;
-};
-
-type ActivitiesParams = {
-  location_id?: string | string[];
-  coach_id?: string | string[];
-};
-
-type ActivityResponse = {
-  data: {
-    activity: Activity;
-  };
-};
-
-type ActivitiesResponse = {
-  data: {
-    activities: Activity[];
-  };
-};
+import type {
+  Activity,
+  ActivitiesParams,
+  ActivityResponse,
+  ActivitiesResponse,
+} from "./types";
 
 export const useActivities = (params: ActivitiesParams = {}) => {
   const api = useApi();

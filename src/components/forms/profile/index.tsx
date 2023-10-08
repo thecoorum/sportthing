@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-
 import { OperatingRules } from "./operating-rules";
 
 import { useUser } from "@/hooks/useUser";
@@ -20,6 +19,8 @@ import { useUser } from "@/hooks/useUser";
 import * as zod from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
+
+import { cn } from "@/utils";
 
 export type FormValues = zod.infer<typeof formSchema>;
 
@@ -104,13 +105,15 @@ export const ProfileForm = ({ onSubmit, onCancel }: Props) => {
           control={form.control}
           name="username"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input placeholder="@username" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+            <div className={cn(user.role !== "coach" && "mb-20")}>
+              <FormItem>
+                <FormLabel>Username</FormLabel>
+                <FormControl>
+                  <Input placeholder="@username" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </div>
           )}
         />
         {user.role === "coach" && (
@@ -136,7 +139,7 @@ export const ProfileForm = ({ onSubmit, onCancel }: Props) => {
             </FormProvider>
           </>
         )}
-        <div className="flex items-center gap-2">
+        <div className="sticky bottom-0 pt-4 flex items-center gap-2 bg-white/60 backdrop-blur-sm">
           <Button size="lg" onClick={onCancel} variant="outline">
             Cancel
           </Button>

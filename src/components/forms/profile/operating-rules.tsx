@@ -47,7 +47,7 @@ export const OperatingRules = () => {
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 pb-20">
       <Label>Operating rules</Label>
       {!fields.length && (
         <div className="flex justify-center items-center p-6">
