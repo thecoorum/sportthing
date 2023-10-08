@@ -16,7 +16,7 @@ begin
   foreach operating_rule_record in array upserted_operating_rules LOOP
     if operating_rule_record.id is not null then
       update operating_rules set
-        employee_id = operating_rule_record.employee_id,
+        employee_id = requestor_id,
         day = operating_rule_record.day,
         start_time = operating_rule_record.start_time,
         end_time = operating_rule_record.end_time,
@@ -24,7 +24,7 @@ begin
       where id = operating_rule_record.id;
     else
       insert into operating_rules (employee_id, day, start_time, end_time)
-      values (operating_rule_record.employee_id, operating_rule_record.day, operating_rule_record.start_time, operating_rule_record.end_time);
+      values (requestor_id, operating_rule_record.day, operating_rule_record.start_time, operating_rule_record.end_time);
     end if;
   end loop;
   return upserted_operating_rules;
