@@ -10,8 +10,6 @@ export const POST = async (req: NextRequest) => {
 
   const data = await req.json();
 
-  console.log(data.date)
-
   if (success) {
     try {
       const { data: timeslots, error } = await supabase.rpc("get_timeslots", {
