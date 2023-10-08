@@ -62,6 +62,3 @@ create table bookings (
 -- Replace insertable values with the ones from https://t.me/userinfobot
 insert into users (id, name, username) values (1, 'John Doe', 'johndoe');
 insert into employees (user_id, role) values (1, 'administrator');
-
--- Uncomment the following lines to insert sample data
--- insert into locations (name, description, address) values ('Sample location', 'Description of sample location', 'Test Address');

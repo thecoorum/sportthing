@@ -88,7 +88,7 @@ export const ActivityForm = ({
       location_id: locationId || activity?.location_id || "",
       employee_id: activity?.employee_id || undefined,
       duration: activity?.duration || undefined,
-      price: activity?.price || undefined,
+      price: activity?.price ? activity.price / 100 : undefined,
     },
   });
 
