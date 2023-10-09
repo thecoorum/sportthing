@@ -8,10 +8,11 @@ import { useEmployee } from "@/hooks/employees";
 
 type Props = {
   id: number;
+  deselectable: boolean;
   onDeselect: () => void;
 };
 
-export const Selected = ({ id, onDeselect }: Props) => {
+export const Selected = ({ id, deselectable, onDeselect }: Props) => {
   const { data, error, loading } = useEmployee(id);
 
   if (error) {
@@ -63,9 +64,11 @@ export const Selected = ({ id, onDeselect }: Props) => {
           <Avatar name={data.user.name} image={data.user.photo_url} />
           <p>{data.user.name}</p>
         </div>
-        <Button onClick={onDeselect} variant="ghost">
-          <X className="w-4 h-4" />
-        </Button>
+        {deselectable && (
+          <Button onClick={onDeselect} variant="ghost">
+            <X className="w-4 h-4" />
+          </Button>
+        )}
       </div>
     </div>
   );

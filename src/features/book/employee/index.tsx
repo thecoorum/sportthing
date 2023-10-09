@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 import { ServerCrash } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -17,6 +19,12 @@ type Props = {
 
 export const Employees = ({ onSelect, onDeselect, selected }: Props) => {
   const { data: employees, error, loading } = useEmployees();
+
+  useEffect(() => {
+    if (employees?.length === 1 && !selected) {
+      onSelect(employees[0].id);
+    }
+  }, [employees, selected, onSelect]);
 
   if (error) {
     return (
@@ -74,7 +82,13 @@ export const Employees = ({ onSelect, onDeselect, selected }: Props) => {
   }
 
   if (selected) {
-    return <Selected id={selected} onDeselect={onDeselect} />;
+    return (
+      <Selected
+        id={selected}
+        deselectable={employees.length > 1}
+        onDeselect={onDeselect}
+      />
+    );
   }
 
   return (
@@ -83,7 +97,7 @@ export const Employees = ({ onSelect, onDeselect, selected }: Props) => {
         Employee
       </h2>
       <div className="space-y-2">
-        {employees.map((employee, index) => (
+        {employees.map((employee) => (
           <Button
             key={employee.id}
             onClick={() => onSelect(employee.id)}

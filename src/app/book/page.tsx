@@ -34,6 +34,8 @@ const schema = zod.object({
 
 const Page = () => {
   const [submitting, setSubmitting] = useState<boolean>(false);
+  const [descriptionCollapsed, setDescriptionCollapsed] =
+    useState<boolean>(true);
 
   const searchParams = useSearchParams();
 
@@ -108,6 +110,10 @@ const Page = () => {
       });
   };
 
+  const handleToggleDescription = () => {
+    setDescriptionCollapsed((prev) => !prev);
+  };
+
   const handleSelectEmployee = (id: number) => {
     form.setValue("employee_id", id);
   };
@@ -173,14 +179,18 @@ const Page = () => {
         <ChevronLeft className="w-4 h-4" />
         <span className="text-sm">{activity.name}</span>
       </Link>
-      <PlainActivity data={activity} />
-      {!activity.employee_id && (
-        <Employees
-          onSelect={handleSelectEmployee}
-          onDeselect={handleDeselectEmployee}
-          selected={employee}
-        />
-      )}
+      <PlainActivity
+        data={activity}
+        collapsed={descriptionCollapsed}
+        onClick={handleToggleDescription}
+        collapsible
+        hideEmployee
+      />
+      <Employees
+        onSelect={handleSelectEmployee}
+        onDeselect={handleDeselectEmployee}
+        selected={employee}
+      />
       <div>
         {!!employee && (
           <Calendar selected={date} onDateSelect={handleSelectDate} />
