@@ -1,5 +1,5 @@
 create or replace function create_location(
-  requestor_id integer,
+  requestor_id bigint,
   location_name text,
   location_description text default null,
   location_address text default null

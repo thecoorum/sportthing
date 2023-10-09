@@ -44,6 +44,6 @@ select cron.schedule(
   'handle-stale-bookings',
   '*/2 * * * *',
   $$
-    select check_booking_status()
+    select check_booking_status();
   $$
 );

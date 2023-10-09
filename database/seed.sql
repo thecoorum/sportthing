@@ -1,5 +1,5 @@
 create table users (
-  id int primary key,
+  id bigint primary key,
   name text not null,
   username text,
   photo_url text,
@@ -17,7 +17,7 @@ create table locations (
 );
 
 create table employees (
-  id int primary key references users(id),
+  id bigint primary key references users(id) on delete cascade,
   role text not null check (role in ('administrator', 'coach')),
   description text,
   location_id uuid references locations(id),
@@ -29,8 +29,8 @@ create table activities (
   id uuid primary key default uuid_generate_v4(),
   name text not null,
   description text,
-  location_id uuid references locations(id),
-  coach_id uuid references employees(id),
+  location_id uuid references locations(id) on delete set null,
+  employee_id bigint references employees(id) on delete set null,
   duration int not null,
   price int not null,
   created_at timestamptz not null default current_timestamp,
@@ -39,7 +39,7 @@ create table activities (
 
 create table operating_rules (
   id uuid primary key default uuid_generate_v4(),
-  coach_id uuid not null references employees(id),
+  employee_id bigint not null references employees(id) on delete cascade,
   day text not null check (day in ('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday', 'weekdays', 'weekends')),
   start_time time not null,
   end_time time not null,
@@ -49,8 +49,9 @@ create table operating_rules (
 
 create table bookings (
   id uuid primary key default uuid_generate_v4(),
-  activity_id uuid not null references activities(id),
-  user_id int not null references users(id),
+  activity_id uuid not null references activities(id) on delete cascade,
+  employee_id bigint not null references employees(id) on delete cascade,
+  user_id bigint not null references users(id) on delete cascade,
   booking_date date not null,
   start_time time not null,
   end_time time not null,

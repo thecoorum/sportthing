@@ -1,4 +1,4 @@
-create or replace function get_timeslots(p_activity_id uuid, p_employee_id int, p_date timestamp)
+create or replace function get_timeslots(p_activity_id uuid, p_employee_id bigint, p_date timestamp)
 returns table(timeslot time) as $$
 declare
     r_activity record;

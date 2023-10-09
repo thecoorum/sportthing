@@ -1,11 +1,11 @@
 create or replace function create_activity(
-  requestor_id integer,
+  requestor_id bigint,
   activity_name text,
   activity_duration integer,
   activity_price integer,
   activity_description text default null,
   activity_location_id uuid default null,
-  activity_employee_id integer default null
+  activity_employee_id bigint default null
 ) returns record as $$
 declare
   activity record;

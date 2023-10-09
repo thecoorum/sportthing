@@ -1,7 +1,7 @@
 create or replace function get_users(
-  requestor_id integer
+  requestor_id bigint
 ) returns table (
-  user_id integer,
+  user_id bigint,
   name text,
   username text,
   photo_url text,

@@ -1,6 +1,6 @@
 create or replace function book_activity(
-    requestor_id integer,
-    p_employee_id integer,
+    requestor_id bigint,
+    p_employee_id bigint,
     p_activity_id uuid,
     p_date date,
     p_start_time time

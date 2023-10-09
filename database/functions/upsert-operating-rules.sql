@@ -1,13 +1,13 @@
 create type operating_rule as (
   id uuid,
-  employee_id integer,
+  employee_id bigint,
   day text,
   start_time time,
   end_time time
 );
 
 create or replace function upsert_operating_rules(
-  requestor_id integer,
+  requestor_id bigint,
   upserted_operating_rules operating_rule[]
 ) returns operating_rule[] as $$
 declare

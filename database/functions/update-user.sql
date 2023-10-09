@@ -1,5 +1,5 @@
 create or replace function update_user(
-  requestor_id integer,
+  requestor_id bigint,
   requestor_name text,
   requestor_username text default null,
   requestor_description text default null,

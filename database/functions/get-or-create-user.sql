@@ -1,5 +1,5 @@
 create or replace function get_or_create_user(
-  requestor_id integer,
+  requestor_id bigint,
   name text,
   username text,
   photo_url text default null
