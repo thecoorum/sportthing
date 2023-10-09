@@ -65,7 +65,7 @@ const Page = ({ params }: { params: { id: string } }) => {
         console.error(error);
 
         toast({
-          title: "Error occured",
+          title: "Oops, an error occured",
           description: error.message,
         });
       });
