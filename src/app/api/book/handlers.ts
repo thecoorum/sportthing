@@ -78,11 +78,9 @@ export const handleConfirmBooking = async (props: Props) => {
 
 export const handleSendPaymentMessage = async (
   props: Props & {
-    paymentToken?: string;
+    paymentToken: string;
   }
 ) => {
-  if (!props.paymentToken) return;
-
   const { data, error } = await supabase
     .from("activities")
     .select("name, price")
