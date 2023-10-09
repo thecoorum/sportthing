@@ -34,12 +34,12 @@ export const Sidebar = memo(({ children }: { children: React.ReactNode }) => {
             />
           </svg>
         </div>
-        <div className="space-y-1 py-4">
+        <div className="space-y-0.5 py-4">
           <Link
             onClick={() => handleOpenChange(false)}
             href="/profile"
             autoFocus={false}
-            className="block mb-5"
+            className="block"
           >
             <Button
               variant="ghost"
@@ -49,6 +49,9 @@ export const Sidebar = memo(({ children }: { children: React.ReactNode }) => {
               Profile
             </Button>
           </Link>
+          <div className="p-3 px-1">
+            <hr />
+          </div>
           <Link
             onClick={() => handleOpenChange(false)}
             href="/"
