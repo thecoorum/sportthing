@@ -17,36 +17,80 @@ export const POST = async (req: NextRequest) => {
       const bookingId = params.get("booking_id");
 
       if (bookingId) {
-        try {
-          const { data, error } = await supabase
-            .from("bookings")
-            .update({ status: "confirmed" })
-            .eq("id", bookingId)
-            .select("*, activity:activities(name)")
-            .single();
+        const { data, error } = await supabase
+          .from("bookings")
+          .update({ status: "confirmed" })
+          .eq("id", bookingId)
+          .select("*, activity:activities(name)")
+          .single();
 
-          if (error) {
-            await ctx.reply("Something went wrong, please try again later.");
-          }
+        if (error) {
+          console.log(error);
 
-          await ctx.reply(
-            `We received your payment for "${data.activity.name}" on ${format(
-              new Date(data.booking_date),
-              "MMMM do, yyyy"
-            )} at ${data.start_time}. We will be waiting for you!`
-          );
-        } catch (error) {
-          console.error(error);
+          ctx.reply("Something went wrong, please try again later.");
         }
+
+        ctx.reply(
+          `We received your payment for "${data.activity.name}" on ${format(
+            new Date(data.booking_date),
+            "MMMM do, yyyy"
+          )} at ${data.start_time}. We will be waiting for you!`
+        );
       }
     });
 
     bot.on("pre_checkout_query", async (ctx) => {
-      try {
-        await ctx.answerPreCheckoutQuery(true);
-      } catch (error) {
-        console.error(error);
+      const params = new URLSearchParams(ctx.preCheckoutQuery.invoice_payload);
+
+      const bookingId = params.get("booking_id");
+
+      if (bookingId) {
+        const { data, error } = await supabase
+          .from("bookings")
+          .select("status")
+          .eq("id", bookingId)
+          .single();
+
+        if (error) {
+          console.log(error);
+
+          ctx.reply(
+            "We were unable to fetch your booking, please try again later"
+          );
+        }
+
+        if (data?.status !== "pending") {
+          let message = "";
+
+          switch (data?.status) {
+            case "confirmed":
+              message = "Booking already confirmed";
+              break;
+            case "cancelled":
+              message = "You booking was cancelled";
+              break;
+          }
+
+          ctx.answerPreCheckoutQuery(false, {
+            error_message: message,
+          });
+
+          return;
+        }
+
+        ctx.answerPreCheckoutQuery(true);
       }
+
+      ctx.answerPreCheckoutQuery(
+        false,
+        "Something went wrong, please try again later."
+      );
+    });
+
+    bot.on("message", (ctx) => {
+      ctx.reply(
+        "Hey! I'm just a bot with a set of predefined commands, so I can't really talk with you at the moment. Please use the the mini app button at the bottom left to book your next activity."
+      );
     });
 
     bot.start();
