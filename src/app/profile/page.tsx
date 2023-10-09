@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
@@ -13,6 +13,8 @@ import { useUser } from "@/hooks/useUser";
 import { useApi } from "@/hooks/useApi";
 import { useToast } from "@/components/ui/use-toast";
 import { useSWRConfig } from "swr";
+import { useBackButton } from "@twa.js/sdk-react";
+import { useRouter } from "next/navigation";
 
 import { statuses } from "@/constants";
 
@@ -21,12 +23,26 @@ const Profile = () => {
 
   const user = useUser();
   const api = useApi();
+  const backButton = useBackButton();
+  const router = useRouter();
 
   const { toast } = useToast();
 
   const { mutate } = useSWRConfig();
 
-  if (!user) return null;
+  useEffect(() => {
+    const handleGoBack = () => {
+      router.back();
+    };
+
+    backButton.show();
+    backButton.on("click", handleGoBack);
+
+    return () => {
+      backButton.off("click", handleGoBack);
+      backButton.hide();
+    };
+  }, [backButton, router]);
 
   const withStatus = ["administrator", "coach"].includes(user.role);
 

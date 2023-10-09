@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 
-import { ChevronLeft } from "lucide-react";
 import { LocationForm, schema } from "@/components/forms/location";
 
 import Link from "next/link";
@@ -21,7 +20,7 @@ const LocationCreatePage = () => {
 
   useEffect(() => {
     const handleGoBack = () => {
-      router.replace("/locations");
+      router.back();
     };
 
     backButton.show();
@@ -45,13 +44,9 @@ const LocationCreatePage = () => {
 
   return (
     <div className="space-y-4">
-      <div className="space-y-3">
-        <Link href="/locations" className="flex items-center space-x-1">
-          <ChevronLeft className="w-4 h-4" />
-          <span className="text-sm">Locations</span>
-        </Link>
-        <h2 className="text-3xl font-semibold leading-none tracking-tight">Create new location</h2>
-      </div>
+      <h2 className="text-3xl font-semibold leading-none tracking-tight">
+        Create new location
+      </h2>
       <LocationForm onSubmit={handleSubmit} onCancel={handleCancel} />
     </div>
   );

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { DayPicker, Day, DayProps, useDayRender } from "react-day-picker";
+import { DayPicker, Day } from "react-day-picker";
 
 import { Button } from "@/components/ui/button";
 

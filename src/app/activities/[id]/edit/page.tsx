@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 
-import { ChevronLeft } from "lucide-react";
 import { ActivityForm, schema } from "@/components/forms/activity";
 import { Skeleton } from "./skeleton";
 
@@ -25,7 +24,7 @@ const Page = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     const handleGoBack = () => {
-      router.replace(`/activities/${params.id}`);
+      router.back();
     };
 
     backButton.show();
@@ -35,7 +34,7 @@ const Page = ({ params }: { params: { id: string } }) => {
       backButton.off("click", handleGoBack);
       backButton.hide();
     };
-  }, [backButton, router, params.id]);
+  }, [backButton, router]);
 
   const handleSubmit = async (data: zod.infer<typeof schema>) => {
     return api
@@ -56,18 +55,9 @@ const Page = ({ params }: { params: { id: string } }) => {
 
   return (
     <div className="space-y-4">
-      <div className="space-y-3">
-        <Link
-          href={`/activities/${params.id}`}
-          className="flex items-center space-x-1"
-        >
-          <ChevronLeft className="w-4 h-4" />
-          <span className="text-sm">{activity.name}</span>
-        </Link>
-        <h2 className="text-3xl font-semibold leading-none tracking-tight">
-          Edit activity
-        </h2>
-      </div>
+      <h2 className="text-3xl font-semibold leading-none tracking-tight">
+        Edit activity
+      </h2>
       <ActivityForm
         onSubmit={handleSubmit}
         onCancel={handleCancel}

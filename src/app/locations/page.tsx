@@ -29,12 +29,15 @@ const Locations = () => {
   const backButton = useBackButton();
 
   useEffect(() => {
+    const handleGoBack = () => {
+      router.back();
+    };
+
     backButton.show();
-    backButton.on("click", () => {
-      router.push("/");
-    });
+    backButton.on("click", handleGoBack);
 
     return () => {
+      backButton.off("click", handleGoBack);
       backButton.hide();
     };
   }, [backButton, router]);

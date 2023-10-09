@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-import { Activity, ChevronLeft } from "lucide-react";
+import { Activity } from "lucide-react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
@@ -29,13 +29,7 @@ import { useRouter } from "next/navigation";
 import { useApi } from "@/hooks/useApi";
 import { useToast } from "@/components/ui/use-toast";
 
-const Page = ({
-  params,
-  searchParams,
-}: {
-  params: { id: string };
-  searchParams: { from: string; fromLabel: string };
-}) => {
+const Page = ({ params }: { params: { id: string } }) => {
   const user = useUser();
 
   const api = useApi();
@@ -48,7 +42,7 @@ const Page = ({
 
   useEffect(() => {
     const handleGoBack = () => {
-      router.push(searchParams.from || "/locations");
+      router.back();
     };
 
     backButton.show();
@@ -58,7 +52,7 @@ const Page = ({
       backButton.off("click", handleGoBack);
       backButton.hide();
     };
-  }, [backButton, router, searchParams.from]);
+  }, [backButton, router]);
 
   const { data: location, error, loading } = useLocation(params.id);
 
@@ -66,7 +60,7 @@ const Page = ({
     api
       .delete(`/locations/${params.id}`)
       .then(() => {
-        router.replace(searchParams.from || "/locations");
+        router.back();
       })
       .catch((error: Error) => {
         console.error(error);
@@ -105,20 +99,9 @@ const Page = ({
     <div className="flex flex-col space-y-6">
       <div className="space-y-6">
         <div className="space-y-1.5">
-          <div className="space-y-3">
-            <Link
-              href={searchParams.from || "/locations"}
-              className="flex items-center space-x-1"
-            >
-              <ChevronLeft className="w-4 h-4" />
-              <span className="text-sm">
-                {searchParams.fromLabel || "Locations"}
-              </span>
-            </Link>
-            <h2 className="text-3xl font-semibold leading-none tracking-tight">
-              {location?.name}
-            </h2>
-          </div>
+          <h2 className="text-3xl font-semibold leading-none tracking-tight">
+            {location?.name}
+          </h2>
           <div className="space-y-2">
             {location?.address && (
               <p className="text-sm text-muted-foreground">
@@ -126,9 +109,7 @@ const Page = ({
               </p>
             )}
             {location?.description && (
-              <p className="text-md">
-                {location.description}
-              </p>
+              <p className="text-md">{location.description}</p>
             )}
           </div>
         </div>

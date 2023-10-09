@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+
 import { UserX } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { PageSkeleton } from "./skeleton";
@@ -8,15 +10,31 @@ import { DataTable } from "./data-table";
 
 import { useUser } from "@/hooks/useUser";
 import { useExternalUsers } from "@/hooks/users";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useBackButton } from "@twa.js/sdk-react";
 
 const UsersPage = () => {
   const user = useUser();
   const searchParams = useSearchParams();
 
+  const backButton = useBackButton();
+  const router = useRouter();
+
   const { data, error, loading } = useExternalUsers();
 
-  if (!user) return;
+  useEffect(() => {
+    const handleGoBack = () => {
+      router.back();
+    };
+
+    backButton.show();
+    backButton.on("click", handleGoBack);
+
+    return () => {
+      backButton.off("click", handleGoBack);
+      backButton.hide();
+    };
+  }, [backButton, router]);
 
   if (user.role !== "administrator") {
     return (

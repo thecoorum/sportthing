@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { ServerCrash, ChevronLeft, Loader2 } from "lucide-react";
+import { ServerCrash, Loader2 } from "lucide-react";
 import { Skeleton } from "./skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { PlainActivity } from "@/components/ui/activity";
@@ -22,6 +22,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useApi } from "@/hooks/useApi";
 import { useToast } from "@/components/ui/use-toast";
+import { useBackButton } from "@twa.js/sdk-react";
 
 import { cn } from "@/utils";
 
@@ -40,6 +41,7 @@ const Page = () => {
   const searchParams = useSearchParams();
 
   const api = useApi();
+  const backButton = useBackButton();
   const { toast } = useToast();
 
   const router = useRouter();
@@ -49,6 +51,20 @@ const Page = () => {
     error,
     loading,
   } = useActivity(searchParams.get("activity"));
+
+  useEffect(() => {
+    const handleGoBack = () => {
+      router.back();
+    };
+
+    backButton.show();
+    backButton.on("click", handleGoBack);
+
+    return () => {
+      backButton.off("click", handleGoBack);
+      backButton.hide();
+    };
+  }, [backButton, router]);
 
   const form = useForm<zod.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -172,13 +188,6 @@ const Page = () => {
 
   return (
     <div className="space-y-3.5 pb-20">
-      <Link
-        href={`/activities/${searchParams.get("activity")}`}
-        className="flex items-center space-x-1"
-      >
-        <ChevronLeft className="w-4 h-4" />
-        <span className="text-sm">{activity.name}</span>
-      </Link>
       <PlainActivity
         data={activity}
         collapsed={descriptionCollapsed}

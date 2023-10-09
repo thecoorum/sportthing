@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 
 import { PlainActivity } from "@/components/ui/activity";
-import { Activity, ChevronLeft, ServerCrash } from "lucide-react";
+import { Activity, ServerCrash } from "lucide-react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
@@ -41,7 +41,7 @@ const Page = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     const handleGoBack = () => {
-      router.push("/activities");
+      router.back();
     };
 
     backButton.show();
@@ -109,13 +109,7 @@ const Page = ({ params }: { params: { id: string } }) => {
 
   return (
     <div className="flex flex-col space-y-6">
-      <div className="space-y-3.5">
-        <Link href="/activities" className="flex items-center space-x-1">
-          <ChevronLeft className="w-4 h-4" />
-          <span className="text-sm">Activities</span>
-        </Link>
-        <PlainActivity data={activity} />
-      </div>
+      <PlainActivity data={activity} />
       <div className="flex flex-col sticky bottom-0 py-4 bg-white/60 backdrop-blur-sm space-y-2">
         <Link
           href={{ pathname: "/book", query: { activity: params.id } }}
