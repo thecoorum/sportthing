@@ -18,6 +18,11 @@ export const TermsProvider = ({ children }: { children: React.ReactNode }) => {
   const app = useWebApp();
 
   useEffect(() => {
+    app.setBackgroundColor('#FFFFFF')
+    app.setHeaderColor('#FFFFFF')
+  }, [app])
+
+  useEffect(() => {
     storage.getValues(["termsAccepted"]).then(({ termsAccepted }) => {
       setTermsAccepted(!!termsAccepted);
     });
