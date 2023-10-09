@@ -1,13 +1,17 @@
 "use client";
 
-import { PropsWithChildren } from "react";
-
-import { useSDK } from "@twa.js/sdk-react";
+import { useEffect } from "react";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export const ComponentsProvider = ({ children }: PropsWithChildren) => {
+import { useSDK } from "@twa.js/sdk-react";
+
+export const ComponentsProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const { didInit, components, error } = useSDK();
 
   if (error) {

@@ -221,7 +221,7 @@ const Page = () => {
         }}
         transition={{ type: "spring" }}
         className={cn(
-          "sticky bottom-0 py-4 bg-white/60 backdrop-blur-smp",
+          "sticky bottom-0 py-4 bg-white/60 backdrop-blur-sm",
           !canSubmit && "pointer-events-none"
         )}
       >

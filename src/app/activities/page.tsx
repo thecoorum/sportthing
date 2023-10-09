@@ -55,10 +55,13 @@ const Page = () => {
 
   if (loading) {
     return (
-      <div className="space-y-2">
-        <Skeleton className="w-full h-[150px]" />
-        <Skeleton className="w-full h-[150px]" />
-        <Skeleton className="w-full h-[150px]" />
+      <div className="space-y-3">
+        <Skeleton className="w-[130px] h-[30px]" />
+        <div className="space-y-2">
+          <Skeleton className="w-full h-[150px]" />
+          <Skeleton className="w-full h-[150px]" />
+          <Skeleton className="w-full h-[150px]" />
+        </div>
       </div>
     );
   }

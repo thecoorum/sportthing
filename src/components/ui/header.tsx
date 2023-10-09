@@ -8,7 +8,7 @@ import Link from "next/link";
 
 export const Header = memo(() => {
   return (
-    <header className="sticky left-0 top-0 w-full flex justify-between items-center px-4 py-3 gap-4 bg-white/60 backdrop-blur-sm z-50">
+    <header className="sticky left-0 top-0 w-full flex justify-between items-center px-4 py-3 gap-4 bg-background/60 backdrop-blur-sm z-50">
       <Link href="/">
         <svg
           width="30%"

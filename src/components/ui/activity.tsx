@@ -88,6 +88,20 @@ export const PlainActivity = ({
         <p className="text-sm text-muted-foreground">{data.duration} mins</p>
       </div>
     </div>
+    {data.employee && !hideEmployee && (
+      <div className="space-y-2">
+        <p className="text-sm text-muted-foreground">
+          This activity is held by:
+        </p>
+        <div className="flex items-center gap-2">
+          <Avatar
+            name={data.employee.user.name}
+            image={data.employee.user.photo_url}
+          />
+          <p className="text-md">{data.employee.user.name}</p>
+        </div>
+      </div>
+    )}
     <div className="flex flex-col gap-2 items-start">
       <motion.div
         initial={{ maxHeight: "1000px" }}
@@ -111,19 +125,5 @@ export const PlainActivity = ({
         </Button>
       )}
     </div>
-    {data.employee && !hideEmployee && (
-      <div className="space-y-2">
-        <p className="text-sm text-muted-foreground">
-          This activity is held by:
-        </p>
-        <div className="flex items-center gap-2">
-          <Avatar
-            name={data.employee.user.name}
-            image={data.employee.user.photo_url}
-          />
-          <p className="text-md">{data.employee.user.name}</p>
-        </div>
-      </div>
-    )}
   </div>
 );

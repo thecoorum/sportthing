@@ -23,7 +23,7 @@ export const Sidebar = memo(({ children }: { children: React.ReactNode }) => {
       <SheetContent className="p-2">
         <div className="p-3 px-3.5">
           <svg
-            width="30%"
+            width="40%"
             viewBox="0 0 574 116"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
