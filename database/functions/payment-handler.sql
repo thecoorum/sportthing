@@ -37,7 +37,8 @@ begin
 end;
 $$ language plpgsql;
 
-select cron.unschedule('handle-stale-bookings');
+-- Uncomment the line if you are going to change the schedule or functions and want to remove the old schedule
+-- select cron.unschedule('handle-stale-bookings');
 
 select cron.schedule(
   'handle-stale-bookings',
