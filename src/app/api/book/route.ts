@@ -39,6 +39,8 @@ export const POST = async (req: NextRequest) => {
 
       await Promise.all([handleSendBookingMessage(handlersPayload)]);
 
+      // If you want to send payment invoices before confirming the booking
+      // set the BOT_PAYMENT_TOKEN environment variable
       if (process.env.BOT_PAYMENT_TOKEN) {
         await handleSendPaymentMessage({
           ...handlersPayload,
