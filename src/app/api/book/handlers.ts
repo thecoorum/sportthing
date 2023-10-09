@@ -42,7 +42,16 @@ export const handleSendBookingMessage = async (props: Props) => {
   }
 };
 
-export const handleSendConfirmationMessage = async (props: Props) => {
+export const handleConfirmBooking = async (props: Props) => {
+  const { error } = await supabase
+    .from("bookings")
+    .update({ status: "confirmed" })
+    .eq("id", props.booking.id);
+
+  if (error) {
+    return NextResponse.json({ error }, { status: 500 });
+  }
+
   const body = new FormData();
 
   body.append("chat_id", String(props.booking.user_id));
@@ -92,10 +101,7 @@ export const handleSendPaymentMessage = async (
     "description",
     "You need to pay for your booking in order to confirm it. You have 15 minutes to pay. If you don't pay in time, your booking will be cancelled. To proceed with payment, enter the following card credentials: 4242 4242 4242 4242"
   );
-  body.append(
-    "payload",
-    `booking_id=${props.booking.id}`
-  );
+  body.append("payload", `booking_id=${props.booking.id}`);
   body.append("provider_token", props.paymentToken);
   body.append("currency", "USD");
   body.append(

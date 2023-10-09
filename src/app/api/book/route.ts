@@ -5,7 +5,7 @@ import { supabase } from "@/supabase";
 
 import {
   handleSendBookingMessage,
-  handleSendConfirmationMessage,
+  handleConfirmBooking,
   handleSendPaymentMessage,
 } from "./handlers";
 
@@ -37,15 +37,16 @@ export const POST = async (req: NextRequest) => {
         activityId: data.activity_id,
       };
 
-      await Promise.all([
-        handleSendBookingMessage(handlersPayload),
-        // handleSendConfirmationMessage(handlersPayload),
-      ]);
+      await Promise.all([handleSendBookingMessage(handlersPayload)]);
 
-      await handleSendPaymentMessage({
-        ...handlersPayload,
-        paymentToken: process.env.BOT_PAYMENT_TOKEN,
-      });
+      if (process.env.BOT_PAYMENT_TOKEN) {
+        await handleSendPaymentMessage({
+          ...handlersPayload,
+          paymentToken: process.env.BOT_PAYMENT_TOKEN,
+        });
+      } else {
+        handleConfirmBooking(handlersPayload);
+      }
 
       return NextResponse.json({ booking }, { status: 200 });
     } catch (error) {
