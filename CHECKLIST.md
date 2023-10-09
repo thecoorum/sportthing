@@ -1,5 +1,3 @@
-## Checklist
-
 - [x] Add API for available timeslots
 - [x] Add API for booking activities
 - [x] Connect editing operating rules to API
@@ -13,4 +11,6 @@
 - [ ] Add backlinks to all pages
 - [ ] Think about enabling them only for web?
 
-- [ ] Make edit profile form footer sticky
+- [x] Make edit profile form footer sticky
+
+- [ ] Debug payment handler Postgres function, so it doesn't run before the set interval
