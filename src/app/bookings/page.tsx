@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -16,9 +17,29 @@ import { motion } from "framer-motion";
 import { format } from "date-fns";
 
 import { useBookings } from "@/hooks/bookings";
+import { useRouter } from "next/navigation";
+import { useBackButton } from "@twa.js/sdk-react";
 
 const Page = () => {
   const { data, error, loading } = useBookings();
+
+  const router = useRouter();
+
+  const backButton = useBackButton();
+
+  useEffect(() => {
+    const handleGoBack = () => {
+      router.back();
+    };
+
+    backButton.show();
+    backButton.on("click", handleGoBack);
+
+    return () => {
+      backButton.off("click", handleGoBack);
+      backButton.hide();
+    };
+  }, [backButton, router]);
 
   if (loading) {
     return (
