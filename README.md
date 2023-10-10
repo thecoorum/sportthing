@@ -114,15 +114,20 @@ Here is the list of the functions with links:
 - `create_activity` - function used to create activities by administrator. If the function will be executed by user with non-administrator permissions the execution will be terminated with error - [link](https://github.com/thecoorum/sportthing/blob/main/database/functions/create-activity.sql)
 - `create_location` - function used to create locations by administrator. If the function will be executed by user with non-administrator permissions the execution will be terminated with error - [link](https://github.com/thecoorum/sportthing/blob/main/database/functions/create-location.sql)
 - `get_or_create_user` - function used for authentication purposes. If the user with the received from Telegram query ID exists, then it will be returned (joined with employee record if the one with given ID exists), else new user will be created and returned in the response - [link](https://github.com/thecoorum/sportthing/blob/main/database/functions/get-or-create-user.sql)
-- `get_timeslots` - function used to calculate available timeslots for select activity at certain date. The timeslots are calculated for each 30 mins, but the configuration can be adjusted - [link](https://github.com/thecoorum/sportthing/blob/main/database/functions/get-timeslots.sql)
+- `get_timeslots` - function used to calculate available timeslots for select activity at certain date. The timeslots are calculated for each 30 mins with 30 minutes padding time (that means if your current time is 14:49 you can't book activity at 15:00, but only at 15:30), but the configuration can be adjusted - [link](https://github.com/thecoorum/sportthing/blob/main/database/functions/get-timeslots.sql)
 - `get_users` - function used to list all existing users by administrator - [link](https://github.com/thecoorum/sportthing/blob/main/database/functions/get-users.sql)
 - `payment_handler` - function used to schedule cron job to monitor pending bookings. The function makes sense if you configured payments in your bot, in that case all bookings will be not confirmed automatically, but will require payment in 15 minutes after placing booking (the time can be configured at the API endpoint and in SQL function) - [link](https://github.com/thecoorum/sportthing/blob/main/database/functions/payment-handler.sql)
+> **Note**<br />
+> Currently there is an issue with the handler, so it will not work as expected. The issue is described [here](https://github.com/thecoorum/sportthing/issues/1)
 - `update-user` - function used to update user information like Name, Username, Operating rules (for role coach) - [link](https://github.com/thecoorum/sportthing/blob/main/database/functions/update-user.sql)
 - `upsert-operating-rules` - function used to create/update coach operating rules for timeslots calculation. Used in conjuction with `update-user` function described above - [link](https://github.com/thecoorum/sportthing/blob/main/database/functions/upsert-operating-rules.sql)
 
 </details>
     
 As soon as all listed above steps are completed you can deploy this project to Vercel using the button below. Fill in required `BOT_TOKEN`, `SUPABASE_URL` and `SUPABASE_ANON_KEY` obtained earlier. `BOT_PAYMENT_TOKEN` key used when you configured payments in your Telegram bot and want to receive payments before confirming booking. If the token is not set the bookings will be confirmed automatically
+
+> **Note**<br />
+> Enabling payment right now is not working correctly at 100% because of payment handler issue. Read more [here](https://github.com/thecoorum/sportthing/issues/1)
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fthecoorum%2Fsportthing&env=BOT_TOKEN,SUPABASE_URL,SUPABASE_ANON_KEY&envDescription=You%20should%20provide%20require%20%60BOT_TOKEN%60%2C%20%60SUPABASE_URL%60%20and%20%60SUPABASE_ANON_KEY%60%20to%20be%20able%20to%20run%20your%20Telegram%20Mini%20App.%20The%20%60BOT_PAYMENT_TOKEN%60%20is%20optional%20and%20used%20to%20send%20payment%20invoices%20before%20confirming%20the%20bookings%2C%20else%20they%20will%20be%20auto-confirmed&demo-url=https%3A%2F%2Ft.me%2Fsportthing_bot%2Fapp)
 
