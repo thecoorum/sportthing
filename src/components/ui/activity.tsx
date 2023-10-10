@@ -28,6 +28,7 @@ type PlainActivityProps = Props & {
   collapsible?: boolean;
   collapsed?: boolean;
   hideEmployee?: boolean;
+  hideDescription?: boolean;
   onClick?: () => void;
 };
 
@@ -67,6 +68,7 @@ export const PlainActivity = ({
   collapsed,
   collapsible,
   hideEmployee,
+  hideDescription,
   onClick,
 }: PlainActivityProps) => (
   <div className="space-y-6">
@@ -102,28 +104,35 @@ export const PlainActivity = ({
         </div>
       </div>
     )}
-    <div className="flex flex-col gap-2 items-start">
-      <motion.div
-        initial={{ maxHeight: "1000px" }}
-        animate={{ maxHeight: collapsed ? "60px" : "1000px" }}
-        className={cn(
-          "text-sm text-muted-foreground text-ellipsis overflow-hidden relative",
-          collapsible &&
-            collapsed &&
-            "after:content-['...'] after:absolute after:top-[calc(100%_-_20px)] after:left-[calc(100%_-_12px)]"
-        )}
-      >
-        {data.description}
-      </motion.div>
-      {collapsible && (
-        <Button variant="ghost" size="sm" className="w-full" onClick={onClick}>
-          {collapsed ? (
-            <ChevronsUpDown className="w-4 h-4" />
-          ) : (
-            <ChevronsDownUp className="w-4 h-4" />
+    {data.description && !hideDescription && (
+      <div className="flex flex-col gap-2 items-start">
+        <motion.div
+          initial={{ maxHeight: "1000px" }}
+          animate={{ maxHeight: collapsed ? "60px" : "1000px" }}
+          className={cn(
+            "text-sm text-muted-foreground text-ellipsis overflow-hidden relative",
+            collapsible &&
+              collapsed &&
+              "after:content-['...'] after:absolute after:top-[calc(100%_-_20px)] after:left-[calc(100%_-_12px)]"
           )}
-        </Button>
-      )}
-    </div>
+        >
+          {data.description}
+        </motion.div>
+        {collapsible && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-full"
+            onClick={onClick}
+          >
+            {collapsed ? (
+              <ChevronsUpDown className="w-4 h-4" />
+            ) : (
+              <ChevronsDownUp className="w-4 h-4" />
+            )}
+          </Button>
+        )}
+      </div>
+    )}
   </div>
 );
