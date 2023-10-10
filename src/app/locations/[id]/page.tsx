@@ -116,7 +116,7 @@ const Page = ({ params }: { params: { id: string } }) => {
         <Tabs locationId={params.id} />
       </div>
       {user.role === "administrator" && (
-        <div className="sticky bottom-0 flex items-center gap-2 py-4 bg-white/60 backdrop-blur-sm">
+        <div className="flex items-center gap-2 py-4">
           <AlertDialog>
             <AlertDialogTrigger>
               <Button size="lg" variant="destructive">

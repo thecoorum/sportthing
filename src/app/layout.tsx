@@ -14,6 +14,7 @@ import { TermsProvider } from "@/providers/terms";
 import { ComponentsProvider } from "@/providers/components";
 
 import { cn } from "@/utils";
+import { ThemeProvider } from "@/providers/theme";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,15 +28,20 @@ export default function RootLayout({
       <body className={cn(inter.className)}>
         <SDKProvider>
           <ComponentsProvider>
-            <TermsProvider>
-              <ApiProvider>
-                <UserProvider>
-                  <Header />
-                  {children}
-                  <Toaster />
-                </UserProvider>
-              </ApiProvider>
-            </TermsProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="light"
+            >
+              <TermsProvider>
+                <ApiProvider>
+                  <UserProvider>
+                    <Header />
+                    {children}
+                    <Toaster />
+                  </UserProvider>
+                </ApiProvider>
+              </TermsProvider>
+            </ThemeProvider>
           </ComponentsProvider>
         </SDKProvider>
       </body>

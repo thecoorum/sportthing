@@ -59,7 +59,7 @@ export const Selected = ({ id, deselectable, onDeselect }: Props) => {
       <h2 className="text-lg font-medium leading-none tracking-tight">
         Employee
       </h2>
-      <div className="flex items-center justify-between gap-2 w-full px-4 py-3 border rounded-md bg-slate-50">
+      <div className="flex items-center justify-between gap-2 w-full px-4 py-3 border rounded-md">
         <div className="flex items-center gap-2 font-medium text-sm">
           <Avatar name={data.user.name} image={data.user.photo_url} />
           <p>{data.user.name}</p>

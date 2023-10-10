@@ -18,7 +18,7 @@ export const LocationCard = ({ data }: Props) => (
       <div className="space-y-1.5">
         {!!data.address && <CardDescription>{data.address}</CardDescription>}
         {!!data.description && (
-          <CardDescription className="text-md text-black">{data.description}</CardDescription>
+          <CardDescription className="text-md">{data.description}</CardDescription>
         )}
       </div>
     </CardHeader>

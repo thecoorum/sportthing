@@ -114,7 +114,7 @@ export const ActivityForm = ({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)}>
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
         <div className="pb-20 space-y-3">
           <FormField
             control={form.control}
@@ -247,7 +247,7 @@ export const ActivityForm = ({
             />
           </div>
         </div>
-        <div className="sticky bottom-0 py-4 flex items-center gap-2 bg-white/60 backdrop-blur-sm">
+        <div className="flex items-center gap-2">
           <Button size="lg" onClick={onCancel} variant="outline">
             Cancel
           </Button>
