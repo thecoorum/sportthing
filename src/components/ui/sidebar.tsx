@@ -7,6 +7,7 @@ import {
   RotateCcw,
   UserCircle2,
   Users2,
+  Tags,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -73,6 +74,20 @@ export const Sidebar = memo(({ children }: { children: React.ReactNode }) => {
               >
                 <UserCircle2 className="w-4 h-4" />
                 Profile
+              </Button>
+            </Link>
+            <Link
+              onClick={() => handleOpenChange(false)}
+              href="/bookings"
+              autoFocus={false}
+              className="block"
+            >
+              <Button
+                variant="ghost"
+                className="w-full justify-start items-center gap-2"
+              >
+                <Tags className="w-4 h-4" />
+                Your bookings
               </Button>
             </Link>
             <div className="p-3 px-1">

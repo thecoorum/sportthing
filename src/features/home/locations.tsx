@@ -55,9 +55,9 @@ export const Locations = () => {
   if (!data?.length) {
     return (
       <div className="space-y-3">
-        <h2 className="text-3xl font-semibold leading-none tracking-tight">
+        <h3 className="text-2xl font-semibold leading-none tracking-tight">
           Locations
-        </h2>
+        </h3>
         <Alert>
           <Map className="w-4 h-4" />
           <AlertTitle>No locations found</AlertTitle>
@@ -84,9 +84,9 @@ export const Locations = () => {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between gap-2">
-        <h2 className="text-3xl font-semibold leading-none tracking-tight">
+        <h3 className="text-2xl font-semibold leading-none tracking-tight">
           Locations
-        </h2>
+        </h3>
         {count && count > per && (
           <Link href="/locations" className="flex items-center gap-1">
             <span className="text-sm">View all</span>

@@ -1,3 +1,5 @@
+"use client";
+
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Card,
@@ -6,20 +8,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge, BadgeProps } from "@/components/ui/badge";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { ServerCrash, XCircle } from "lucide-react";
 
 import { motion } from "framer-motion";
 import { format } from "date-fns";
 
 import { useBookings } from "@/hooks/bookings";
 
-const per = 3;
-
-export const Bookings = () => {
-  const { data, error, loading } = useBookings({
-    per,
-    status: ["confirmed", "pending"],
-    from: new Date(),
-  });
+const Page = () => {
+  const { data, error, loading } = useBookings();
 
   if (loading) {
     return (
@@ -44,13 +42,36 @@ export const Bookings = () => {
     );
   }
 
-  if (error || !data?.length) return null;
+  if (error) {
+    return (
+      <Alert>
+        <ServerCrash className="w-4 h-4" />
+        <AlertTitle>Oops, something went wrong</AlertTitle>
+        <AlertDescription>
+          There was an error during fetching your bookings, please try again. If
+          the problem persists, please contact the support.
+        </AlertDescription>
+      </Alert>
+    );
+  }
+
+  if (!data?.length) {
+    return (
+      <Alert>
+        <XCircle className="w-4 h-4" />
+        <AlertTitle>No bookings found</AlertTitle>
+        <AlertDescription>
+          You have no bookings yet. Book an activity to get started.
+        </AlertDescription>
+      </Alert>
+    );
+  }
 
   return (
     <div className="space-y-3">
-      <h3 className="text-2xl font-semibold leading-none tracking-tight">
+      <h2 className="text-3xl font-semibold leading-none tracking-tight">
         Your bookings
-      </h3>
+      </h2>
       <div className="space-y-2">
         {data.map((booking) => {
           let variant = "outline";
@@ -93,3 +114,5 @@ export const Bookings = () => {
     </div>
   );
 };
+
+export default Page;
