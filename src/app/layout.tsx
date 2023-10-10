@@ -4,6 +4,7 @@ import "./globals.css";
 
 import { Inter } from "next/font/google";
 import { SDKProvider } from "@twa.js/sdk-react";
+import { Analytics } from '@vercel/analytics/react'
 
 import { Header } from "@/components/ui/header";
 import { Toaster } from "@/components/ui/toaster";
@@ -37,6 +38,7 @@ export default function RootLayout({
                   <UserProvider>
                     <Header />
                     {children}
+                    <Analytics />
                     <Toaster />
                   </UserProvider>
                 </ApiProvider>
