@@ -17,7 +17,8 @@ export const GET = async (req: NextRequest) => {
       let queryBuilder = supabase
         .from("bookings")
         .select("*, activity:activities(*)")
-        .eq("user_id", user.id);
+        .eq("user_id", user.id)
+        .order("booking_date", { ascending: true });
 
       if (query.page && query.per) {
         const from = (Number(query.page) - 1) * Number(query.per);
