@@ -7,19 +7,25 @@ import type {
   ActivitiesParams,
   ActivityResponse,
   ActivitiesResponse,
+  ActivitiesFetcherResponse,
 } from "./types";
 
 export const useActivities = (params: ActivitiesParams = {}) => {
   const api = useApi();
 
-  const fetcher: Fetcher<Activity[], string> = (url) =>
+  const fetcher: Fetcher<ActivitiesFetcherResponse, string> = (url) =>
     api
       .get(url, { params })
-      .then((response: ActivitiesResponse) => response.data.activities);
+      .then((response: ActivitiesResponse) => response.data);
 
   const { data, error, isLoading } = useSWR("/activities", fetcher);
 
-  return { data, error, loading: isLoading };
+  return {
+    data: data?.activities,
+    count: data?.count,
+    error,
+    loading: isLoading,
+  };
 };
 
 export const useActivity = (id: string | null) => {

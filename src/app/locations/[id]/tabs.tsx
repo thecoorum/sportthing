@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { Avatar } from "@/components/ui/avatar";
-import { CardActivity } from "@/components/ui/activity";
+import { ActivityCard } from "@/components/ui/activity";
 
 import Link from "next/link";
 
@@ -143,7 +143,7 @@ const ActivitiesTab = ({ locationId }: Props) => {
           href={`/activities/${activity.id}`}
           className="block"
         >
-          <CardActivity data={activity} />
+          <ActivityCard data={activity} />
         </Link>
       ))}
       {user.role === "administrator" && (

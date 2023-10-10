@@ -1,30 +1,14 @@
 import useSWR, { Fetcher } from "swr";
 
-import { Tables } from "@/database.extensions";
-import { useApi } from "./useApi";
+import { useApi } from "../useApi";
 
-type LocationsParams = {
-  per?: number;
-  page?: number;
-};
-
-type LocationResponse = {
-  data: {
-    location: Tables<"locations">;
-  };
-};
-
-type LocationsResponse = {
-  data: {
-    locations: Tables<"locations">[];
-    count: number;
-  };
-};
-
-type LocationsFetcherResponse = {
-  locations: Tables<"locations">[];
-  count: number;
-};
+import type {
+  Location,
+  LocationsParams,
+  LocationResponse,
+  LocationsFetcherResponse,
+  LocationsResponse,
+} from "./types";
 
 export const useLocations = (
   params: LocationsParams = { per: 10, page: 1 }
@@ -49,7 +33,7 @@ export const useLocations = (
 export const useLocation = (id: string | null) => {
   const api = useApi();
 
-  const fetcher: Fetcher<Tables<"locations">, string> = (url) =>
+  const fetcher: Fetcher<Location, string> = (url) =>
     api.get(url).then((response: LocationResponse) => response.data.location);
 
   const { data, error, isLoading } = useSWR(`/locations/${id}`, fetcher);

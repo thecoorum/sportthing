@@ -6,10 +6,23 @@ import { format } from "date-fns";
 
 import { useUser } from "@/hooks/useUser";
 import { useTheme } from "next-themes";
+import { useToast } from "./use-toast";
 
 export const UserCard = ({ children }: { children: React.ReactNode }) => {
   const user = useUser();
+
   const { theme } = useTheme();
+
+  const { toast } = useToast();
+
+  const handleCopyUserId = () => {
+    navigator.clipboard.writeText(String(user.id));
+
+    toast({
+      title: "User ID copied",
+      description: `The user ID has been copied to your clipboard.`,
+    });
+  }
 
   return (
     <Sheet>
@@ -28,7 +41,7 @@ export const UserCard = ({ children }: { children: React.ReactNode }) => {
               </span>
             </div>
           </div>
-          <div className="p-6 space-y-2 relative">
+          <div className="space-y-2 relative" onClick={handleCopyUserId}>
             <QRCode
               size={256}
               style={{ height: "auto", width: "100%" }}

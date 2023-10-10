@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
 import {
   Dumbbell,
@@ -8,6 +8,7 @@ import {
   UserCircle2,
   Users2,
   Tags,
+  Scan,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -19,8 +20,9 @@ import { useTheme } from "next-themes";
 import { useCloudStorage } from "@twa.js/sdk-react";
 import { useToast } from "@/components/ui/use-toast";
 
-export const Sidebar = memo(({ children }: { children: React.ReactNode }) => {
+export const Sidebar = ({ children }: { children: React.ReactNode }) => {
   const [open, setOpen] = useState<boolean>(false);
+  const [withScanner, setWithScanner] = useState<boolean>(false);
 
   const user = useUser();
 
@@ -28,6 +30,15 @@ export const Sidebar = memo(({ children }: { children: React.ReactNode }) => {
 
   const { theme } = useTheme();
   const { toast } = useToast();
+
+  useEffect(() => {
+    cloudStorage.getValues(["scanner"]).then(({ scanner }) => {
+      console.log(scanner);
+      if (["", "disabled"].includes(scanner)) return;
+
+      setWithScanner(true);
+    });
+  }, [cloudStorage]);
 
   if (!user) return null;
 
@@ -40,6 +51,20 @@ export const Sidebar = memo(({ children }: { children: React.ReactNode }) => {
       title: "Terms & Conditions restored",
       description:
         "The terms & conditions have been restored to the default value. Reload the app to see the changes.",
+    });
+  };
+
+  const handleToggleScanner = async () => {
+    await cloudStorage.saveValue(
+      "scanner",
+      withScanner ? "disabled" : "enabled"
+    );
+
+    setWithScanner(!withScanner);
+
+    toast({
+      title: `Scanner ${withScanner ? "disabled" : "enabled"}`,
+      description: "Reload the app to see the changes.",
     });
   };
 
@@ -155,17 +180,25 @@ export const Sidebar = memo(({ children }: { children: React.ReactNode }) => {
             )}
           </div>
         </div>
-        <Button
-          variant="ghost"
-          className="w-full justify-start items-center gap-2 mt-auto"
-          onClick={handleRestoreTerms}
-        >
-          <RotateCcw className="w-4 h-4" />
-          Restore Terms
-        </Button>
+        <div>
+          <Button
+            variant="ghost"
+            className="w-full justify-start items-center gap-2 mt-auto"
+            onClick={handleToggleScanner}
+          >
+            <Scan className="w-4 h-4" />
+            {withScanner ? "Disable" : "Enable"} QR scanner
+          </Button>
+          <Button
+            variant="ghost"
+            className="w-full justify-start items-center gap-2 mt-auto"
+            onClick={handleRestoreTerms}
+          >
+            <RotateCcw className="w-4 h-4" />
+            Restore Terms
+          </Button>
+        </div>
       </SheetContent>
     </Sheet>
   );
-});
-
-Sidebar.displayName = "Sidebar";
+};

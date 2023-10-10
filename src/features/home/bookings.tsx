@@ -1,14 +1,17 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Card,
+  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Badge, BadgeProps } from "@/components/ui/badge";
+import { ChevronRight } from "lucide-react";
 
 import { motion } from "framer-motion";
 import { format } from "date-fns";
+import Link from "next/link";
 
 import { useBookings } from "@/hooks/bookings";
 
@@ -48,9 +51,15 @@ export const Bookings = () => {
 
   return (
     <div className="space-y-3">
-      <h3 className="text-2xl font-semibold leading-none tracking-tight">
-        Your bookings
-      </h3>
+      <div className="flex items-center justify-between gap-2">
+        <h3 className="text-2xl font-semibold leading-none tracking-tight">
+          Upcoming bookings
+        </h3>
+        <Link href="/bookings" className="flex items-center gap-1">
+          <span className="text-sm">View all</span>
+          <ChevronRight className="w-4 h-4" />
+        </Link>
+      </div>
       <div className="space-y-2">
         {data.map((booking) => {
           let variant = "outline";
@@ -70,14 +79,6 @@ export const Bookings = () => {
           return (
             <Card key={booking.id} className="w-full">
               <CardHeader>
-                <div className="mb-3">
-                  <Badge
-                    variant={variant as BadgeProps["variant"]}
-                    className="inline-flex px-4 py-2"
-                  >
-                    {booking.status.toUpperCase()}
-                  </Badge>
-                </div>
                 <CardTitle>{booking.activity.name}</CardTitle>
                 <CardDescription>
                   {format(new Date(booking.booking_date), "MMMM do, yyyy")}
@@ -86,6 +87,16 @@ export const Bookings = () => {
                   {booking.start_time} - {booking.end_time}
                 </CardDescription>
               </CardHeader>
+              <CardContent>
+                <div>
+                  <Badge
+                    variant={variant as BadgeProps["variant"]}
+                    className="inline-flex px-4 py-2"
+                  >
+                    {booking.status.toUpperCase()}
+                  </Badge>
+                </div>
+              </CardContent>
             </Card>
           );
         })}

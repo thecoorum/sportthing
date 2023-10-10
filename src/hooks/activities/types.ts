@@ -9,7 +9,9 @@ export type Activity = Tables<"activities"> & {
 
 export type ActivitiesParams = {
   location_id?: string | string[];
-  coach_id?: string | string[];
+  employee_id?: number | number[];
+  page?: number;
+  per?: number;
 };
 
 export type ActivityResponse = {
@@ -21,5 +23,11 @@ export type ActivityResponse = {
 export type ActivitiesResponse = {
   data: {
     activities: Activity[];
+    count: number;
   };
+};
+
+export type ActivitiesFetcherResponse = {
+  activities: Activity[];
+  count: number;
 };

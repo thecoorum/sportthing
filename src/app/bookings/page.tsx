@@ -3,6 +3,7 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Card,
+  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -91,14 +92,6 @@ const Page = () => {
           return (
             <Card key={booking.id} className="w-full">
               <CardHeader>
-                <div className="mb-3">
-                  <Badge
-                    variant={variant as BadgeProps["variant"]}
-                    className="inline-flex px-4 py-2"
-                  >
-                    {booking.status.toUpperCase()}
-                  </Badge>
-                </div>
                 <CardTitle>{booking.activity.name}</CardTitle>
                 <CardDescription>
                   {format(new Date(booking.booking_date), "MMMM do, yyyy")}
@@ -107,6 +100,16 @@ const Page = () => {
                   {booking.start_time} - {booking.end_time}
                 </CardDescription>
               </CardHeader>
+              <CardContent>
+                <div>
+                  <Badge
+                    variant={variant as BadgeProps["variant"]}
+                    className="inline-flex px-4 py-2"
+                  >
+                    {booking.status.toUpperCase()}
+                  </Badge>
+                </div>
+              </CardContent>
             </Card>
           );
         })}

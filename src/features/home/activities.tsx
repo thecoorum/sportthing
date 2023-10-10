@@ -2,20 +2,20 @@ import { ChevronRight, Map, ServerCrash } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { LocationCard } from "@/components/ui/location";
+import { ActivityCard } from "@/components/ui/activity";
 
 import { motion } from "framer-motion";
 import Link from "next/link";
 
-import { useLocations } from "@/hooks/locations";
 import { useUser } from "@/hooks/useUser";
+import { useActivities } from "@/hooks/activities";
 
-const per = 3;
+const per = 5;
 
-export const Locations = () => {
+export const Activities = () => {
   const user = useUser();
 
-  const { data, count, error, loading } = useLocations({ per });
+  const { data, count, error, loading } = useActivities({ per });
 
   if (loading) {
     return (
@@ -46,8 +46,8 @@ export const Locations = () => {
         <ServerCrash className="w-4 h-4" />
         <AlertTitle>Oops, something went wrong</AlertTitle>
         <AlertDescription>
-          There was an error during fetching the locations, please try again. If
-          the problem persists, please contact the support.
+          There was an error during fetching the activities, please try again.
+          If the problem persists, please contact the support.
         </AlertDescription>
       </Alert>
     );
@@ -56,24 +56,24 @@ export const Locations = () => {
     return (
       <div className="space-y-3">
         <h3 className="text-2xl font-semibold leading-none tracking-tight">
-          Locations
+          Activities
         </h3>
         <Alert>
           <Map className="w-4 h-4" />
-          <AlertTitle>No locations found</AlertTitle>
+          <AlertTitle>No activities found</AlertTitle>
           {user.role === "administrator" && (
             <div className="space-y-3">
               <AlertDescription>
-                You can create a new location by clicking the button below.
+                You can create a new activity by clicking the button below.
               </AlertDescription>
-              <Link href="/locations/new" className="block">
-                <Button className="w-full">Create a new location</Button>
+              <Link href="/activities/new" className="block">
+                <Button className="w-full">Create a new activity</Button>
               </Link>
             </div>
           )}
           {user.role !== "administrator" && (
             <AlertDescription>
-              This organization has no locations yet. Please come back later.
+              This organization has no activities yet. Please come back later.
             </AlertDescription>
           )}
         </Alert>
@@ -81,29 +81,27 @@ export const Locations = () => {
     );
   }
 
-  if (data.length === 1) return null
-
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between gap-2">
         <h3 className="text-2xl font-semibold leading-none tracking-tight">
-          Locations
+          Activities
         </h3>
         {count && count > per && (
-          <Link href="/locations" className="flex items-center gap-1">
+          <Link href="/activities" className="flex items-center gap-1">
             <span className="text-sm">View all</span>
             <ChevronRight className="w-4 h-4" />
           </Link>
         )}
       </div>
       <div className="space-y-2">
-        {data.map((location) => (
+        {data.map((activity) => (
           <Link
-            key={location.id}
-            href={`/locations/${location.id}`}
+            key={activity.id}
+            href={`/activities/${activity.id}`}
             className="block"
           >
-            <LocationCard data={location} />
+            <ActivityCard data={activity} />
           </Link>
         ))}
       </div>

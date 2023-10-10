@@ -6,7 +6,7 @@ import { Map, Activity as ActivityIcon } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { CardActivity } from "@/components/ui/activity";
+import { ActivityCard } from "@/components/ui/activity";
 import { Badge } from "@/components/ui/badge";
 
 import Link from "next/link";
@@ -112,7 +112,7 @@ const Page = () => {
             key={activity.id}
             className="block"
           >
-            <CardActivity data={activity} />
+            <ActivityCard data={activity} />
           </Link>
         ))}
       </div>

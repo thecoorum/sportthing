@@ -32,7 +32,7 @@ type PlainActivityProps = Props & {
   onClick?: () => void;
 };
 
-export const CardActivity = ({ data }: Props) => (
+export const ActivityCard = ({ data }: Props) => (
   <Card className="w-full">
     <CardHeader>
       <CardTitle>{data.name}</CardTitle>
@@ -109,12 +109,17 @@ export const PlainActivity = ({
         <motion.div
           initial={{ maxHeight: "1000px" }}
           animate={{ maxHeight: collapsed ? "60px" : "1000px" }}
-          className={cn(
-            "text-sm text-muted-foreground text-ellipsis overflow-hidden relative",
-            collapsible &&
-              collapsed &&
-              "after:content-['...'] after:absolute after:top-[calc(100%_-_20px)] after:left-[calc(100%_-_12px)]"
-          )}
+          className="text-sm text-muted-foreground text-ellipsis overflow-hidden relative"
+          style={
+            collapsible && collapsed
+              ? {
+                  WebkitLineClamp: 3,
+                  WebkitBoxOrient: "vertical",
+                  display: "-webkit-box",
+                  overflow: "hidden",
+                }
+              : undefined
+          }
         >
           {data.description}
         </motion.div>

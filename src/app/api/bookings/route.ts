@@ -35,7 +35,9 @@ export const GET = async (req: NextRequest) => {
       }
 
       if (query.from) {
-        queryBuilder = queryBuilder.gte("booking_date", query.from);
+        queryBuilder = queryBuilder
+          .gte("booking_date", query.from)
+          .gt("start_time", query.from);
       }
 
       if (query["status[]"] && Array.isArray(query["status[]"])) {
