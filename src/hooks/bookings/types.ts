@@ -7,6 +7,8 @@ export type Booking = Tables<"bookings"> & {
 export type BookingsParams = {
   per?: number;
   page?: number;
+  from?: Date;
+  status?: ("confirmed" | "pending" | "cancelled")[];
 };
 
 export type BookingResponse = {

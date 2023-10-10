@@ -33,6 +33,18 @@ export const GET = async (req: NextRequest) => {
         queryBuilder = queryBuilder.range(from, to);
       }
 
+      if (query.from) {
+        queryBuilder = queryBuilder.gte("booking_date", query.from);
+      }
+
+      if (query["status[]"] && Array.isArray(query["status[]"])) {
+        queryBuilder = queryBuilder.in("status", query["status[]"]);
+      }
+
+      if (query.status) {
+        queryBuilder = queryBuilder.eq("status", query.status);
+      }
+
       const { data: bookings, error } = await queryBuilder;
 
       if (error) {

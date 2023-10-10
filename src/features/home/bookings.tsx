@@ -15,7 +15,11 @@ import { useBookings } from "@/hooks/bookings";
 const per = 3;
 
 export const Bookings = () => {
-  const { data, error, loading } = useBookings({ per });
+  const { data, error, loading } = useBookings({
+    per,
+    status: ["confirmed", "pending"],
+    from: new Date(),
+  });
 
   if (loading) {
     return (
@@ -65,12 +69,15 @@ export const Bookings = () => {
           return (
             <Card key={booking.id} className="w-full">
               <CardHeader>
-                <div className="flex items-start justify-between gap-2">
-                  <CardTitle>{booking.activity.name}</CardTitle>
-                  <Badge variant={variant as BadgeProps["variant"]}>
-                    {booking.status}
+                <div className="mb-3">
+                  <Badge
+                    variant={variant as BadgeProps["variant"]}
+                    className="inline-flex px-4 py-2"
+                  >
+                    {booking.status.toUpperCase()}
                   </Badge>
                 </div>
+                <CardTitle>{booking.activity.name}</CardTitle>
                 <CardDescription>
                   {format(new Date(booking.booking_date), "MMMM do, yyyy")}
                 </CardDescription>
