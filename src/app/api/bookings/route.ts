@@ -1,4 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
+
+import { parse } from "url";
 
 import { verifyInitData } from "@/utils";
 import { supabase } from "@/supabase";
@@ -6,7 +8,47 @@ import { supabase } from "@/supabase";
 export const GET = async (req: NextRequest) => {
   const tgWebAppData = req.headers.get("Web-App-Data");
 
+  const { query } = parse(req.url, true);
+
   const { success, user } = verifyInitData(tgWebAppData);
 
-  const data = await req.json();
-}
+  if (success && user) {
+    try {
+      let queryBuilder = supabase
+        .from("bookings")
+        .select("*, activity:activities(*)")
+        .eq("user_id", user.id);
+
+      if (query.page && query.per) {
+        const from = (Number(query.page) - 1) * Number(query.per);
+        const to = from + Number(query.per);
+
+        queryBuilder = queryBuilder.range(from, to);
+      } else if (query.per) {
+        queryBuilder = queryBuilder.limit(Number(query.per));
+      } else if (query.page) {
+        const from = (Number(query.page) - 1) * 10;
+        const to = from + 10;
+
+        queryBuilder = queryBuilder.range(from, to);
+      }
+
+      const { data: bookings, error } = await queryBuilder;
+
+      if (error) {
+        return NextResponse.json({ error }, { status: 400 });
+      }
+
+      return NextResponse.json({ bookings });
+    } catch (error) {
+      return NextResponse.json({ error }, { status: 400 });
+    }
+  }
+
+  return NextResponse.json(
+    {
+      message: "Invalid data provided",
+    },
+    { status: 400 }
+  );
+};

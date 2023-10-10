@@ -12,6 +12,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { UserCard } from "@/components/ui/user-card";
+import { Bookings } from "@/features/home/bookings";
 
 import Link from "next/link";
 
@@ -74,6 +75,7 @@ const Page = () => {
           </TooltipProvider>
         )}
       </div>
+      <Bookings />
       <Locations />
     </div>
   );
