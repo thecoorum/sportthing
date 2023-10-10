@@ -1,30 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-import { ServerCrash, Loader2 } from "lucide-react";
+import { ServerCrash } from "lucide-react";
 import { Skeleton } from "./skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { PlainActivity } from "@/components/ui/activity";
-import { Button } from "@/components/ui/button";
 import { Calendar } from "@/features/book/calendar";
 import { Employees } from "@/features/book/employee";
 import { Timeslots } from "@/features/book/timeslots";
 
-import Link from "next/link";
 import * as zod from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formatISO, isEqual, isSameDay, format } from "date-fns";
-import { motion } from "framer-motion";
 
 import { useActivity } from "@/hooks/activities";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useApi } from "@/hooks/useApi";
 import { useToast } from "@/components/ui/use-toast";
-import { useBackButton } from "@twa.js/sdk-react";
-
-import { cn } from "@/utils";
+import { useBackButton, useMainButton } from "@twa.js/sdk-react";
 
 const schema = zod.object({
   id: zod.string().uuid(),
@@ -34,7 +29,6 @@ const schema = zod.object({
 });
 
 const Page = () => {
-  const [submitting, setSubmitting] = useState<boolean>(false);
   const [descriptionCollapsed, setDescriptionCollapsed] =
     useState<boolean>(true);
 
@@ -42,6 +36,7 @@ const Page = () => {
 
   const api = useApi();
   const backButton = useBackButton();
+  const mainButton = useMainButton();
   const { toast } = useToast();
 
   const router = useRouter();
@@ -94,8 +89,8 @@ const Page = () => {
     }
   }, [form, activity]);
 
-  const handleBookActivity = () => {
-    setSubmitting(true);
+  const handleBookActivity = useCallback(() => {
+    mainButton.showProgress();
 
     api
       .post("/book", {
@@ -122,9 +117,27 @@ const Page = () => {
         });
       })
       .finally(() => {
-        setSubmitting(false);
+        mainButton.hideProgress();
       });
-  };
+  }, [api, employee, id, date, timeslot, toast, router, mainButton]);
+
+  useEffect(() => {
+    if (canSubmit) {
+      mainButton.enable();
+      mainButton.setText("Book activity");
+      mainButton.show();
+      mainButton.on("click", handleBookActivity);
+    } else {
+      mainButton.disable();
+      mainButton.hide();
+      mainButton.off("click", handleBookActivity);
+    }
+
+    return () => {
+      mainButton.hide();
+      mainButton.off("click", handleBookActivity);
+    };
+  }, [mainButton, canSubmit, handleBookActivity]);
 
   const handleToggleDescription = () => {
     setDescriptionCollapsed((prev) => !prev);
@@ -214,32 +227,6 @@ const Page = () => {
           />
         )}
       </div>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{
-          opacity: canSubmit ? 1 : 0,
-        }}
-        transition={{ type: "spring" }}
-        className={cn(
-          "sticky bottom-0 py-4 bg-white/60 backdrop-blur-sm",
-          !canSubmit && "pointer-events-none"
-        )}
-      >
-        <Button
-          disabled={!canSubmit || submitting}
-          onClick={handleBookActivity}
-          className="w-full"
-          size="lg"
-        >
-          {submitting && (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Booking
-            </>
-          )}
-          {!submitting && "Book activity"}
-        </Button>
-      </motion.div>
     </div>
   );
 };

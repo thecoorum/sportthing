@@ -1,7 +1,5 @@
-import { useState } from "react";
+import { useEffect, useCallback } from "react";
 
-import { Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -15,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { OperatingRules } from "./operating-rules";
 
 import { useUser } from "@/hooks/useUser";
+import { useMainButton } from "@twa.js/sdk-react";
 
 import * as zod from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,7 +25,6 @@ export type FormValues = zod.infer<typeof formSchema>;
 
 type Props = {
   onSubmit: (data: FormValues) => void;
-  onCancel: () => void;
 };
 
 export const formSchema = zod.object({
@@ -61,10 +59,10 @@ export const formSchema = zod.object({
     .optional(),
 });
 
-export const ProfileForm = ({ onSubmit, onCancel }: Props) => {
-  const [loading, setLoading] = useState<boolean>(false);
-
+export const ProfileForm = ({ onSubmit }: Props) => {
   const user = useUser();
+
+  const mainButton = useMainButton();
 
   const form = useForm<zod.infer<typeof formSchema>>({
     defaultValues: {
@@ -76,18 +74,45 @@ export const ProfileForm = ({ onSubmit, onCancel }: Props) => {
     resolver: zodResolver(formSchema),
   });
 
-  const handleSubmit = (data: zod.infer<typeof formSchema>) => {
-    setLoading(true);
+  const handleSubmit = useCallback(
+    (data: zod.infer<typeof formSchema>) => {
+      mainButton.disable();
+      mainButton.showProgress();
 
-    onSubmit(data);
-  };
+      onSubmit(data);
+    },
+    [onSubmit, mainButton]
+  );
+
+  useEffect(() => {
+    mainButton.disable();
+    mainButton.setText("Save");
+    mainButton.show();
+
+    return () => {
+      mainButton.hide();
+    };
+  }, [mainButton]);
+
+  useEffect(() => {
+    mainButton.on("click", form.handleSubmit(handleSubmit));
+
+    return () => {
+      mainButton.off("click", form.handleSubmit(handleSubmit));
+    };
+  }, [mainButton, handleSubmit, form]);
+
+  useEffect(() => {
+    if (form.formState.isDirty) {
+      mainButton.enable();
+    } else {
+      mainButton.disable();
+    }
+  }, [mainButton, form.formState.isDirty]);
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(handleSubmit)}
-        className="w-full space-y-3"
-      >
+      <form className="w-full space-y-3">
         <FormField
           control={form.control}
           name="name"
@@ -139,25 +164,6 @@ export const ProfileForm = ({ onSubmit, onCancel }: Props) => {
             </FormProvider>
           </>
         )}
-        <div className="sticky bottom-0 pt-4 flex items-center gap-2 bg-white/60 backdrop-blur-sm">
-          <Button size="lg" onClick={onCancel} variant="outline">
-            Cancel
-          </Button>
-          <Button
-            size="lg"
-            type="submit"
-            disabled={loading || !form.formState.isDirty}
-            className="w-full"
-          >
-            {loading && (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Updating...
-              </>
-            )}
-            {!loading && "Submit"}
-          </Button>
-        </div>
       </form>
     </Form>
   );

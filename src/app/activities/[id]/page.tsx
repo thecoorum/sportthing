@@ -22,7 +22,7 @@ import {
 import Link from "next/link";
 
 import { useUser } from "@/hooks/useUser";
-import { useBackButton } from "@twa.js/sdk-react";
+import { useBackButton, useMainButton } from "@twa.js/sdk-react";
 import { useRouter } from "next/navigation";
 import { useApi } from "@/hooks/useApi";
 import { useToast } from "@/components/ui/use-toast";
@@ -38,6 +38,7 @@ const Page = ({ params }: { params: { id: string } }) => {
   const { toast } = useToast();
 
   const backButton = useBackButton();
+  const mainButton = useMainButton();
 
   useEffect(() => {
     const handleGoBack = () => {
@@ -52,6 +53,22 @@ const Page = ({ params }: { params: { id: string } }) => {
       backButton.hide();
     };
   }, [backButton, router]);
+
+  useEffect(() => {
+    const handleNavigateToBook = () => {
+      router.push(`/book?activity=${params.id}`);
+    };
+
+    mainButton.enable();
+    mainButton.setText("Book activity");
+    mainButton.on("click", handleNavigateToBook);
+    mainButton.show();
+
+    return () => {
+      mainButton.off("click", handleNavigateToBook);
+      mainButton.hide();
+    };
+  }, [mainButton, router, params.id]);
 
   const { data: activity, error, loading } = useActivity(params.id);
 
@@ -110,50 +127,37 @@ const Page = ({ params }: { params: { id: string } }) => {
   return (
     <div className="flex flex-col space-y-6">
       <PlainActivity data={activity} />
-      <div className="flex flex-col sticky bottom-0 py-4 bg-white/60 backdrop-blur-sm space-y-2">
-        <Link
-          href={{ pathname: "/book", query: { activity: params.id } }}
-          className="block w-full"
-        >
-          <Button size="lg" className="w-full">
-            Book activity
-          </Button>
-        </Link>
-        {user.role === "administrator" && (
-          <div className="flex items-center gap-2">
-            <AlertDialog>
-              <AlertDialogTrigger>
-                <Button size="lg" variant="destructive">
-                  Delete
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete
-                    this activity.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleDeleteActivity}>
-                    Continue
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-            <Link
-              href={`/activities/${params.id}/edit`}
-              className="block w-full"
-            >
-              <Button size="lg" className="w-full" variant="outline">
-                Edit
+      {user.role === "administrator" && (
+        <div className="flex items-center gap-2">
+          <AlertDialog>
+            <AlertDialogTrigger>
+              <Button size="lg" variant="destructive">
+                Delete
               </Button>
-            </Link>
-          </div>
-        )}
-      </div>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete
+                  this activity.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDeleteActivity}>
+                  Continue
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+          <Link href={`/activities/${params.id}/edit`} className="block w-full">
+            <Button size="lg" className="w-full" variant="outline">
+              Edit
+            </Button>
+          </Link>
+        </div>
+      )}
     </div>
   );
 };

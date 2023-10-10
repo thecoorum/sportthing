@@ -1,19 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ProfileForm, FormValues } from "@/components/forms/profile";
 
-import { DateTime } from "luxon";
+import { format } from "date-fns";
 
 import { useUser } from "@/hooks/useUser";
 import { useApi } from "@/hooks/useApi";
 import { useToast } from "@/components/ui/use-toast";
 import { useSWRConfig } from "swr";
-import { useBackButton } from "@twa.js/sdk-react";
+import { useBackButton, useMainButton } from "@twa.js/sdk-react";
 import { useRouter } from "next/navigation";
 
 import { statuses } from "@/constants";
@@ -22,8 +22,12 @@ const Profile = () => {
   const [editing, setEditing] = useState<boolean>(false);
 
   const user = useUser();
+
   const api = useApi();
+
+  const mainButton = useMainButton();
   const backButton = useBackButton();
+
   const router = useRouter();
 
   const { toast } = useToast();
@@ -46,44 +50,42 @@ const Profile = () => {
 
   const withStatus = ["administrator", "coach"].includes(user.role);
 
-  const handleSubmit = async (data: FormValues) => {
-    const { operating_rules } = data;
+  const handleSubmit = useCallback(
+    async (data: FormValues) => {
+      const { operating_rules } = data;
 
-    const pendingDelete = operating_rules
-      ?.filter((rule) => rule._delete)
-      .map(({ id }) => id);
+      const pendingDelete = operating_rules
+        ?.filter((rule) => rule._delete)
+        .map(({ id }) => id);
 
-    if (pendingDelete?.length) {
-      api.delete("/operating-rules", { data: pendingDelete });
-    }
+      if (pendingDelete?.length) {
+        api.delete("/operating-rules", { data: pendingDelete });
+      }
 
-    api
-      .post(`/users/${user.id}`, data)
-      .then((response) => {
-        mutate("/auth", response.data.user);
-      })
-      .catch((error: Error) => {
-        toast({
-          title: "Oops, an error occured",
-          description: error.message,
+      api
+        .post(`/users/${user.id}`, data)
+        .then((response) => {
+          mutate("/auth", response.data.user);
+        })
+        .catch((error: Error) => {
+          toast({
+            title: "Oops, an error occured",
+            description: error.message,
+          });
+        })
+        .finally(() => {
+          setEditing(false);
+          mainButton.hideProgress();
         });
-      })
-      .finally(() => {
-        setEditing(false);
-      });
-  };
-
-  const handleCancel = () => {
-    setEditing(false);
-  };
+    },
+    [api, mutate, toast, user, mainButton]
+  );
 
   return (
     <div className="flex flex-col h-full p-4 justify-between">
       <div className="flex flex-col space-y-2 items-center">
         <Avatar name={user.name} className="w-16 h-16" />
-        {editing && (
-          <ProfileForm onSubmit={handleSubmit} onCancel={handleCancel} />
-        )}
+        {editing && <ProfileForm onSubmit={handleSubmit} />}
         {!editing && (
           <>
             <h2 className="text-2xl">{user.name}</h2>
@@ -101,14 +103,7 @@ const Profile = () => {
               </p>
             )}
             <span className="text-sm text-muted-foreground">
-              Member since{" "}
-              {DateTime.fromISO(user.created_at || "")
-                .setLocale("en")
-                .toLocaleString({
-                  month: "long",
-                  day: "numeric",
-                  year: "numeric",
-                })}
+              Member since {format(new Date(user.created_at), "MMMM do, yyyy")}
             </span>
             <div className="flex items-center self-start w-full gap-2">
               <Button
