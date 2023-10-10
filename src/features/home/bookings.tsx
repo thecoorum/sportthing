@@ -35,6 +35,7 @@ export const Bookings = () => {
           <motion.div
             initial={{ opacity: 0, translateY: 20 }}
             animate={{ opacity: 1, translateY: 0 }}
+            transition={{ delay: 0.2 }}
           >
             <Skeleton className="w-full h-[150px]" />
           </motion.div>
