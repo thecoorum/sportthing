@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import * as RadixAvatarPrimitive from "@radix-ui/react-avatar";
 
